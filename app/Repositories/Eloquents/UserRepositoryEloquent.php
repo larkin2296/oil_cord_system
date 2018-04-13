@@ -44,5 +44,15 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+    /*验证手机号是否注册*/
+
+    public function checkMobile($mobile)
+    {
+        if( $this->model->where('mobile',$mobile)->first() ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
 }
