@@ -52,7 +52,8 @@ $router->group(['middleware' => ['api']],function($router){
                 'as' => 'loginMassage',
             ]);
         });
-        /*验证码*/
+
+        /*短信验证码*/
         $router->group(['prefix' => 'messages'],function ($router){
             /*登陆验证码*/
             $router->match(['get','post'],'loginMessage',[
@@ -73,6 +74,38 @@ $router->group(['middleware' => ['api']],function($router){
             $router->match(['get','post'],'editMobileMessage',[
                 'uses' => 'Login\MessageController@editMobileMessage',
                 'as' => 'editMobileMessage'
+            ]);
+        });
+        /*用户信息*/
+        $router->group(['prefix' => 'user'],function($router){
+
+            /*更改绑定手机号*/
+            $router->match(['get','post'],'edit',[
+                'uses' => 'Login\MessageController@editMobile',
+                'as' => 'editMobile',
+            ]);
+
+            /*用户信息*/
+            $router->match(['get','post'],'info',[
+                'uses' => 'UserController@userinfo',
+                'as' => 'info',
+            ]);
+        });
+
+
+
+        $router->group(['prefix' => 'getinfo'],function($router){
+            /*登陆*/
+            $router->match(['get','post'],'/',[
+                'uses' => 'Login\LoginController@get_info',
+                'as' => 'login',
+            ]);
+        });
+        $router->group(['prefix' => 'logout'],function($router){
+            /*登陆*/
+            $router->match(['get','post'],'/',[
+                'uses' => 'Login\LoginController@logout',
+                'as' => 'login',
             ]);
         });
 

@@ -15,7 +15,5 @@ class Service
     public function __construct()
     {
         $this->userRepo = app(UserRepository::class);
-
-
     }
 }

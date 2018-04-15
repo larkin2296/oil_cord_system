@@ -28,10 +28,8 @@ class LoginService extends Service {
      */
     public function login()
     {
-
         //TODO  验证规则
         $mobile = request('mobile', '');
-
 
         $password = request('password', '');
 
@@ -63,8 +61,8 @@ class LoginService extends Service {
         /*事务处理*/
         $exception = DB::transaction(function(){
             $mobile = request('mobile', '');
-            $code = request('code', '');
 
+            $code = request('code', '');
             //验证验证码
             $this->checkCode('login', $mobile, $code);
 
@@ -97,10 +95,6 @@ class LoginService extends Service {
 
         return array_merge($this->results, $exception);
     }
-
-
-
-
 
 
 }
