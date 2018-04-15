@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\Login;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\Api\LoginService as Service;
+use App\Services\Api\UserService as Service;
 
-class LoginController extends Controller
+class UserController extends Controller
 {
     protected $service;
     public function __construct(Service $service)
@@ -15,23 +15,23 @@ class LoginController extends Controller
     }
 
     /**
-     * 登陆
+     * 更改绑定手机号
      * @return [type] [description]
      */
-    public function login()
+    public function editMobile()
     {
-        $results = $this->service->login();
+        $results = $this->service->editMobile();
 
         return response()->json($results);
     }
 
     /**
-     * 手机验证码
+     * 当前登陆用户信息
      * @return [type] [description]
      */
-    public function loginMassage()
+    public function userinfo()
     {
-        $results = $this->service->loginMassage();
+        $results = $this->service->userinfo();
 
         return response()->json($results);
     }

@@ -33,6 +33,7 @@ class CreateUsersTable extends Migration
             $table->string('role_status', 30)->nullable()->comment('1-采购商2-供应商');
             $table->string('status', 30)->nullable()->default()->comment('状态1-正常2-锁定');
             $table->string('auth_papers', 100)->nullable()->comment('认证的证件图片');
+            $table->string('grade', 30)->nullable()->comment('等级');
             $table->rememberToken();
             $table->timestamps();
             /*软删除*/

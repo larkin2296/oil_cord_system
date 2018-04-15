@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Models;
 
+use App\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -13,7 +14,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class User extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait,ModelTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -27,5 +28,23 @@ class User extends Model implements Transformable
     	'role_status','status','auth_papers','qq_num','alipay'
 
     ];
+
+    protected $dates = ['deleted_at'];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'remember_token',
+    ];
+
+
+    public function getIdHashAttribute()
+    {
+        return $this->encodeId('user', $this->id);
+    }
+
 
 }

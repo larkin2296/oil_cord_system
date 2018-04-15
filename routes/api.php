@@ -37,6 +37,7 @@ $router->group(['middleware' => ['api']],function($router){
                'uses' => 'Login\RegisterController@register',
                'as' => 'index',
             ]);
+
         });
             
         $router->group(['prefix' => 'login'],function($router){
@@ -45,7 +46,36 @@ $router->group(['middleware' => ['api']],function($router){
                'uses' => 'Login\LoginController@login',
                'as' => 'login',
             ]);
+            /*手机短信登陆*/
+            $router->match(['get','post'],'mobile',[
+                'uses' => 'Login\LoginController@loginMassage',
+                'as' => 'loginMassage',
+            ]);
         });
+        /*验证码*/
+        $router->group(['prefix' => 'messages'],function ($router){
+            /*登陆验证码*/
+            $router->match(['get','post'],'loginMessage',[
+                'uses' => 'Login\MessageController@loginMessage',
+                'as' => 'loginMessage',
+            ]);
+            /*注册验证码*/
+             $router->match(['get','post'],'registerMessage',[
+                 'uses' => 'Login\MessageController@registerMessage',
+                 'as' => 'registerMessage'
+             ]);
+             /*发送重置验证码*/
+            $router->match(['get','post'],'resetpassMessage',[
+                'uses' => 'Login\MessageController@resetpassMessage',
+                'as' => 'resetpassMessage'
+            ]);
+            /*更改手机号绑定验证码*/
+            $router->match(['get','post'],'editMobileMessage',[
+                'uses' => 'Login\MessageController@editMobileMessage',
+                'as' => 'editMobileMessage'
+            ]);
+        });
+
     });
 
 

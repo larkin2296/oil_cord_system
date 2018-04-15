@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Traits;
 use PhpRedis;
@@ -6,21 +6,23 @@ use Exception;
 
 Trait CodeTrait
 {
-	public function checkCode($action, $mobile, $verifyCode)
-	{
-		$key = $this->getCodeKey($mobile, $action);
+    public function checkCode($action, $mobile, $verifyCode)
+    {
 
-		if(	PhpRedis::command('exists', [$key]) ) {
-			$code = $this->getRedis($key);
+        $key = $this->getCodeKey($mobile, $action);
 
-			if( $code == $verifyCode ) {
-				$this->clearRedis($key);
-				return true;
-			}
-		} 
+        if(	PhpRedis::command('exists', [$key]) ) {
+            $code = $this->getRedis($key);
 
-		throw new Exception("验证码错误", 2);
-	}
+
+            if( $code == $verifyCode ) {
+                $this->clearRedis($key);
+                return true;
+            }
+        }
+
+        throw new Exception("验证码错误", 2);
+    }
 
     private function checkCount($mobile, $default = 5)
     {
@@ -42,11 +44,11 @@ Trait CodeTrait
         throw new Exception("短信发送次数过多", 2);
     }
 
-	private function getRedis($key)
-	{
-		return PhpRedis::command('get', [$key]);
-	}
-	/**
+    private function getRedis($key)
+    {
+        return PhpRedis::command('get', [$key]);
+    }
+    /**
      * 设置Redis
      *
      */
@@ -67,14 +69,14 @@ Trait CodeTrait
 
     private function getCodeKey($mobile, $action)
     {
-    	//验证码
+        //验证码
         $codeKey = $mobile . ':code:';
         return $codeKey . $action;
     }
 
     private function getCountKey($mobile)
     {
-    	// 总量
+        // 总量
         return $mobile . ':count';
     }
 

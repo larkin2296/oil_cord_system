@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Api\RegisterService as Service;
 
+use Illuminate\Http\Response;
+
+use App\Http\Requests;
 class RegisterController extends Controller
 {
     protected $service;
@@ -21,8 +24,10 @@ class RegisterController extends Controller
     public function register()
     {
 
-        $results = $this->service->index();
+        $results = $this->service->register();
 
         return response()->json($results);
     }
+
+
 }
