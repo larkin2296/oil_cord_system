@@ -33,7 +33,7 @@ class LoginService extends Service {
        
        try {
            $exception =  DB::transaction(function() {
-               return ['code' => '200','message' => '登陆成功'];
+               return ['code' => '200','message' => '登陆成功','data' => ['token' => '123321']];
            });
        } catch (Exception $e) {
            dd($e);
@@ -44,5 +44,18 @@ class LoginService extends Service {
        }
        return array_merge($this->results, $exception);
 
+    }
+    public function get_info($field){
+        try {
+                $result = $this->userRepo->findWhere($field)->all();
+                return $result[0];
+        } catch (Exception $e) {
+            dd($e);
+            $exception = [
+                'code' => '0',
+                'message' => $this->handler($e),
+            ];
+        }
+        return array_merge($this->results, $exception);
     }
 }

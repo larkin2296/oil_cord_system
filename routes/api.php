@@ -46,6 +46,21 @@ $router->group(['middleware' => ['api']],function($router){
                'as' => 'login',
             ]);
         });
+
+        $router->group(['prefix' => 'getinfo'],function($router){
+            /*登陆*/
+            $router->match(['get','post'],'/',[
+                'uses' => 'Login\LoginController@get_info',
+                'as' => 'login',
+            ]);
+        });
+        $router->group(['prefix' => 'logout'],function($router){
+            /*登陆*/
+            $router->match(['get','post'],'/',[
+                'uses' => 'Login\LoginController@logout',
+                'as' => 'login',
+            ]);
+        });
     });
 
 
