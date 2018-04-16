@@ -14,7 +14,7 @@ Trait UserTrait
     public function getLoginUserInfo($user)
     {
         return [
-            'name' => $user->name ?: $user->name,
+            'name' => $user->name ?: $user->mobile,
             'truename' => $user->truename ?: $user->mobile,
             'mobile' => $user->mobile,
             //'avatar' => $user->avatar ? dealAvatar($user->avatar): '',
