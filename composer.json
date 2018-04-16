@@ -19,8 +19,8 @@
         "prettus/l5-repository": "^2.6",
         "santigarcor/laratrust": "^5.0",
         "shawn/kdniao": "^1.2",
+        "tymon/jwt-auth": "0.5.12",
         "vinkla/hashids": "^5.0",
-        "tymon/jwt-auth": "^0.5.12",
         "yajra/laravel-datatables": "^1.0",
         "yajra/laravel-datatables-buttons": "^3.0"
     },
