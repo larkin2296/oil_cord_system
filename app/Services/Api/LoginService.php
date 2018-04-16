@@ -35,7 +35,7 @@ class LoginService extends Service {
         $password = request('password', '');
 
         $credentials = request()->only('mobile', 'password');
-        return $token = JWTAuth::attempt($credentials);
+
         if( $token = JWTAuth::attempt($credentials) ) {
             $user = $this->userRepo->findByField('mobile', $mobile)->first();
         } else {

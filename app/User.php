@@ -1,20 +1,29 @@
 <?php
 
-namespace App\Repositories\Models;
+namespace App;
 
-use App\Traits\ModelTrait;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laratrust\Traits\LaratrustUserTrait;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\ModelTrait;
+//use App\RepositoriesModels\ThirdAccount;
+
 
 /**
  * Class User.
  *
  * @package namespace App\Repositories\Models;
  */
-class User extends Model implements Transformable
+class User extends Authenticatable implements Transformable
 {
-    use TransformableTrait,ModelTrait;
+    use LaratrustUserTrait;
+    use Notifiable;
+    use TransformableTrait;
+    use SoftDeletes;
+    use ModelTrait;
 
     /**
      * The attributes that are mass assignable.
