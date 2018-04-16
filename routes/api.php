@@ -91,9 +91,7 @@ $router->group(['middleware' => ['api']],function($router){
                 'as' => 'info',
             ]);
         });
-
-
-
+        
         $router->group(['prefix' => 'getinfo'],function($router){
             /*登陆*/
             $router->match(['get','post'],'/',[

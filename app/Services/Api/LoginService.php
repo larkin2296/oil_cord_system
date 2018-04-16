@@ -5,13 +5,14 @@ use App\Traits\ResultTrait;
 use App\Traits\ExceptionTrait;
 use App\Traits\ServiceTrait;
 use App\Traits\CodeTrait;
+use App\Traits\UserTrait;
 use App\Services\Service;
 use Exception;
 use DB;
 use Redis;
 use App\Repositories\Models\User;
 use JWTAuth;
-use App\Traits\Services\User\UserTrait;
+
 
 class LoginService extends Service {
    use ServiceTrait,ResultTrait,ExceptionTrait, CodeTrait,UserTrait;
@@ -34,7 +35,7 @@ class LoginService extends Service {
         $password = request('password', '');
 
         $credentials = request()->only('mobile', 'password');
-
+        return $token = JWTAuth::attempt($credentials);
         if( $token = JWTAuth::attempt($credentials) ) {
             $user = $this->userRepo->findByField('mobile', $mobile)->first();
         } else {

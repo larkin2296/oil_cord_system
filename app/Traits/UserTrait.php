@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Traits\Services\User;
+namespace App\Traits;
 
 use Carbon\Carbon;
 use JWTAuth;
