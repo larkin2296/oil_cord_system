@@ -76,7 +76,7 @@ $router->group(['middleware' => ['api']],function($router){
                 'as' => 'editMobileMessage'
             ]);
         });
-//        $router->group(['prefix' => 'jwt.auth'],function($router){
+        $router->group(['middleware' => 'jwt.auth'],function($router){
 
             /*用户信息*/
             $router->group(['prefix' => 'user'],function($router){
@@ -94,7 +94,7 @@ $router->group(['middleware' => ['api']],function($router){
                 ]);
             });
 
-//        });
+        });
 
 
 
