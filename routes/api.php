@@ -76,22 +76,28 @@ $router->group(['middleware' => ['api']],function($router){
                 'as' => 'editMobileMessage'
             ]);
         });
-        /*用户信息*/
-        $router->group(['prefix' => 'user'],function($router){
-
-            /*更改绑定手机号*/
-            $router->match(['get','post'],'edit',[
-                'uses' => 'Login\MessageController@editMobile',
-                'as' => 'editMobile',
-            ]);
+//        $router->group(['prefix' => 'jwt.auth'],function($router){
 
             /*用户信息*/
-            $router->match(['get','post'],'info',[
-                'uses' => 'UserController@userinfo',
-                'as' => 'info',
-            ]);
-        });
-        
+            $router->group(['prefix' => 'user'],function($router){
+
+                /*更改绑定手机号*/
+                $router->match(['get','post'],'edit',[
+                    'uses' => 'Login\MessageController@editMobile',
+                    'as' => 'editMobile',
+                ]);
+
+                /*用户信息*/
+                $router->match(['get','post'],'info',[
+                    'uses' => 'UserController@userinfo',
+                    'as' => 'info',
+                ]);
+            });
+
+//        });
+
+
+
         $router->group(['prefix' => 'getinfo'],function($router){
             /*登陆*/
             $router->match(['get','post'],'/',[

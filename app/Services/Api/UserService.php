@@ -3,13 +3,14 @@ namespace App\Services\Api;
 use App\Traits\ResultTrait;
 use App\Traits\ExceptionTrait;
 use App\Traits\ServiceTrait;
-use App\Traits\Services\User\UserTrait;
+use App\Traits\UserTrait;
 use App\Services\Service;
 use App\Traits\CodeTrait;
 use Carbon\Carbon;
 use Exception;
 use DB;
 use Storage;
+use JWTAuth;
 
 class UserService extends Service
 {
@@ -52,6 +53,7 @@ class UserService extends Service
     public function userInfo()
     {
         $user = $this->jwtUser();
+
         $result = $this->userRepo->find($user->id);
         // 头像路径
         $data = [
@@ -64,7 +66,7 @@ class UserService extends Service
             'qq_num' => $result->qq_num ? $result->qq_num : '',
             'grade' => $result->grade ? $result->grade : '',
             'notes' => $result->notes ? $result->notes : '',
-            'avatar' => dealAvatar($result->avatar),
+//            'avatar' => dealAvatar($result->avatar),
         ];
         return array_merge($this->results,['code' => '200','data' => $data,'message' => '请求成功']);
 
