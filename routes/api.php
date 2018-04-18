@@ -96,20 +96,34 @@ $router->group(['middleware' => ['api']],function($router){
 
         });
 
-
-
-        $router->group(['prefix' => 'getinfo'],function($router){
-            /*登陆*/
-            $router->match(['get','post'],'/',[
-                'uses' => 'Login\LoginController@get_info',
-                'as' => 'login',
-            ]);
-        });
         $router->group(['prefix' => 'logout'],function($router){
             /*登陆*/
             $router->match(['get','post'],'/',[
                 'uses' => 'Login\LoginController@logout',
                 'as' => 'login',
+            ]);
+        });
+
+        $router->group(['prefix' => 'purchasing'],function($router){
+            /*采购商添加卡密采购*/
+            $router->match(['get','post'],'camilo_order',[
+                'uses' => 'Purchasing\PurchasingController@camilo_order',
+                'as' => 'camilo_order',
+            ]);
+            /*采购商查询界面卡密查询*/
+            $router->match(['get','post'],'get_camilo_order',[
+                'uses' => 'Purchasing\PurchasingController@get_camilo_order',
+                'as' => 'get_camilo_order',
+            ]);
+            /*采购商查询界面直充查询*/
+            $router->match(['get','post'],'get_directy_order',[
+                'uses' => 'Purchasing\PurchasingController@get_directy_order',
+                'as' => 'get_directy_order',
+            ]);
+            /*采购商油卡绑定*/
+            $router->match(['get','post'],'binding_card',[
+                'uses' => 'Purchasing\PurchasingController@binding_card',
+                'as' => 'binding_card',
             ]);
         });
 

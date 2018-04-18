@@ -66,6 +66,7 @@ class UserService extends Service
             'qq_num' => $result->qq_num ? $result->qq_num : '',
             'grade' => $result->grade ? $result->grade : '',
             'notes' => $result->notes ? $result->notes : '',
+            'roles' => $result->role_status ? [$result->role_status] : '',
 //            'avatar' => dealAvatar($result->avatar),
         ];
         return array_merge($this->results,['code' => '200','data' => $data,'message' => '请求成功']);

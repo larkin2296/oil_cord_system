@@ -6,7 +6,7 @@ use Exception;
 
 Trait ServiceTrait
 {
-
+    protected $auto_increment = 0;
 	public function index()
 	{
 		return [];
@@ -167,4 +167,23 @@ Trait ServiceTrait
 
 		return $setValue;
 	}
+    /*
+     * 创建订单号
+     * 来源 1.电脑端 2.手机端
+     * 支付方式 1.支付宝 2.微信 3.银行卡
+     * 业务 1.卡密采购 2.直充采购 3.卡密供货 4.直充供货 5.问题订单 6.补发订单
+     * 当前年月日
+     * 自增一位
+     * 随机码+时间戳
+     * */
+    public function set_order_code($from,$pay_type,$business){
+        $code = '';
+        $date = date('YmdHis',time());
+        $rand = mt_rand(1,100);
+        $auto = $this->auto_increment;
+        $time = substr(time(),10);
+        $code = $from.$pay_type.$business.$date.$auto.$rand.$time;
+        $this->auto_increment++;
+        return $code;
+    }
 }

@@ -9,4 +9,5 @@ trait ResultTrait
 		'data' => [],
 		'message' => '',
 	];
+
 }

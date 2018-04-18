@@ -35,5 +35,11 @@ class LoginController extends Controller
 
         return response()->json($results);
     }
+    public function get_info(Request $request)
+    {
 
+        $result['data'] = $this->service->get_info(['remember_token'=>$request->token]);
+
+       return response()->json($result);
+    }
 }
