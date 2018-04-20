@@ -41,4 +41,22 @@ class PurchasingService extends Service {
         }
         return array_merge($this->results, $exception);
     }
+    public function card_binding($request){
+        try{
+            $res = $this->oilcardRepo->findByField('oil_card_code',$request['list']['oil_card_code']);
+            if(empty($res) || $res = ''){
+                $this->oilcardRepo->create($request['list']);
+                return ['code' => '200','message' => '添加成功'];
+            }else{
+                return ['code' => '500','message' => '此卡已存在'];
+            }
+
+        }catch(Exception $e){
+            $exception = [
+                'code' => '0',
+                'message' => $this->handler($e),
+            ];
+        }
+        return array_merge($this->results, $exception);
+    }
 }

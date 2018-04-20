@@ -57,6 +57,7 @@ class UserService extends Service
         $result = $this->userRepo->find($user->id);
         // 头像路径
         $data = [
+            'id' => $result->id ?: $result->id,
             'name' => $result->truename ?: $result->mobile,
             'truename' => $result->truename ?: $result->mobile,
             'sex' => $result->sex ? $result->sex: '',
