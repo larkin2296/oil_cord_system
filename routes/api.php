@@ -92,6 +92,11 @@ $router->group(['middleware' => ['api']],function($router){
                     'uses' => 'UserController@userinfo',
                     'as' => 'info',
                 ]);
+                /*供应商*/
+                $router->group(['prefix' => 'supply'],function ($router) {
+                    /*供应商*/
+                    require(__DIR__.'api/accommed/api.php');
+                });
             });
 
         });
