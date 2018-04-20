@@ -130,6 +130,16 @@ $router->group(['middleware' => ['api']],function($router){
                 'uses' => 'Purchasing\PurchasingController@get_card',
                 'as' => 'get_card',
             ]);
+            /*采购商油卡启用*/
+            $router->match(['get','post'],'card_start',[
+                'uses' => 'Purchasing\PurchasingController@card_start',
+                'as' => 'card_start',
+            ]);
+            /*采购商油卡设置为长期*/
+            $router->match(['get','post'],'set_longtrem',[
+                'uses' => 'Purchasing\PurchasingController@set_longtrem',
+                'as' => 'set_longtrem',
+            ]);
         });
 
     });

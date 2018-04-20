@@ -22,7 +22,7 @@ class CreateUserOilCardTable extends Migration
             $table->string('ture_name',20)->comment('油卡对应的姓名');
             $table->string('web_account',100)->nullable()->comment('官网油卡账号');
             $table->string('web_password',100)->nullable()->comment('官网油卡密码');
-            $table->integer('card_status')->default(1)->comment('油卡状态');
+            $table->integer('card_status')->default(0)->comment('油卡状态');
             $table->integer('is_longtrem')->default(0)->comment('是否长期充值');
             $table->integer('recharge_num')->default(0)->comment('油卡被充值总次数');
             $table->integer('recharge_today_num')->default(0)->comment('油卡今日被充值次数');
