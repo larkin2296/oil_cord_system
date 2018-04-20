@@ -130,6 +130,11 @@ $router->group(['middleware' => ['api']],function($router){
                 'uses' => 'Purchasing\PurchasingController@binding_card',
                 'as' => 'binding_card',
             ]);
+            /*采购商油卡*/
+            $router->match(['get','post'],'get_card',[
+                'uses' => 'Purchasing\PurchasingController@get_card',
+                'as' => 'get_card',
+            ]);
         });
 
     });

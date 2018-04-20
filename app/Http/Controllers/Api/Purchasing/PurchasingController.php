@@ -28,6 +28,12 @@ class PurchasingController extends Controller
     }
     //油卡绑定功能
     public function binding_card(Request $request){
-        return $request;
+        $results = $this->service->card_binding($request);
+        return response()->json($results);
+    }
+    //油卡查询
+    public function get_card(Request $request){
+        $results = $this->service->oilcardRepo->all();
+        return response()->json($results);
     }
 }
