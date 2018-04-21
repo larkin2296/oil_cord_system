@@ -96,6 +96,7 @@ class UserService extends Service
         return array_merge($this->results,$exception);
 
     }
+
     /**
      * 修改账户密码
      * @return [type] [description]
@@ -122,6 +123,40 @@ class UserService extends Service
         });
 
         return array_merge($this->results,$exception);
+    }
+
+    /**
+     * 生成注册邀请链接
+     * @return [type] [description]
+     */
+    public function setLink()
+    {
+        $exception = DB::transaction(function() {
+
+            /*获取用户信息*/
+            $user = $this->jwtUser();
+dd($user);
+            $route = route('api.register');
+            dd($route);
+            if ( $user->status == 1 && $user->grade == '二级' ) {
+                /*生成邀请链接*/
+
+            } else {
+                return ['code' => '200' ,'massage' => '您的等级还不够,请多用系统'];
+            }
+            /*更改密码*/
+            if ( $data = $this->userRepo->update(Hash::make($password),$this->jwtUser()->id) ) {
+
+            } else {
+                throw new Exception ('密码修改失败，请稍后再试' );
+            }
+            return ['code' => '200' ,'massage' => '密码修改成功'];
+
+        });
+
+        return array_merge($this->results,$exception);
 
     }
+
+
 }

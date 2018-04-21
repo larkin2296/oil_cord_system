@@ -104,6 +104,12 @@ $router->group(['middleware' => ['api']],function($router){
                     'uses' => 'UserController@updatePasswd',
                     'as' => 'updatePasswd',
                 ]);
+
+                /*生成邀请链接*/
+                $router->post('link',[
+                    'uses' => 'UserController@setLink',
+                    'as' => 'link',
+                ]);
             });
 
              /*供应商*/

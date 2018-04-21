@@ -35,6 +35,7 @@ class UserController extends Controller
 
         return response()->json($results);
     }
+
     /**
      * 修改当前用户信息
      * @return [type] [description]
@@ -53,6 +54,18 @@ class UserController extends Controller
     public function updatePasswd()
     {
         $results = $this->service->updatePasswd();
+
+        return response()->json($results);
+    }
+
+    /**
+     * 生成邀请链接
+     * @return [type] [description]
+     */
+    public function setLink()
+    {
+        dd(123);
+        $results = $this->service->setLink();
 
         return response()->json($results);
     }
