@@ -11,6 +11,7 @@ use Exception;
 use DB;
 use Storage;
 use JWTAuth;
+use Illuminate\Support\Facades\Hash;
 
 class UserService extends Service
 {
@@ -68,9 +69,59 @@ class UserService extends Service
             'grade' => $result->grade ? $result->grade : '',
             'notes' => $result->notes ? $result->notes : '',
             'roles' => $result->role_status ? [$result->role_status] : '',
-//            'avatar' => dealAvatar($result->avatar),
+            //'avatar' => dealAvatar($result->avatar),
         ];
         return array_merge($this->results,['code' => '200','data' => $data,'message' => '请求成功']);
+
+    }
+    /**
+     * 修改个人信息
+     * @return [type] [description]
+     */
+    public function updateUser()
+    {
+        $exception = DB::transaction(function() {
+            /*获取用户信息*/
+            $user = $this->jwtUser();
+
+            if ( $data = $this->userRepo->update(request()->all(),$user->id) ) {
+
+            } else {
+                throw new Exception ('修改失败，请稍后再试' );
+            }
+            return ['code' => '200' ,'massage' => '信息修改成功',];
+
+        });
+
+        return array_merge($this->results,$exception);
+
+    }
+    /**
+     * 修改账户密码
+     * @return [type] [description]
+     */
+    public function updatePasswd()
+    {
+        $exception = DB::transaction(function() {
+
+            $password = request()->post('password','');
+             /*校验密码*/
+            if ( $this->checkAuthPasswd($password) ) {
+
+            } else {
+                return ['code' => '200' ,'massage' => '密码不正确,请输入正确密码'];
+            }
+            /*更改密码*/
+            if ( $data = $this->userRepo->update(Hash::make($password),$this->jwtUser()->id) ) {
+
+            } else {
+                throw new Exception ('密码修改失败，请稍后再试' );
+            }
+            return ['code' => '200' ,'massage' => '密码修改成功'];
+
+        });
+
+        return array_merge($this->results,$exception);
 
     }
 }

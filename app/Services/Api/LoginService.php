@@ -52,6 +52,7 @@ class LoginService extends Service {
         $exception = DB::transaction(function(){
             $mobile = request('mobile', '');
             $code = request('code', '');
+
             //验证验证码
             $this->checkCode('login', $mobile, $code);
             //验证手机号是否存在

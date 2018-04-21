@@ -15,7 +15,7 @@ class OrderController extends Controller
     }
 
     /**
-     * 更改绑定手机号
+     * 订单
      * @return [type] [description]
      */
     public function editMobile()
@@ -26,7 +26,7 @@ class OrderController extends Controller
     }
 
     /**
-     * 当前登陆用户信息
+     *
      * @return [type] [description]
      */
     public function userinfo()

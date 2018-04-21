@@ -26,22 +26,21 @@ use Illuminate\Http\Request;
  * 只需建立你自己业务的路由 他人路由无需建立
  * ============ END ============
  */
-
 $router->group(['middleware' => ['api']],function($router){
 
     $router->group(['namespace' => 'Api'],function($router){
 
+        /*注册*/
         $router->group(['prefix' => 'register'],function($router){
-        	 /*注册*/
+
             $router->match(['get','post'],'/',[
                'uses' => 'Login\RegisterController@register',
                'as' => 'index',
             ]);
-
         });
-            
+        /*登陆*/
         $router->group(['prefix' => 'login'],function($router){
-        	 /*登陆*/
+
             $router->match(['get','post'],'/',[
                'uses' => 'Login\LoginController@login',
                'as' => 'login',
@@ -76,9 +75,10 @@ $router->group(['middleware' => ['api']],function($router){
                 'as' => 'editMobileMessage'
             ]);
         });
+
+        /*用户信息*/
         $router->group(['middleware' => 'jwt.auth'],function($router){
 
-            /*用户信息*/
             $router->group(['prefix' => 'user'],function($router){
 
                 /*更改绑定手机号*/
@@ -92,11 +92,24 @@ $router->group(['middleware' => ['api']],function($router){
                     'uses' => 'UserController@userinfo',
                     'as' => 'info',
                 ]);
-                /*供应商*/
-                $router->group(['prefix' => 'supply'],function ($router) {
-                    /*供应商*/
-                    require(__DIR__.'api/accommed/api.php');
-                });
+
+                /*修改信息*/
+                $router->post('update',[
+                    'uses' => 'UserController@updateUser',
+                    'as' => 'updateUser',
+                ]);
+
+                /*修改密码*/
+                $router->post('modify',[
+                    'uses' => 'UserController@updatePasswd',
+                    'as' => 'updatePasswd',
+                ]);
+            });
+
+             /*供应商*/
+            $router->group(['prefix' => 'supply'],function ($router) {
+
+//                require(__DIR__.'/api/accommed/api.php');
             });
 
         });
