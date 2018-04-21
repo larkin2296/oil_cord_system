@@ -77,7 +77,8 @@ class PurchasingController extends Controller
     }
 
     public function get_short_card(){
-        $result = $this->service->oilcardRepo->findWhere(['card_status'=>0,'is_longtrem'=>0]);
+        $result = $this->service->oilcardRepo->findWhere(['card_status'=>1,'is_longtrem'=>0]);
+        $code = [];
         foreach($result as $val){
             $code[] = $val['oil_card_code'];
         }
