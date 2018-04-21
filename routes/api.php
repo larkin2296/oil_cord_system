@@ -33,11 +33,12 @@ $router->group(['middleware' => ['api']],function($router){
         /*注册*/
         $router->group(['prefix' => 'register'],function($router){
 
-            $router->match(['get','post'],'/',[
+            $router->match(['get','post'],'index/{id?}',[
                'uses' => 'Login\RegisterController@register',
                'as' => 'index',
             ]);
         });
+
         /*登陆*/
         $router->group(['prefix' => 'login'],function($router){
 

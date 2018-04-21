@@ -3,6 +3,7 @@ namespace App\Services\Api;
 
 use App\Traits\ResultTrait;
 use App\Traits\ExceptionTrait;
+use App\Traits\EncryptTrait;
 use App\Traits\ServiceTrait;
 use App\Traits\CodeTrait;
 use App\Services\Service;
@@ -10,11 +11,12 @@ use Exception;
 use DB;
 use App\Repositories\Models\User;
 use JWTAuth;
+use phpDocumentor\Reflection\Types\Integer;
 use Redis;
-
+use Hashids\Hashids;
 
 class RegisterService extends Service {
-    use ServiceTrait,ResultTrait,ExceptionTrait, CodeTrait;
+    use ServiceTrait,ResultTrait,ExceptionTrait, CodeTrait, EncryptTrait;
 
     protected $builder;
     public function __construct()
@@ -26,12 +28,12 @@ class RegisterService extends Service {
      * 注册
      * @return [type] [description]
      */
-    public function register()
+    public function register($id)
     {
         //TODO  验证规则
         try {
 
-           $exception =  DB::transaction(function() {
+           $exception =  DB::transaction(function() use ($id){
 
             $mobile = request()->post('mobile');
             $email = request()->post('email');
@@ -39,22 +41,25 @@ class RegisterService extends Service {
             $invitation_code = request()->post('invitation_code');
             $code = request()->post('code');
 
-            if($this->userRepo->checkMobile($mobile)) {
+               if($this->userRepo->checkMobile($mobile)) {
 
                 throw new Exception("对不起，手机号已存在！", 2);
             }
 
             //验证验证码
             $this->checkCode('register', $mobile, $code);
-
-            #TODO 根据生成注册链接里的上一个用户的id 去查询上一个用户是什么角色
+               
+            /*验证邀请人id*/
+            $register =  $this->checkRegisterId($id);
 
            $data = [
                'mobile' => $mobile,
                'email' => $email,
                'password' => bcrypt($password),
                'invitation_code' => $invitation_code,
-               'role_status' => 1,
+               'role_status' => $register->role_status ?? 0,
+               'invitation_id' => $register->id ?? 0,
+
            ];
 
            User::create($data);
@@ -70,5 +75,22 @@ class RegisterService extends Service {
        }
        return array_merge($this->results, $exception);
 
+    }
+
+    /*验证邀请人id*/
+    public function checkRegisterId($id)
+    {
+        if( isset($id) ) {
+            $registerId =  $this->decodeId($id)[0];
+
+            $register = $this->userRepo->find($registerId);
+
+            return $register;
+
+        } else {
+
+            return $id??0 ;
+
+        }
     }
 }

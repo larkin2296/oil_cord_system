@@ -33,7 +33,7 @@ class User extends Authenticatable implements Transformable
     protected $table = 'users';
 
     protected $fillable = [
-    	'name','truename','sex','mobile','email','is_auth','notes','password','avatar','invitation_code','city',
+    	'name','truename','sex','mobile','email','is_auth','notes','password','avatar','invitation_id','city',
     	'role_status','status','auth_papers','qq_num','alipay'
 
     ];

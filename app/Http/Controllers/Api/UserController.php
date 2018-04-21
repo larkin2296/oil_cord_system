@@ -64,7 +64,7 @@ class UserController extends Controller
      */
     public function setLink()
     {
-        dd(123);
+
         $results = $this->service->setLink();
 
         return response()->json($results);

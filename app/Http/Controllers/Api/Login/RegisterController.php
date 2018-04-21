@@ -21,10 +21,10 @@ class RegisterController extends Controller
      * 注册
      * @return [type] [description]
      */
-    public function register()
+    public function register( $id = null)
     {
 
-        $results = $this->service->register();
+        $results = $this->service->register($id);
 
         return response()->json($results);
     }

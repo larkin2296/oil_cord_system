@@ -4,6 +4,7 @@ use App\Traits\ResultTrait;
 use App\Traits\ExceptionTrait;
 use App\Traits\ServiceTrait;
 use App\Traits\UserTrait;
+use App\Traits\EncryptTrait;
 use App\Services\Service;
 use App\Traits\CodeTrait;
 use Carbon\Carbon;
@@ -12,10 +13,9 @@ use DB;
 use Storage;
 use JWTAuth;
 use Illuminate\Support\Facades\Hash;
-
 class UserService extends Service
 {
-    use ServiceTrait, ResultTrait, ExceptionTrait, UserTrait,CodeTrait;
+    use ServiceTrait, ResultTrait, ExceptionTrait, UserTrait,CodeTrait,EncryptTrait;
 
     public function __construct()
     {
@@ -132,29 +132,24 @@ class UserService extends Service
     public function setLink()
     {
         $exception = DB::transaction(function() {
-
             /*获取用户信息*/
             $user = $this->jwtUser();
-dd($user);
-            $route = route('api.register');
-            dd($route);
-            if ( $user->status == 1 && $user->grade == '二级' ) {
+
+            /*用户状态正常且等级大于二级*/
+            if ( $user->status == 1 && $user->grade = 2 ) {
+
                 /*生成邀请链接*/
+                $regsiterLink = url('api/register/index/'.$this->encodeId($user->id));
 
             } else {
                 return ['code' => '200' ,'massage' => '您的等级还不够,请多用系统'];
             }
-            /*更改密码*/
-            if ( $data = $this->userRepo->update(Hash::make($password),$this->jwtUser()->id) ) {
 
-            } else {
-                throw new Exception ('密码修改失败，请稍后再试' );
-            }
-            return ['code' => '200' ,'massage' => '密码修改成功'];
+            return ['code' => '200' ,'massage' => '生成邀请链接','data' => $regsiterLink];
 
         });
 
-        return array_merge($this->results,$exception);
+        return $exception;
 
     }
 

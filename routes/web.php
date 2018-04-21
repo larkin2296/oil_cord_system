@@ -11,23 +11,23 @@
 |
 */
 
-$router->group(['middleware' => ['web']],function($router){
-
-    $router->group(['prefix' => 'web'],function($router){
-
-        $router->group(['namespace' => 'Api'],function($router){
-
-            $router->group(['prefix' => 'register','as' => 'register.'],function($router){
-
-                $router->get('index', [
-                    'uses' => 'Login\RegisterController@register',
-                    'as' => 'index',
-                ]);
-
-            });
-
-        });
-
-
-    });
-});
+//$router->group(['middleware' => ['web']],function($router){
+//
+//    $router->group(['prefix' => 'web'],function($router){
+//
+//        $router->group(['namespace' => 'Api'],function($router){
+//
+//            $router->group(['prefix' => 'register','as' => 'register.'],function($router){
+//
+//                $router->get('index', [
+//                    'uses' => 'Login\RegisterController@register',
+//                    'as' => 'index',
+//                ]);
+//
+//            });
+//
+//        });
+//
+//
+//    });
+//});
