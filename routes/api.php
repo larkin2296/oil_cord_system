@@ -140,6 +140,11 @@ $router->group(['middleware' => ['api']],function($router){
                 'uses' => 'Purchasing\PurchasingController@set_longtrem',
                 'as' => 'set_longtrem',
             ]);
+            /*获取短期采购商油卡*/
+            $router->match(['get','post'],'get_short_card',[
+                'uses' => 'Purchasing\PurchasingController@get_short_card',
+                'as' => 'get_short_card',
+            ]);
         });
 
     });

@@ -43,8 +43,8 @@ class PurchasingService extends Service {
     }
     public function card_binding($request){
         try{
-            $res = $this->oilcardRepo->findByField('oil_card_code',$request['list']['oil_card_code']);
-            if(empty($res) || $res = ''){
+            $res = $this->oilcardRepo->findWhere(['oil_card_code'=>$request['list']['oil_card_code']])->count();
+            if($res == 0){
                 $this->oilcardRepo->create($request['list']);
                 return ['code' => '200','message' => '添加成功'];
             }else{
