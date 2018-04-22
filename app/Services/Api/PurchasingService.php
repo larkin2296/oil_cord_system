@@ -24,9 +24,9 @@ class PurchasingService extends Service {
     }
     //将购物车数据添加到数据库
     public function add($request){
-        $order = $this->set_order_code(1,1,1);
+        $order = $this->set_order_code($request[0]['order_type'],1,1);
         try {
-            foreach($request['list'] as $val){
+            foreach($request as $val){
                 $re = $val;
                 $re['order_code'] = $order;
                 $this->purorderRepo->create($re);

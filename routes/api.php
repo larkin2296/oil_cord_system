@@ -170,6 +170,11 @@ $router->group(['middleware' => ['api']],function($router){
                 'uses' => 'Purchasing\PurchasingController@get_short_card',
                 'as' => 'get_short_card',
             ]);
+            /*采购商短期直充*/
+            $router->match(['get','post'],'directly_order',[
+                'uses' => 'Purchasing\PurchasingController@directly_order',
+                'as' => 'directly_order',
+            ]);
         });
 
     });
