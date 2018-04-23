@@ -177,6 +177,17 @@ $router->group(['middleware' => ['api']],function($router){
             ]);
         });
 
+        $router->group(['middleware' => 'cors'],function($router) {
+
+            $router->group(['prefix' => 'upload'], function ($router) {
+
+                /*更改绑定手机号*/
+                $router->match(['get', 'post'], '/', [
+                    'uses' => 'UserController@upfile',
+                    'as' => 'upfile',
+                ]);
+            });
+        });
     });
 
 

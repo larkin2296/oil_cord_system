@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Purchasing;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Services\Api\PurchasingService as Service;
 
