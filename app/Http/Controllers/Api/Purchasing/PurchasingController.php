@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Purchasing;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Services\Api\PurchasingService as Service;
 
@@ -15,7 +16,8 @@ class PurchasingController extends Controller
     }
     //购物车添加接口
     public function camilo_order(Request $request){
-        $results = $this->service->add($request);
+        $res = $request['list'];
+        $results = $this->service->add($res);
         return response()->json($results);
     }
     //获取卡密订单查询数据
@@ -83,5 +85,14 @@ class PurchasingController extends Controller
             $code[] = $val['oil_card_code'];
         }
         return response()->json($code);
+    }
+    public function directly_order(Request $request){
+        $result = $request['list'];
+        foreach($result as $key=>$value){
+            $arr = implode(',',$value['oil_card_code']);
+            $result[$key]['oil_card_code'] = $arr;
+        }
+        $results = $this->service->add($result);
+        return response()->json($results);
     }
 }
