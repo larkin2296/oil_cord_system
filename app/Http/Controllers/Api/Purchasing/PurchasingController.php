@@ -22,11 +22,18 @@ class PurchasingController extends Controller
     }
     //获取卡密订单查询数据
     public function get_camilo_order(Request $request){
-
+        $results = $this->service->purorderRepo->findWhere(['order_type'=>1]);
+        return response()->json($results);
     }
-    //获取直充订单查询数据
-    public function get_directy_order(Request $request){
-
+    //获取长期直充订单查询数据
+    public function ldirectly_order(Request $request){
+        $results = $this->service->oilcardRepo->findWhere(['is_longtrem'=>1]);
+        return response()->json($results);
+    }
+    //获取短期直充订单查询数据
+    public function sdirectly_order(Request $request){
+        $results = $this->service->purorderRepo->findWhere(['order_type'=>2]);
+        return response()->json($results);
     }
     //油卡绑定功能
     public function binding_card(Request $request){
