@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Repositories\Models\PurchasingOrder;
+use App\Repositories\Models\UserOilCard;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -34,7 +36,7 @@ class User extends Authenticatable implements Transformable
 
     protected $fillable = [
     	'name','truename','sex','mobile','email','is_auth','notes','password','avatar','invitation_id','city',
-    	'role_status','status','auth_papers','qq_num','alipay'
+    	'role_status','status','auth_papers','qq_num','alipay',
 
     ];
 
@@ -55,5 +57,13 @@ class User extends Authenticatable implements Transformable
         return $this->encodeId('user', $this->id);
     }
 
+    /**
+     *用户订单
+     * @return [type] [description]
+     */
+    public function hasManyUserOrder()
+    {
+        return $this->hasMany(PurchasingOrder::class,'user_id','id');
+    }
 
 }

@@ -9,7 +9,7 @@ use App\Services\Service;
 use Exception;
 use DB;
 use Redis;
-use App\Repositories\Models\User;
+use App\User;
 use JWTAuth;
 class LoginService extends Service {
     use ServiceTrait,ResultTrait,ExceptionTrait, CodeTrait,UserTrait;

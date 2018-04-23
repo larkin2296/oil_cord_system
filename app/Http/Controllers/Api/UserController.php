@@ -64,11 +64,20 @@ class UserController extends Controller
      */
     public function setLink()
     {
-
         $results = $this->service->setLink();
 
         return response()->json($results);
     }
 
+    /**
+     * 查看已邀请人数
+     * @return [type] [description]
+     */
+    public function show()
+    {
+        $results = $this->service->show();
+
+        return response()->json($results);
+    }
 
 }
