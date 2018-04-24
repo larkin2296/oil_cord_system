@@ -24,6 +24,7 @@ class AccommedService extends Service {
      */
     public function index()
     {
+        #TODO 卡密完成再开发
         /*用户信息*/
         $user = $this->jwtUser();
 

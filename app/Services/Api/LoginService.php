@@ -26,8 +26,11 @@ class LoginService extends Service {
     {
         //TODO  验证规则
         $mobile = request('mobile', '');
+
         $password = request('password', '');
+
         $credentials = request()->only('mobile', 'password');
+
         if( $token = JWTAuth::attempt($credentials) ) {
             $user = $this->userRepo->findByField('mobile', $mobile)->first();
         } else {

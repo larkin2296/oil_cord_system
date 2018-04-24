@@ -125,6 +125,8 @@ $router->group(['middleware' => ['api']],function($router){
                 require(__DIR__.'/api/accommed/api.php');
             });
 
+            /*文件上传*/
+            require(__DIR__.'/common/api.php');
         });
 
         $router->group(['prefix' => 'logout'],function($router){
