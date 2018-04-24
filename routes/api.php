@@ -178,10 +178,21 @@ $router->group(['middleware' => ['api']],function($router){
                 'uses' => 'Purchasing\PurchasingController@get_short_card',
                 'as' => 'get_short_card',
             ]);
-            /*采购商短期直充*/
-            $router->match(['get','post'],'directly_order',[
+
+            /*采购商创建短期直充订单*/
+            $router->match(['get','post'],'set_sdirectly_order',[
                 'uses' => 'Purchasing\PurchasingController@directly_order',
-                'as' => 'directly_order',
+                'as' => 'set_sdirectly_order',
+            ]);
+            /*采购商短期直充*/
+            $router->match(['get','post'],'get_sdirecty_order',[
+                'uses' => 'Purchasing\PurchasingController@sdirectly_order',
+                'as' => 'get_sdirecty_order',
+            ]);
+            /*采购商长期直充*/
+            $router->match(['get','post'],'get_ldirecty_order',[
+                'uses' => 'Purchasing\PurchasingController@ldirectly_order',
+                'as' => 'get_ldirecty_order',
             ]);
         });
 
