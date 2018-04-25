@@ -102,4 +102,35 @@ class PurchasingController extends Controller
         $results = $this->service->add($result);
         return response()->json($results);
     }
+
+    public function get_camilo_detail(){
+        
+    }
+    public function get_ldirectly_detail(){
+
+    }
+    public function get_sdirectly_detail(){
+
+    }
+    public function set_problem(){
+
+    }
+    public function get_initialize(){
+
+    }
+    public function get_initialize_detail(){
+
+    }
+    public function set_initialize_data(){
+
+    }
+    public function get_reconciliation(){
+
+    }
+    public function auto_recharge(){
+
+    }
+    public function set_camilo_userd(){
+
+    }
 }

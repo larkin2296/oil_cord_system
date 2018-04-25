@@ -105,20 +105,21 @@ class UserService extends Service
     {
         $exception = DB::transaction(function() {
 
-            $password = request()->post('password','');
+            $password = request()->post('old_psd','');
+            $new_password = request()->post('new_psd','');
              /*校验密码*/
             if ( $this->checkAuthPasswd($password) ) {
 
             } else {
-                return ['code' => '200' ,'massage' => '密码不正确,请输入正确密码'];
+                return ['code' => '500' ,'msg' => '密码不正确,请输入正确密码'];
             }
             /*更改密码*/
-            if ( $data = $this->userRepo->update(Hash::make($password),$this->jwtUser()->id) ) {
+            if ( $data = $this->userRepo->update(['password'=>Hash::make($new_password)],$this->jwtUser()->id) ) {
 
             } else {
                 throw new Exception ('密码修改失败，请稍后再试' );
             }
-            return ['code' => '200' ,'massage' => '密码修改成功'];
+            return ['code' => '200' ,'msg' => '密码修改成功'];
 
         });
 
