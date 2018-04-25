@@ -80,4 +80,10 @@ class UserController extends Controller
         return response()->json($results);
     }
 
+    public function refresh_token(){
+        $results = $this->service->updateToken();
+
+        return $results;
+    }
+
 }

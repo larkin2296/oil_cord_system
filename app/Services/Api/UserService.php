@@ -188,6 +188,37 @@ class UserService extends Service
 
         return array_merge($this->results,$exception);
     }
+    /*刷新token*/
+    public function updateToken()
 
+    {
+        try {
 
+            $old_token = JWTAuth::getToken();
+
+            $token = JWTAuth::refresh($old_token);
+
+            JWTAuth::invalidate($old_token);
+
+            $cacheKey = 'token';
+
+            Cache::forever($cacheKey,$token);
+
+        } catch (TokenExpiredException $e) {
+
+            throw new AuthException(
+
+                trans('errors.refresh_token_expired'), $e);
+
+        } catch (JWTException $e) {
+
+            throw new AuthException(
+
+                trans('errors.token_invalid'), $e);
+
+        }
+
+        return response()->json(compact('token'));
+
+    }
 }

@@ -94,6 +94,12 @@ $router->group(['middleware' => ['api']],function($router){
                     'as' => 'info',
                 ]);
 
+                /*刷新token*/
+                $router->match(['get','post'],'refresh',[
+                    'uses' => 'UserController@refresh_token',
+                    'as' => 'refresh',
+                ]);
+
                 /*修改信息*/
                 $router->post('update',[
                     'uses' => 'UserController@updateUser',

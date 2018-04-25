@@ -10,7 +10,8 @@ use App\Repositories\Interfaces\AttachmentRepository;
 use App\Repositories\Interfaces\PlatformRepository;
 use App\Repositories\Interfaces\PlatformMoneyRepository;
 use App\Repositories\Interfaces\RelationPlatformRepository;
-
+use App\Repositories\Interfaces\PurchasingCamiloDetailRepository;
+use App\Repositories\Models\PurchasingCamiloDetail;
 
 
 class Service
@@ -22,6 +23,7 @@ class Service
     public $platformRepo;
     public $platformMoneyRepo;
     public $RelationPlatformRepo;
+    public $purchasingcamilodetailRepo;
 
 
 
@@ -34,5 +36,6 @@ class Service
         $this->platformRepo = app(PlatformRepository::class);
         $this->platformMoneyRepo = app(PlatformMoneyRepository::class);
         $this->RelationPlatformRepo = app(RelationPlatformRepository::class);
+        $this->purchasingcamilodetailRepo = app(PurchasingCamiloDetailRepository::class);
     }
 }
