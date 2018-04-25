@@ -36,6 +36,7 @@ class LoginController extends Controller
 
         return response()->json($results);
     }
+
     public function get_info(Request $request)
     {
 

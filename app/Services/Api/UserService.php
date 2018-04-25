@@ -143,7 +143,7 @@ class UserService extends Service
                 $regsiterLink = url('api/register/index/'.$this->encodeId($user->id));
 
             } else {
-                return ['code' => '200' ,'massage' => '您的等级还不够,请多用系统'];
+                return ['code' => '200' ,'massage' => '您的等级还不够,请保持良好记录等待下次评估'];
             }
 
             return ['code' => '200' ,'massage' => '生成邀请链接','data' => $regsiterLink];
@@ -152,6 +152,41 @@ class UserService extends Service
 
         return $exception;
 
+    }
+
+    /**
+     * 查看已邀请
+     * @return [type] [description]
+     */
+    public function show()
+    {
+        $exception = DB::transaction(function() {
+            /*用户信息*/
+            $user = $this->jwtUser();
+
+            /*邀请人信息*/
+            $registerInvite = $this->userRepo->findWhere([
+                'invitation_id' => $user->id,
+            ])->map(function($key,$item){
+                return [
+                  'name' => $item->name,
+                  'time' => $item->create_time,
+                  'grade' => $item->grade,
+                  'status' => $item->status,
+                ];
+            });
+
+            if ( $registerInvite ) {
+
+            } else {
+                return ['code' => '200' ,'massage' => '您还没有邀请任何人'];
+            }
+
+            return ['code' => '200' ,'massage' => '列表显示成功','data' => $registerInvite];
+
+        });
+
+        return array_merge($this->results,$exception);
     }
 
 

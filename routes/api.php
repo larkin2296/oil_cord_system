@@ -111,14 +111,22 @@ $router->group(['middleware' => ['api']],function($router){
                     'uses' => 'UserController@setLink',
                     'as' => 'link',
                 ]);
+
+                /*查看已邀请人*/
+                $router->post('show',[
+                    'uses' => 'UserController@show',
+                    'as' => 'show',
+                ]);
             });
 
              /*供应商*/
             $router->group(['prefix' => 'supply'],function ($router) {
 
-//                require(__DIR__.'/api/accommed/api.php');
+                require(__DIR__.'/api/accommed/api.php');
             });
 
+            /*文件上传*/
+            require(__DIR__.'/common/api.php');
         });
 
         $router->group(['prefix' => 'logout'],function($router){

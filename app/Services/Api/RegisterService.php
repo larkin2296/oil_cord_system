@@ -48,8 +48,8 @@ class RegisterService extends Service {
 
             //验证验证码
             $this->checkCode('register', $mobile, $code);
-               
-            /*验证邀请人id*/
+
+            /*验证邀请人角色*/
             $register =  $this->checkRegisterId($id);
 
            $data = [
@@ -89,6 +89,7 @@ class RegisterService extends Service {
 
         } else {
 
+            /*直接返回id*/
             return $id??0 ;
 
         }

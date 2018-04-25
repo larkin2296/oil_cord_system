@@ -4,35 +4,31 @@ namespace App\Http\Controllers\Api\Supply;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\Api\UserService as Service;
+use App\Services\Api\AccommedService as Service;
 
 class OrderController extends Controller
 {
     protected $service;
+
     public function __construct(Service $service)
     {
         $this->service = $service;
     }
 
     /**
-     * 订单
+     * 卡密供货查询
      * @return [type] [description]
      */
-    public function editMobile()
+    public function index()
     {
-        $results = $this->service->editMobile();
+        $results = $this->service->index();
 
         return response()->json($results);
     }
 
     /**
-     *
+     * 查看订单详情
      * @return [type] [description]
      */
-    public function userinfo()
-    {
-        $results = $this->service->userinfo();
 
-        return response()->json($results);
-    }
 }
