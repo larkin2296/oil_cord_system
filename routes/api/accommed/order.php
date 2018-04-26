@@ -6,4 +6,5 @@ $router->group(['prefix' => 'verb'],function($router){
         'uses' => 'Supply\OrderController@index',
         'as' => 'index',
     ]);
+
 });
