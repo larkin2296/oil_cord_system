@@ -43,6 +43,8 @@ Class CatSupplyservice extends Service{
                 #TODO 供应单号表  卡密表
                 $cam = request()->post('cam',[]);
 
+                $cam_random = request()->post('cam_two',[]);
+
 
                 // 生成关联关系  绑定数据关系
                 //supply_single_number
