@@ -94,6 +94,12 @@ $router->group(['middleware' => ['api']],function($router){
                     'as' => 'info',
                 ]);
 
+                /*刷新token*/
+                $router->match(['get','post'],'refresh',[
+                    'uses' => 'UserController@refresh_token',
+                    'as' => 'refresh',
+                ]);
+
                 /*修改信息*/
                 $router->post('update',[
                     'uses' => 'UserController@updateUser',
@@ -130,7 +136,7 @@ $router->group(['middleware' => ['api']],function($router){
         });
 
         $router->group(['prefix' => 'logout'],function($router){
-            /*登陆*/
+            /*登出*/
             $router->match(['get','post'],'/',[
                 'uses' => 'Login\LoginController@logout',
                 'as' => 'login',
@@ -194,13 +200,63 @@ $router->group(['middleware' => ['api']],function($router){
                 'uses' => 'Purchasing\PurchasingController@ldirectly_order',
                 'as' => 'get_ldirecty_order',
             ]);
+            /*采购商短充卡密详情*/
+            $router->match(['get','post'],'get_camilo_detail',[
+                'uses' => 'Purchasing\PurchasingController@get_camilo_detail',
+                'as' => 'get_camilo_detail',
+            ]);
+            /*采购商长期直充详情*/
+            $router->match(['get','post'],'get_ldirectly_detail',[
+                'uses' => 'Purchasing\PurchasingController@get_ldirectly_detail',
+                'as' => 'get_ldirectly_detail',
+            ]);
+            /*采购商长期直充详情*/
+            $router->match(['get','post'],'get_sdirectly_detail',[
+                'uses' => 'Purchasing\PurchasingController@get_sdirectly_detail',
+                'as' => 'get_sdirectly_detail',
+            ]);
+            /*采购商上报错误*/
+            $router->match(['get','post'],'set_problem',[
+                'uses' => 'Purchasing\PurchasingController@set_problem',
+                'as' => 'set_problem',
+            ]);
+            /*采购商圈存数据获取*/
+            $router->match(['get','post'],'get_initialize',[
+                'uses' => 'Purchasing\PurchasingController@get_initializea',
+                'as' => 'get_initialize',
+            ]);
+            /*采购商圈存详情*/
+            $router->match(['get','post'],'get_initialize_detail',[
+                'uses' => 'Purchasing\PurchasingController@get_initialize_detail',
+                'as' => 'get_initialize_detail',
+            ]);
+            /*采购商上报圈存*/
+            $router->match(['get','post'],'set_initialize_data',[
+                'uses' => 'Purchasing\PurchasingController@set_initialize_data',
+                'as' => 'set_initialize_data',
+            ]);
+            /*采购商对账数据获取*/
+            $router->match(['get','post'],'get_reconciliation',[
+                'uses' => 'Purchasing\PurchasingController@get_reconciliation',
+                'as' => 'get_reconciliation',
+            ]);
+            /*采购商卡密补发自动发货*/
+            $router->match(['get','post'],'auto_recharge',[
+                'uses' => 'Purchasing\PurchasingController@auto_recharge',
+                'as' => 'auto_recharge',
+            ]);
+            /*采购商卡密标记已使用*/
+            $router->match(['get','post'],'set_camilo_userd',[
+                'uses' => 'Purchasing\PurchasingController@set_camilo_userd',
+                'as' => 'set_camilo_userd',
+            ]);
         });
 
         $router->group(['middleware' => 'cors'],function($router) {
 
             $router->group(['prefix' => 'upload'], function ($router) {
 
-                /*更改绑定手机号*/
+                /*上传文件*/
                 $router->match(['get', 'post'], '/', [
                     'uses' => 'UserController@upfile',
                     'as' => 'upfile',

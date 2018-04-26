@@ -105,20 +105,21 @@ class UserService extends Service
     {
         $exception = DB::transaction(function() {
 
-            $password = request()->post('password','');
+            $password = request()->post('old_psd','');
+            $new_password = request()->post('new_psd','');
              /*校验密码*/
             if ( $this->checkAuthPasswd($password) ) {
 
             } else {
-                return ['code' => '200' ,'massage' => '密码不正确,请输入正确密码'];
+                return ['code' => '500' ,'msg' => '密码不正确,请输入正确密码'];
             }
             /*更改密码*/
-            if ( $data = $this->userRepo->update(Hash::make($password),$this->jwtUser()->id) ) {
+            if ( $data = $this->userRepo->update(['password'=>Hash::make($new_password)],$this->jwtUser()->id) ) {
 
             } else {
                 throw new Exception ('密码修改失败，请稍后再试' );
             }
-            return ['code' => '200' ,'massage' => '密码修改成功'];
+            return ['code' => '200' ,'msg' => '密码修改成功'];
 
         });
 
@@ -187,6 +188,37 @@ class UserService extends Service
 
         return array_merge($this->results,$exception);
     }
+    /*刷新token*/
+    public function updateToken()
 
+    {
+        try {
 
+            $old_token = JWTAuth::getToken();
+
+            $token = JWTAuth::refresh($old_token);
+
+            JWTAuth::invalidate($old_token);
+
+            $cacheKey = 'token';
+
+            Cache::forever($cacheKey,$token);
+
+        } catch (TokenExpiredException $e) {
+
+            throw new AuthException(
+
+                trans('errors.refresh_token_expired'), $e);
+
+        } catch (JWTException $e) {
+
+            throw new AuthException(
+
+                trans('errors.token_invalid'), $e);
+
+        }
+
+        return response()->json(compact('token'));
+
+    }
 }

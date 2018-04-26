@@ -32,8 +32,12 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\Interfaces\PlatformRepository::class, \App\Repositories\Eloquents\PlatformRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\Interfaces\PlatformMoneyRepository::class, \App\Repositories\Eloquents\PlatformMoneyRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\Interfaces\RelationPlatformRepository::class, \App\Repositories\Eloquents\RelationPlatformRepositoryEloquent::class);
+<<<<<<< HEAD
         $this->app->bind(\App\Repositories\Interfaces\SupplySingleRepository::class, \App\Repositories\Eloquents\SupplySingleRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\Interfaces\SupplyCamRepository::class, \App\Repositories\Eloquents\SupplyCamRepositoryEloquent::class);
+=======
+        $this->app->bind(\App\Repositories\Interfaces\PurchasingCamiloDetailRepository::class, \App\Repositories\Eloquents\PurchasingCamiloDetailRepositoryEloquent::class);
+>>>>>>> 95e0c91cdeac857f422b750f4a9bc6acb0c689b1
         //:end-bindings:
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Login;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Api\LoginService as Service;
+use Illuminate\Auth as Auth;
 
 class LoginController extends Controller
 {
@@ -42,5 +43,7 @@ class LoginController extends Controller
         $result['data'] = $this->service->get_info(['remember_token'=>$request->token]);
 
        return response()->json($result);
+    }
+    public function logout(){
     }
 }
