@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Services\Api\PurchasingService as Service;
+use Mockery\Exception;
 
 class PurchasingController extends Controller
 {
@@ -64,8 +65,8 @@ class PurchasingController extends Controller
     }
 
     public function get_camilo_detail(Request $request){
-//        $results = $this->service->get_data('purchasing_camilo_detail',['order_code'=>$request['order_code']]);
-//        return response()->json($results);
+        $results = $this->service->get_camilo_detail();
+        return response()->json($results);
     }
     public function get_ldirectly_detail(){
         $results = $this->service->get_ldirectly_detail();
@@ -98,8 +99,14 @@ class PurchasingController extends Controller
         $results = $this->service->auto_recharge();
         return response()->json($results);
     }
-    public function set_camilo_userd(){
-        $results = $this->service->set_camilo_userd();
-        return response()->json($results);
+    public function set_camilo_userd(Request $request){
+        try{
+            foreach($request['order'] as $value){
+                $this->service->set_camilo_userd($value['id'],$value['cam_name']);
+            }
+            return response()->json(['code'=>200,'msg'=>'修改成功']);
+        }catch(Exception $e){
+            return response()->json($e);
+        }
     }
 }

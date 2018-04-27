@@ -34,5 +34,5 @@ class PurchasingCamiloDetailRepositoryEloquent extends BaseRepository implements
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

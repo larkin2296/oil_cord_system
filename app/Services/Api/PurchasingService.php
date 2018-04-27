@@ -136,11 +136,42 @@ class PurchasingService extends Service {
         $results = $this->service->add($result);
         return $results;
     }
+    //获取卡密订单详情
+    public function get_camilo_detail(){
+        $order_code = request('order','');
+        $results['data'] = DB::table('purchasing_camilo_detail')
+                    ->join('supply_cam','purchasing_camilo_detail.camilo_id','=','supply_cam.id')
+                    ->join('platform','platform.id','=','supply_cam.platform_id')
+                    ->join('platform_money','platform_money.id','=','supply_cam.denomination')
+                    ->where('purchasing_camilo_detail.order_code','=',$order_code)
+                    ->select('platform.platform_name', 'platform_money.denomination','supply_cam.cam_name','supply_cam.id','supply_cam.cam_two_name','supply_cam.status')
+                    ->get();
+        $results['msg']['num'] = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$order_code])->count();
+        $results['msg']['is_usd'] = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$order_code,'is_used'=>1])->count();
+        $results['msg']['is_error'] = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$order_code,'is_problem'=>1])->count();
+        $results['msg']['no_use'] = $results['msg']['num'] - $results['msg']['is_usd'] - $results['msg']['is_error'];
+        foreach($results['data'] as &$value){
+            switch($value->status){
+                case '2':
+                    $value->status_name = '未使用';
+                    break;
+                case '3':
+                    $value->status_name = '问题卡密';
+                    break;
+                case '4':
+                    $value->status_name = '已使用';
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $results;
+    }
     /*设置为问题卡密*/
     public function set_problem(){
         try{
             $this->purchasingcamilodetailRepo->update(['is_problem'=>1],request('id', ''));
-            $this->suppliercamRepo->update(['status'=>4],request('card_code',''));
+            $this->supplyCamRepo->update(['status'=>4],request('card_code',''));
         }catch(Exception $e) {
             return $e;
         }
@@ -173,9 +204,9 @@ class PurchasingService extends Service {
         }
     }
     /*采购商设置卡密已用*/
-    public function set_camilo_userd(){
-        $this->purchasingcamilodetailRepo->update(['is_used'=>1],request('id', ''));
-        $this->suppliercamRepo->update(['status'=>3],request('card_code',''));
+    public function set_camilo_userd($id,$code){
+        $this->purchasingcamilodetailRepo->update(['is_used'=>1],['camilo_id'=>$id]);
+        $this->supplyCamRepo->update(['status'=>4],['cam_name'=>$code]);
     }
     /*采购商直充长期查询*/
     public function get_ldirectly_detail(){

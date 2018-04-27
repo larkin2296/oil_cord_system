@@ -20,6 +20,7 @@ class PurchasingCamiloDetail extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $table = 'purchasing_camilo_detail';
+    protected $fillable = ['order_code','camilo_id','is_used','is_problem','created_at','updated_at'];
 
 }
