@@ -186,4 +186,25 @@ Trait ServiceTrait
         $this->auto_increment++;
         return $code;
     }
+    //获取配置的商品和面额信息
+    public function get_config_data(){
+        $result['platform'] = $this->platformRepo->findWhere(['status'=>1]);
+        $result['denomination'] = $this->platformMoneyRepo->findWhere(['status'=>1]);
+        return $result;
+    }
+    //获取卡密的详细信息
+    public function get_camilo_detail($id){
+        $result = $this->supplyCamRepo->find($id);
+        return $result;
+    }
+    //获取商品信息
+    public function get_goods_data($id){
+        $result = $this->platformRepo->find($id);
+        return $result;
+    }
+    //获取面额信息
+    public function get_denomination_data($id){
+        $result = $this->platformMoneyRepo->find($id);
+        return $result;
+    }
 }

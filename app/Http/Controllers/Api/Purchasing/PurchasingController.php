@@ -23,12 +23,12 @@ class PurchasingController extends Controller
     }
     //获取卡密订单查询数据
     public function get_camilo_order(Request $request){
-        $results = $this->service->get_data('purchasing_order',['order_type'=>1]);
+        $results = $this->service->get_camilo_order('purchasing_order',['order_type'=>1]);
         return response()->json($results);
     }
     //获取长期直充订单查询数据
     public function ldirectly_order(Request $request){
-        $results = $this->service->get_data('user_oil_card',['is_longtrem'=>1]);
+        $results = $this->service->ldirectly_order('user_oil_card',['is_longtrem'=>1]);
         return response()->json($results);
     }
     //获取短期直充订单查询数据
@@ -73,12 +73,16 @@ class PurchasingController extends Controller
         return response()->json($results);
     }
     public function get_sdirectly_detail(){
-        $results = $this->service->get_sdirectly_detail();
-        return response()->json($results);
     }
-    public function set_problem(){
-        $results = $this->service->set_problem();
-        return response()->json($results);
+    public function set_problem(Request $request){
+        try{
+            foreach($request['list'] as $value){
+                $this->service->set_problem($value['id'], $value['type'], $value['order_id']);
+            }
+            return response()->json(['code'=>200,'msg'=>'修改成功']);
+        }catch(Exception $e){
+            return response()->json($e);
+        }
     }
     public function get_initialize(){
         $results = $this->service->get_initialize();
@@ -102,7 +106,9 @@ class PurchasingController extends Controller
     public function set_camilo_userd(Request $request){
         try{
             foreach($request['order'] as $value){
-                $this->service->set_camilo_userd($value['id'],$value['cam_name']);
+                if(isset($value['choose']) && $value['choose'] == true) {
+                    $this->service->set_camilo_userd($value['id'], $value['order_id']);
+                }
             }
             return response()->json(['code'=>200,'msg'=>'修改成功']);
         }catch(Exception $e){
