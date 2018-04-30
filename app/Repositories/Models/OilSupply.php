@@ -7,11 +7,11 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class UserOilCard.
+ * Class OilSupply.
  *
  * @package namespace App\Repositories\Models;
  */
-class UserOilCard extends Model implements Transformable
+class OilSupply extends Model implements Transformable
 {
     use TransformableTrait;
 
@@ -20,12 +20,17 @@ class UserOilCard extends Model implements Transformable
      *
      * @var array
      */
-    protected $table = 'user_oil_card';
+    protected $table = 'oil_supply';
 
     protected $fillable = [
-        'id','user_id','serial_number','oil_card_code','identity_card','ture_name','web_account','web_password','card_status','is_longtrem','recharge_num','recharge_today_num','total_money','save_money','initialize_price','last_recharge_time',
-        'status_supply',
+        'user_id','oil_id','status'
     ];
 
-
+    /**
+     * 油卡表
+     */
+    public function hasManyOilCard()
+    {
+        return $this->hasMany(UserOilCard::class,'id','oil_id');
+    }
 }

@@ -177,11 +177,94 @@ Class CatSupplyservice extends Service{
      */
     public function relationshipSupply()
     {
+        #TODO 根据供应商的等级去设定油卡数量 生成关联关系 管理员可对查看每个供应商所持有的直充油卡 可对进行编辑操作
         /* 获取供应商信息 */
-        $user = $this->jwtUser();
+        try{
+            $exception = DB::transaction(function() {
+                $user = $this->jwtUser();
+
+                /*供应商是否第一次获取油卡*/
+                if( $info = $this->oilSupplyRepo->findWhere(['user_id' => $user->id])->count() > 0 ) {
+
+                    /* 油卡信息 */
+                    $data=  $this->oilSupplyRepo->model()::where('user_id',$user->id)
+                        ->with('hasManyOilCard')->get()
+                        ->map(function($item,$key){
+                            $arr = $item->hasManyOilCard;
+                            //return $arr[0]['id'];
+                            return [
+                                'id' => $arr[0]['id'],
+                                'user_id' => $arr[0]['user_id'],
+                                'oil_card_code' => $arr[0]['oil_card_code'],
+                                'serial_number' => $arr[0]['serial_number'],
+                                'card_status' => $arr[0]['card_status'],
+                                'status_supply' => $arr[0]['status_supply'],
+                                'total_money' => $arr[0]['total_money'],
+                                'is_longtrem' => $arr[0]['is_longtrem'],
+                                'recharge_num' => $arr[0]['recharge_num'],
+                                'recharge_today_num' => $arr[0]['recharge_today_num'],
+                                'last_recharge_time' => $arr[0]['last_recharge_time'],
+                            ];
+                        });
+
+                    return ['code' => 200, 'message' => '获取油卡信息成功','data' => $data];
+
+
+                } else {
+
+                    $limit = 3;
+                    /* 获取油卡 */
+                    $arr = $this->oilcardRepo->model()::where('status_supply',2)
+                        ->limit($limit)
+                        ->get()->map(function($item,$key){
+                            return [
+                                'id' => $item->id,
+                                'user_id' => $item->user_id,
+                                'oil_card_code' => $item->oil_card_code,
+                                'serial_number' => $item->serial_number,
+                                'card_status' => $item->card_status,
+                                'status_supply' => $item->status_supply,
+                                'total_money' => $item->total_money,
+                                'is_longtrem' => $item->is_longtrem,
+                                'recharge_num' => $item->recharge_num,
+                                'recharge_today_num' => $item->recharge_today_num,
+                                'last_recharge_time' => $item->last_recharge_time,
+                            ];
+
+                        });
+                    if( $arr ) {
+
+                        foreach( $arr as $item ) {
+
+                            /* 油卡使用状态 */
+                            $supplyStatus =  $this->oilcardRepo->update(['status_supply' => 1],$item['id']);
+
+                            $arrNew = [
+                                'user_id' => $user->id,
+                                'oil_id' => $item['id']
+                            ];
+
+                            $patient =  $this->oilSupplyRepo->create($arrNew);
+
+                            if( $supplyStatus && $patient ) {
+                            } else {
+                                throw new Exception('获取油卡失败，请联系管理员',2);
+                            }
+                        }
+                    } else {
+                        throw new Exception('当前暂无油卡,请稍后再试',2);
+                    }
+
+                    return ['code' => 200, 'message' => '获取油卡信息成功','data' => $arr];
+                }
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+
+       return array_merge($this->results,$exception);
+
     }
-
-
 
     /**
      * 直充供货
@@ -189,7 +272,20 @@ Class CatSupplyservice extends Service{
      */
     public function charge()
     {
-        #TODO 先获取油卡 三张油卡 随机充值
+        try{
+            $exception = DB::transaction(function(){
+                #TODO 生成供应单记录 增加附件信息 关联上附件信息
+                /*充值油卡*/
+                $id = request()->post('id','');
+
+
+
+            });
+
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
     }
 
 }

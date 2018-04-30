@@ -22,7 +22,8 @@ class CreateUserOilCardTable extends Migration
             $table->string('ture_name',20)->comment('油卡对应的姓名');
             $table->string('web_account',100)->nullable()->comment('官网油卡账号');
             $table->string('web_password',100)->nullable()->comment('官网油卡密码');
-            $table->integer('card_status')->default(0)->comment('油卡状态');
+            $table->integer('card_status')->default(0)->comment('油卡状态 1-正常 2-停用');
+            $table->integer('status_supply')->default(0)->comment('1-采购商使用中 2-无采购商使用');
             $table->integer('total_money')->default(0)->comment('油卡总存款');
             $table->integer('save_money')->default(0)->comment('油卡存款，对账后清零');
             $table->integer('initialize_price')->default(0)->comment('油卡圈存，对账后清零');

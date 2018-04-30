@@ -4,9 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Class CreateSupplyCamsTable.
+ * Class CreateOilSuppliesTable.
  */
-class CreateSupplyCamsTable extends Migration
+class CreateOilSuppliesTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -15,7 +15,7 @@ class CreateSupplyCamsTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('supply_cams', function(Blueprint $table) {
+		Schema::create('oil_supplies', function(Blueprint $table) {
             $table->increments('id');
 
             $table->timestamps();
@@ -29,6 +29,6 @@ class CreateSupplyCamsTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('supply_cams');
+		Schema::drop('oil_supplies');
 	}
 }

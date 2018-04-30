@@ -10,13 +10,11 @@ use App\Repositories\Interfaces\AttachmentRepository;
 use App\Repositories\Interfaces\PlatformRepository;
 use App\Repositories\Interfaces\PlatformMoneyRepository;
 use App\Repositories\Interfaces\RelationPlatformRepository;
-
 use App\Repositories\Interfaces\SupplyCamRepository;
 use App\Repositories\Interfaces\SupplySingleRepository;
-
-
 use App\Repositories\Interfaces\PurchasingCamiloDetailRepository;
-use App\Repositories\Models\PurchasingCamiloDetail;
+use App\Repositories\Interfaces\OilSupplyRepository;
+
 
 
 
@@ -33,8 +31,11 @@ class Service
     public $supplyCamRepo;
     public $supplySingleRepo;
 
-    public $RelationPlatformRepo;
+
     public $purchasingcamilodetailRepo;
+    public $oilSupplyRepo;
+
+
 
 
 
@@ -52,8 +53,8 @@ class Service
         $this->supplyCamRepo = app(SupplyCamRepository::class);
         $this->supplySingleRepo = app(SupplySingleRepository::class);
 
-        $this->RelationPlatformRepo = app(RelationPlatformRepository::class);
         $this->purchasingcamilodetailRepo = app(PurchasingCamiloDetailRepository::class);
+        $this->oilSupplyRepo = app(OilSupplyRepository::class);
 
     }
 }

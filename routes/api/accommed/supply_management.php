@@ -33,7 +33,7 @@ $router->group(['prefix' => 'commodity'],function($router){
 
     /*获取油卡*/
     $router->post('relationship',[
-       'uses' => 'CatSupplyController@relationship',
+       'uses' => 'Supply\CatSupplyController@relationship',
         'as' => 'relationship',
     ]);
 });
