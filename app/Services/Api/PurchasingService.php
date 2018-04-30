@@ -38,6 +38,31 @@ class PurchasingService extends Service {
                 break;
         }
     }
+    public function get_camilo_order($table,$param){
+        $result = $this->get_data($table,$param);
+        foreach($result as &$val){
+            $val['platform'] = $this->get_goods_data($val['platform'])->platform_name;
+            switch($val['order_status']){
+                case '1':
+                    $val['order_status'] = '已完成';
+                    break;
+                case '2':
+                    $val['order_status'] = '未完成';
+                    break;
+                case '3':
+                    $val['order_status'] = '问题订单';
+                    break;
+                default:
+                    $val['order_status'] = '问题订单';
+                    break;
+            }
+        }
+        return $result;
+    }
+    public function ldirectly_order($table,$param){
+        $result = $this->get_data($table,$param);
+        return $result;
+    }
     public function get_data($table,$param){
         $result = $this->r_object($table)->findWhere($param);
         return $result;
@@ -144,7 +169,7 @@ class PurchasingService extends Service {
                     ->join('platform','platform.id','=','supply_cam.platform_id')
                     ->join('platform_money','platform_money.id','=','supply_cam.denomination')
                     ->where('purchasing_camilo_detail.order_code','=',$order_code)
-                    ->select('platform.platform_name', 'platform_money.denomination','supply_cam.cam_name','supply_cam.id','supply_cam.cam_two_name','supply_cam.status')
+                    ->select('platform.platform_name', 'platform_money.denomination','supply_cam.cam_name','supply_cam.id','supply_cam.cam_other_name','supply_cam.status','purchasing_camilo_detail.id as order_id')
                     ->get();
         $results['msg']['num'] = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$order_code])->count();
         $results['msg']['is_usd'] = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$order_code,'is_used'=>1])->count();
@@ -168,10 +193,10 @@ class PurchasingService extends Service {
         return $results;
     }
     /*设置为问题卡密*/
-    public function set_problem(){
+    public function set_problem($id,$type,$order){
         try{
-            $this->purchasingcamilodetailRepo->update(['is_problem'=>1],request('id', ''));
-            $this->supplyCamRepo->update(['status'=>4],request('card_code',''));
+            $this->purchasingcamilodetailRepo->update(['is_problem'=>1],$order)->where(['is_used'=>['!=',1]]);
+            $this->supplyCamRepo->update(['status'=>3,'remark'=>$type],$id)->where(['status'=>2]);
         }catch(Exception $e) {
             return $e;
         }
@@ -204,9 +229,9 @@ class PurchasingService extends Service {
         }
     }
     /*采购商设置卡密已用*/
-    public function set_camilo_userd($id,$code){
-        $this->purchasingcamilodetailRepo->update(['is_used'=>1],['camilo_id'=>$id]);
-        $this->supplyCamRepo->update(['status'=>4],['cam_name'=>$code]);
+    public function set_camilo_userd($id,$order){
+        $this->purchasingcamilodetailRepo->update(['is_used'=>1],$order)->where(['is_problem'=>['!=',1]]);
+        $this->supplyCamRepo->update(['status'=>4],$id)->where(['status'=>2]);;
     }
     /*采购商直充长期查询*/
     public function get_ldirectly_detail(){
