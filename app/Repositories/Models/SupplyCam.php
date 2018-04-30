@@ -22,7 +22,7 @@ class SupplyCam extends Model implements Transformable
      */
     protected $table = 'supply_cam';
     protected $fillable = [
-        'supply_id','cam_name','status','remark','platform_id','denomination'
+        'supply_id','cam_name','status','remark','platform_id','denomination','cam_other_name','user_id'
     ];
 
 }
