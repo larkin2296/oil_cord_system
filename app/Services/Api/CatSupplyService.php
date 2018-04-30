@@ -13,7 +13,7 @@ use Redis;
 use App\User;
 use JWTAuth;
 use Carbon\Carbon;
-
+use Excel;
 Class CatSupplyservice extends Service{
     protected $build;
     use ResultTrait, ExceptionTrait, ServiceTrait, CodeTrait, UserTrait,CatSupplyTrait;
@@ -34,60 +34,37 @@ Class CatSupplyservice extends Service{
 
                 $now = new Carbon();
 
+                #TODO 供应单号表  卡密表
+                $cam[] = request()->post('cam',[]);
+
+                /*用户信息*/
+                $user = $this->jwtUser();
+
                 /*面额*/
                 $platform_money_id = request()->post('money_id','');
 
                 /*平台*/
                 $platform_id = request()->post('platform_id','');
 
-                #TODO 供应单号表  卡密表
-                $cam = request()->post('cam',[]);
-
-                $cam_random = request()->post('cam_two',[]);
-
-
-                // 生成关联关系  绑定数据关系
-                //supply_single_number
-                //一个供应单表对应一条 金额 平台 对应多条卡密 对应一条附件信息
-                /*用户信息*/
-                $user = $this->jwtUser();
-
-                $arr = [
-                  'user_id' => $user->id,
-                  'commodity_name' => $this->platformRepo->find($platform_id)->platform_name,
-                  'denomination' => $this->platformMoneyRepo->find($platform_money_id)->denomination,
-                  'status' => 1,
-                ];
-                /*供应单*/
-                $supply =  $this->supplySingleRepo->create($arr);
-
-                $supply_id = $supply->id;
-
-                /*供应单号*/
-                $supplySingleNumber = $this->generateSupplyNumber($supply,$user);
-
-                $this->supplySingleRepo->update(['supply_single_number' => $supplySingleNumber],$supply_id);
-
                 /*卡密信息*/
+
                 foreach( $cam as $item ) {
 
-                    $this->supplyCamRepo->create([
-                        'cam_name' => $item,
-                        'supply_id' => $supply_id,
-                    ]);
+                    $arr = [
+                        'cam_name' => $item['cam_name'],
+                        'cam_other_name' => $item['cam_other_name'],
+                        'denomination' => $platform_money_id,
+                        'platform_id' => $platform_id,
+                        'user_id' => $user->id,
+                    ];
 
+                    $info = $this->supplyCamRepo->create($arr);
                 }
 
+                /*供应单号*/
+                // $supplySingleNumber = $this->generateSupplyNumber($supply,$user);
 
-                /*面额平台*/
-                $this->relationPlatformRepo->create([
-                        'supply_id' => $supply_id,
-                        'platform_id' => $platform_id,
-                        'money_id' => $platform_money_id,
-                    ]
-                );
-
-                return ['code' => 200, 'message' => '显示成功', 'data' => ''];
+                return ['code' => 200, 'message' => '显示成功', 'data' => $info];
 
             });
 
@@ -97,6 +74,75 @@ Class CatSupplyservice extends Service{
         return array_merge($this->results,$exception);
     }
 
+    /**
+     * 导入模版
+     * return [type][deception]
+     */
+    public function importExcelData()
+    {
+        set_time_limit(0);
+
+        $filePath = 'storage/attachments/'.iconv('UTF-8', 'GBK', 'cam').'.xlsx';
+
+        Excel::load($filePath, function($reader) {
+
+            $platform_money = request()->get('money_id','');
+            ;
+            $platform_id = request()->post('platform_id','');
+
+            $reader = $reader->getSheet(0);
+
+            $data = $reader->toArray();
+
+            /*用户信息*/
+            $user = $this->jwtUser();
+
+            unset($data[0]);
+
+            foreach( $data as $k=>$v ){
+                /* 清除标题 */
+                unset($v[2]);
+
+                $arr = [
+                    'cam_name' => $v[0],
+                    'cam_other_name' => $v[1],
+                    'denomination' => $platform_money,
+                    'platform_id' => $platform_id,
+                    'user_id' => $user->id,
+                ];
+
+                if( $info =  $this->supplyCamRepo->create($arr) ) {
+
+                } else {
+                    throw new Exception('导入卡密数据失败,请数据检查格式','2');
+                }
+            }
+
+            return ['code' => '200' ,'message' => '导入卡密成功'];
+
+
+        });
+
+    }
+
+    /**
+     * 导出模版
+     * return [type][deception]
+     */
+    public function export()
+    {
+        Excel::create('cam',function($excel){
+            $excel->sheet('Sheetname',function($sheet) {
+                $sheet->rows([
+                        array('字段名称1','字段名称2-可为空','备注 ：卡密为纯数字的请按照模版格式将excel单元格式选择为文本格式'),
+                        array('110501804252467010327','110501804252467010328'),
+                        array('110501804252467010329','110501804252467010338'),
+                    ]
+                );
+
+            })->export('xlsx');
+        });
+    }
 
     /**
      * 平台金额
@@ -120,10 +166,30 @@ Class CatSupplyservice extends Service{
 
             });
         } catch(Exception $e){
-
+            dd($e);
         }
         return array_merge($this->results,$exception);
+    }
 
+    /**
+     * 供应商油卡
+     * return [type][deception]
+     */
+    public function relationshipSupply()
+    {
+        /* 获取供应商信息 */
+        $user = $this->jwtUser();
+    }
+
+
+
+    /**
+     * 直充供货
+     * return [type][deception]
+     */
+    public function charge()
+    {
+        #TODO 先获取油卡 三张油卡 随机充值
     }
 
 }
