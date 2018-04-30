@@ -29,4 +29,8 @@ class ConfigureController extends Controller
         $results = $this->service->platformMoneyRepo->create($request['list']);
         return response()->json($results);
     }
+    public function get_config_detail(){
+        $results = $this->service->get_config_data();
+        return response()->json($results);
+    }
 }

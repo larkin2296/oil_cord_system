@@ -91,7 +91,7 @@ Class CatSupplyservice extends Service{
 
             });
 
-        }catch(EXception $e){
+        }catch(EXception $exception){
 
         }
         return array_merge($this->results,$exception);

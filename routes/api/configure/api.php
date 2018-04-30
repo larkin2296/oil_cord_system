@@ -27,4 +27,9 @@ $router->group([],function($router){
         'as' => 'add_denomination',
     ]);
 
+    /*获取页面配置信息*/
+    $router->match(['get','post'],'get_config_detail',[
+        'uses' => 'Configure\ConfigureController@get_config_detail',
+        'as' => 'get_config_detail',
+    ]);
 });
