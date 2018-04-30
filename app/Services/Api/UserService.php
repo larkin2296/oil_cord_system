@@ -69,7 +69,7 @@ class UserService extends Service
             'grade' => $result->grade ? $result->grade : '',
             'notes' => $result->notes ? $result->notes : '',
             'roles' => $result->role_status ? [$result->role_status] : '',
-            'avatar' => dealAvatar($result->avatar),
+            //'avatar' => dealAvatar($result->avatar),
         ];
         return array_merge($this->results,['code' => '200','data' => $data,'message' => '请求成功']);
 
@@ -190,8 +190,10 @@ class UserService extends Service
     }
     /*刷新token*/
     public function updateToken()
+
     {
         try {
+
             $old_token = JWTAuth::getToken();
 
             $token = JWTAuth::refresh($old_token);
@@ -215,6 +217,8 @@ class UserService extends Service
                 trans('errors.token_invalid'), $e);
 
         }
+
         return response()->json(compact('token'));
+
     }
 }

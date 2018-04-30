@@ -26,22 +26,10 @@ class AttachmentController extends Controller {
       * 查看附件
       * @return [type] [description]
       */
-      public function uploadList($id)
-      {
+        public function uploadList($id)
+        {
             $results = $this->service->uploadList($id);
 
             return response()->json($results);
-      }
-
-        /**
-         * 查看头像
-         * @return [type] [description]
-         */
-      public function avatar($id)
-      {
-          $results = $this->service->avatar($id);
-
-          return response()->json($results);
-      }
-
+        }
 }

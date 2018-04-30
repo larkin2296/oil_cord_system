@@ -23,7 +23,7 @@ class Attachment extends Model implements Transformable
     protected $table = 'cam_attachment';
 
     protected $fillable = [
-        'name','origin_name','size','ext','ext_info','path','user_id','created_at',
+        'name','origin_name','size','ext','ext_info','path','supply_info',
     ];
 
 }
