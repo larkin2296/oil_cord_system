@@ -21,8 +21,28 @@ class SupplyCam extends Model implements Transformable
      * @var array
      */
     protected $table = 'supply_cam';
+
+
     protected $fillable = [
-        'supply_id','cam_name','status','remark','platform_id','denomination'
+        'cam_name','status','remark','platform_id','denomination','user_id','success_time','status','cam_other_name',
+        'discount','actual_money',
     ];
 
+    /**
+     *面额
+     *return [type][deception]
+     */
+    public function denomination()
+    {
+        return $this->hasOne(PlatformMoney::class,'id','denomination');
+    }
+
+    /**
+     *平台
+     *return [type][deception]
+     */
+    public function platform()
+    {
+        return $this->hasOne(Platform::class,'id','platform_id');
+    }
 }

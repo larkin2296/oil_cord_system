@@ -21,8 +21,11 @@ class SupplySingle extends Model implements Transformable
      * @var array
      */
     protected $table = 'supply_single';
+
     protected $fillable = [
-        'supply_single_number','supply_state','user_id','oil_card','start_time','notes','end_time','already_card','remarks','direct_id','status'
+        'supply_single_number','supply_state','oil_card','start_time','notes','end_time','already_card','remarks','direct_id','status','suoil_id'
     ];
+
+
 
 }

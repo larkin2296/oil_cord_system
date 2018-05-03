@@ -21,8 +21,9 @@ class Platform extends Model implements Transformable
      * @var array
      */
     protected $table = 'platform';
+
     protected $fillable = [
-        'platform_name',
+        'platform_name','status'
     ];
 
 }

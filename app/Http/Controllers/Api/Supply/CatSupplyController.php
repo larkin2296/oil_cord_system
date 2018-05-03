@@ -46,6 +46,17 @@ Class CatSupplyController extends Controller{
     }
 
     /**
+     * 卡密供货-显示
+     * return [type\[deception]
+     */
+    public function lists()
+    {
+        $results = $this->service->importExcelShow();
+
+        return response()->json($results);
+    }
+
+    /**
      * 模版导出
      * return [type\[deception]
      */

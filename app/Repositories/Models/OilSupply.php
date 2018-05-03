@@ -28,9 +28,19 @@ class OilSupply extends Model implements Transformable
 
     /**
      * 油卡表
+     * return [type][deception]
      */
     public function hasManyOilCard()
     {
         return $this->hasMany(UserOilCard::class,'id','oil_id');
+    }
+
+    /**
+     * 供应商油卡
+     * return [type][deception]
+     */
+    public function hasManySupplySingle()
+    {
+        return $this->hasMany(UserOilCard::class,'suoil_id','id');
     }
 }

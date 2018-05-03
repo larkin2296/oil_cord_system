@@ -21,8 +21,10 @@ class PlatformMoney extends Model implements Transformable
      * @var array
      */
     protected $table = 'platform_money';
+
     protected $fillable = [
-        'denomination',
+        'denomination','status'
     ];
+
 
 }

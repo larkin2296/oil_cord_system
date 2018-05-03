@@ -61,9 +61,6 @@ Class CatSupplyservice extends Service{
                     $info = $this->supplyCamRepo->create($arr);
                 }
 
-                /*供应单号*/
-                // $supplySingleNumber = $this->generateSupplyNumber($supply,$user);
-
                 return ['code' => 200, 'message' => '显示成功', 'data' => $info];
 
             });
@@ -81,13 +78,13 @@ Class CatSupplyservice extends Service{
     public function importExcelData()
     {
         set_time_limit(0);
-
+        #TODO 文件显示 加个接口
         $filePath = 'storage/attachments/'.iconv('UTF-8', 'GBK', 'cam').'.xlsx';
 
         Excel::load($filePath, function($reader) {
 
             $platform_money = request()->get('money_id','');
-            ;
+
             $platform_id = request()->post('platform_id','');
 
             $reader = $reader->getSheet(0);
@@ -100,6 +97,7 @@ Class CatSupplyservice extends Service{
             unset($data[0]);
 
             foreach( $data as $k=>$v ){
+
                 /* 清除标题 */
                 unset($v[2]);
 
@@ -117,12 +115,30 @@ Class CatSupplyservice extends Service{
                     throw new Exception('导入卡密数据失败,请数据检查格式','2');
                 }
             }
-
             return ['code' => '200' ,'message' => '导入卡密成功'];
-
-
         });
 
+    }
+
+    /**
+     * 内容回显
+     * return [type][deception]
+     */
+    public function importExcelShow()
+    {
+        set_time_limit(0);
+
+        $filePath = 'storage/attachments/'.iconv('UTF-8', 'GBK', 'cam').'.xlsx';
+
+        Excel::load($filePath, function($reader) {
+
+            $reader = $reader->getSheet(0);
+
+            $data = $reader->toArray();
+
+            return ['code' => '200' ,'message' => '显示成功','data' => $data];
+
+        });
     }
 
     /**
@@ -208,10 +224,7 @@ Class CatSupplyservice extends Service{
                         });
 
                     return ['code' => 200, 'message' => '获取油卡信息成功','data' => $data];
-
-
                 } else {
-
                     $limit = 3;
                     /* 获取油卡 */
                     $arr = $this->oilcardRepo->model()::where('status_supply',2)
@@ -235,7 +248,6 @@ Class CatSupplyservice extends Service{
                     if( $arr ) {
 
                         foreach( $arr as $item ) {
-
                             /* 油卡使用状态 */
                             $supplyStatus =  $this->oilcardRepo->update(['status_supply' => 1],$item['id']);
 
@@ -261,9 +273,7 @@ Class CatSupplyservice extends Service{
         } catch(Exception $e){
             dd($e);
         }
-
        return array_merge($this->results,$exception);
-
     }
 
     /**
@@ -273,19 +283,47 @@ Class CatSupplyservice extends Service{
     public function charge()
     {
         try{
-            $exception = DB::transaction(function(){
+            $exception = DB::transaction(function() {
                 #TODO 生成供应单记录 增加附件信息 关联上附件信息
                 /*充值油卡*/
                 $id = request()->post('id','');
 
+                $oilInfo = $this->oilSupplyRepo->model()::where('oil_id',$id)
+                    ->with('hasManyOilCard')
+                    ->get()
+                    ->map(function($item,$key){
+                    return [
+                      'id' => $item->id
+                    ];
+                });
+                $arr = [
+                    'suoil_id' => $oilInfo[0]['id'],
+                    'already_card' => request()->already_card,
+                    'end_time' => request()->end_time,
+                ];
+                $supply = $this->supplySingleRepo->create($arr);
 
+                /*用户信息*/
+                $user = $this->jwtUser();
+                /*供应单号*/
+                $supplySingleNumber = $this->generateSupplyNumber($supply,$user);
+
+                $data = $this->supplySingleRepo->update(['supply_single_number' => $supplySingleNumber],$supply->id);
+
+                if( $data ) {
+                } else {
+                    throw new Exception('直充失败','2');
+                }
+
+                return ['code' => 200, 'message' => '直充成功', 'data' => $data];
 
             });
 
         } catch(Exception $e){
             dd($e);
         }
-        return array_merge($this->results,$exception);
+            return array_merge($this->results,$exception);
+
     }
 
 }

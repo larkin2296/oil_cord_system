@@ -7,4 +7,21 @@ $router->group(['prefix' => 'verb'],function($router){
         'as' => 'index',
     ]);
 
+    /*供货详情*/
+    $router->get('{id}/show',[
+        'uses' => 'Supply\OrderController@show',
+        'as' => 'index',
+    ]);
+
+    /*直充供货查询*/
+    $router->get('charge',[
+        'uses' => 'Supply\OrderController@charge',
+        'as' => 'charge',
+    ]);
+
+    /*直充详情*/
+    $router->get('{id}/attachmentCharge',[
+        'uses' => 'Supply\OrderController@attachmentCharge',
+        'as' => 'attachmentCharge',
+    ]);
 });

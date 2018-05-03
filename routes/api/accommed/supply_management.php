@@ -19,6 +19,12 @@ $router->group(['prefix' => 'commodity'],function($router){
         'as' => 'import',
     ]);
 
+    /*导入回显*/
+    $router->match(['get','post'],'lists',[
+        'uses' => 'Supply\CatSupplyController@lists',
+        'as' => 'lists',
+    ]);
+
     /*模版导出*/
     $router->match(['get','post'],'export',[
         'uses' => 'Supply\CatSupplyController@export',
