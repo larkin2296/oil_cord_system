@@ -284,7 +284,7 @@ Class CatSupplyservice extends Service{
     {
         try{
             $exception = DB::transaction(function() {
-                #TODO 生成供应单记录 增加附件信息 关联上附件信息
+                #TODO 生成供应单记录 增加附件信息 关联上附件信息 direct_id 附件id
                 /*充值油卡*/
                 $id = request()->post('id','');
 
@@ -295,11 +295,16 @@ Class CatSupplyservice extends Service{
                     return [
                       'id' => $item->id
                     ];
-                });
+                })->first();
+
+                /* 冗余油卡 */
+                $oilCard =  $this->oilcardRepo->find($id);
+
                 $arr = [
-                    'suoil_id' => $oilInfo[0]['id'],
+                    'suoil_id' => $oilInfo['id'],
                     'already_card' => request()->already_card,
                     'end_time' => request()->end_time,
+                    'oil_number' => $oilCard->oil_card_code,
                 ];
                 $supply = $this->supplySingleRepo->create($arr);
 

@@ -101,16 +101,91 @@ class AccommedService extends Service {
      */
     public function chargeQuery()
     {
+        /*用户信息*/
+        $user = $this->jwtUser();
 
+        $field = [
+            'oil_number' => 'like',
+            'status' => '=',
+            'end_time' => 'like',
+        ];
+
+        $fieldWhere = $this->searchArray($field);
+
+        #TODO 用户 供应商拥有的油卡  供应单的时间
+
+        $where = array_merge($fieldWhere,[
+           'user_id' => $user->id,
+        ]);
+
+        $data = $this->supplySingleRepo->findWhere($where)->map(function($item,$key){
+
+            //return $item;
+            return [
+                'id' => $item->id,
+                'supply_single_number' => $item->supply_single_number,
+                'oil_number' => $item->oil_number,
+                'end_time' => $item->end_time,
+                'created_at' => $item->created_at->format("Y-m-d H:i"),
+                'already_card' => $item->already_card,
+                'supply_status' => $this->checkSupplyStatus($item->supply_status),
+            ];
+        });
+
+        return ['code' => 200, 'message' => '直充查询成功', 'data' => $data];
+
+    }
+
+    public function checkSupplyStatus($status)
+    {
+        $item = [
+            '1' => '已到账',
+            '2' => '未到账',
+            '3' => '问题订单',
+        ];
+        return $item[$status];
     }
 
     /**
      * 直充详情查询
      * return [type][deception]
      */
-    public function attachmentCharge()
+    public function attachmentCharge($id)
     {
+        try{
+            $exception = DB::transaction(function() use ($id){
+                $data = $this->supplySingleRepo->model()::where('id',$id)
+                    ->with('attachmentCharge')
+                    ->get()->map(function($item,$key){
 
+                        return [
+                          'id' => $item->id,
+                          'supply_single_number' => $item->supply_single_number,
+                          'oil_number' => $item->oil_number,
+                          'supply_status' => $this->checkSupplyStatus($item->supply_status),
+                          'notes' => $item->notes,
+                          'end_time' => $item->end_time,
+                          'already_card' => $item->already_card,
+                          'direct_id' => $item->attachmentCharge,   //调用获取附件接口
+                          'status' => $item->status,
+
+                        ];
+                    });
+
+                if( $data ) {
+                }else {
+                    throw new Exception('直充详情列表读取失败','2');
+                }
+                return $this->results = array_merge([
+                   'code' => 200,
+                   'message' => '直充详情展示成功',
+                   'data' => $data,
+                ]);
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
     }
 
 }

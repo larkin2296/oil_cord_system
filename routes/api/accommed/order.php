@@ -2,7 +2,7 @@
 $router->group(['prefix' => 'verb'],function($router){
 
     /*卡密供货查询*/
-    $router->get('index',[
+    $router->post('index',[
         'uses' => 'Supply\OrderController@index',
         'as' => 'index',
     ]);
@@ -14,7 +14,7 @@ $router->group(['prefix' => 'verb'],function($router){
     ]);
 
     /*直充供货查询*/
-    $router->get('charge',[
+    $router->post('charge',[
         'uses' => 'Supply\OrderController@charge',
         'as' => 'charge',
     ]);

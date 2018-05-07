@@ -23,9 +23,16 @@ class SupplySingle extends Model implements Transformable
     protected $table = 'supply_single';
 
     protected $fillable = [
-        'supply_single_number','supply_state','oil_card','start_time','notes','end_time','already_card','remarks','direct_id','status','suoil_id'
+        'supply_single_number','supply_state','oil_card','start_time','notes','end_time','already_card','remarks',
+        'direct_id','status','suoil_id','oil_number','user_id',
     ];
 
-
-
+    /**
+     * 直充附件
+     * return [type] [deception]
+     */
+     public function attachmentCharge()
+     {
+         return $this->hasOne(Attachment::class,'id','direct_id');
+     }
 }
