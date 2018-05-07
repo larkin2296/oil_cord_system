@@ -28,7 +28,7 @@ Class AttachmentService extends Service{
                 throw new Exception('文件不能空',2);
             }
 
-            $file = request()->file('files','');
+            $file = request()->file('cam_file','');
 
             /*上传文件路径*/
             $path = $file->store('attachments',$this->disk);
