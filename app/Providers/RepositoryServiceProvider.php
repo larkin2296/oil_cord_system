@@ -39,6 +39,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\Interfaces\PurchasingCamiloDetailRepository::class, \App\Repositories\Eloquents\PurchasingCamiloDetailRepositoryEloquent::class);
 
         $this->app->bind(\App\Repositories\Interfaces\OilSupplyRepository::class, \App\Repositories\Eloquents\OilSupplyRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\Interfaces\ForwardRepository::class, \App\Repositories\Eloquents\ForwardRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\Interfaces\PresentForwardRepository::class, \App\Repositories\Eloquents\PresentForwardRepositoryEloquent::class);
         //:end-bindings:
     }
 }

@@ -14,7 +14,8 @@ use App\Repositories\Interfaces\SupplyCamRepository;
 use App\Repositories\Interfaces\SupplySingleRepository;
 use App\Repositories\Interfaces\PurchasingCamiloDetailRepository;
 use App\Repositories\Interfaces\OilSupplyRepository;
-
+use App\Repositories\Interfaces\ForwardRepository;
+use App\Repositories\Interfaces\PresentForwardRepository;
 
 
 
@@ -34,8 +35,8 @@ class Service
 
     public $purchasingcamilodetailRepo;
     public $oilSupplyRepo;
-
-
+    public $forwardRepo;
+    public $presentForwardRepo;
 
 
 
@@ -55,6 +56,8 @@ class Service
 
         $this->purchasingcamilodetailRepo = app(PurchasingCamiloDetailRepository::class);
         $this->oilSupplyRepo = app(OilSupplyRepository::class);
+        $this->forwardRepo = app(ForwardRepository::class);
+        $this->presentForwardRepo = app(PresentForwardRepository::class);
 
     }
 }

@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
  * ============ API ============
  *刘通
  *api路由写在api下 
- *         1:accommed 供应商  -api
+ *         1:Accommed 供应商  -api
  *         2:purchase 采购商  -api
  *common 公共路由
  *

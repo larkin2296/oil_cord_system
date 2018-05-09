@@ -136,16 +136,6 @@ class AccommedService extends Service {
 
     }
 
-    public function checkSupplyStatus($status)
-    {
-        $item = [
-            '1' => '已到账',
-            '2' => '未到账',
-            '3' => '问题订单',
-        ];
-        return $item[$status];
-    }
-
     /**
      * 直充详情查询
      * return [type][deception]

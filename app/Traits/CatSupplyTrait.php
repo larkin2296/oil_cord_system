@@ -41,4 +41,63 @@ Trait CatSupplyTrait{
     {
         return app(PlatformRepository::class)->find($platform)->toArray();
     }
+
+    /**
+     * 卡密提现状态
+     * return [type] [data]
+     */
+    public function checkForWardStatus($status)
+    {
+        $data = [
+           '1' => '已提现',
+           '2' => '未提现',
+           '3' => '提现中',
+
+        ];
+        return $data[$status];
+    }
+
+    /**
+     * 卡密状态
+     * return [type] [deception]
+     */
+    public function checkCamStatus($status)
+    {
+        $item = [
+            '1' => '上传成功',
+            '2' => '下发采购商',
+            '3' => '问题卡密',
+            '4' => '销卡成功',
+        ];
+        return $item[$status];
+    }
+
+    /**
+     * 直充订单状态
+     * @param $status
+     * @return mixed
+     */
+    public function checkSupplyStatus($status)
+    {
+        $item = [
+            '1' => '已到账',
+            '2' => '未到账',
+            '3' => '问题订单',
+        ];
+        return $item[$status];
+    }
+
+    /**
+     * 提现单号
+     * return [type] [deception]
+     */
+    public function getForwardNumber($user,$serviceType = '1')
+    {
+        $user_id = $user->id;
+
+        $businessType = '0';
+
+        return $serviceType . $businessType . date("Ymd") .substr(time(),2) .$user_id . rand(0, 9);
+    }
+
 }
