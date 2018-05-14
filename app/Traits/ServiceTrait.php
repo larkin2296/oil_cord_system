@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use Exception;
 
-Trait ServiceTrait
+Trait 涩rvicetraiServiceTrait
 {
     protected $auto_increment = 0;
 	public function index()
