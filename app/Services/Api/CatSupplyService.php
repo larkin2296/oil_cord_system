@@ -126,19 +126,20 @@ Class CatSupplyservice extends Service{
      */
     public function importExcelShow()
     {
+        $list = request()->post('list','');
         set_time_limit(0);
+        $filePath = 'storage/app/uploads/'.iconv('UTF-8', 'GBK', $list);
 
-        $filePath = 'storage/attachments/'.iconv('UTF-8', 'GBK', 'cam').'.xlsx';
 
         Excel::load($filePath, function($reader) {
 
+
             $reader = $reader->getSheet(0);
-
             $data = $reader->toArray();
-
+//            dd($data);
             return ['code' => '200' ,'message' => '显示成功','data' => $data];
-
         });
+
     }
 
     /**

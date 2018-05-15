@@ -52,7 +52,7 @@ Class CatSupplyController extends Controller{
     public function lists()
     {
         $results = $this->service->importExcelShow();
-
+        dd($results);
         return response()->json($results);
     }
 
