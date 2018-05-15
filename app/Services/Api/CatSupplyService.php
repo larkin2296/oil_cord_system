@@ -135,7 +135,7 @@ Class CatSupplyservice extends Service{
             $reader = $reader->getSheet(0);
 
             $data = $reader->toArray();
-
+            dd($data);
             return ['code' => '200' ,'message' => '显示成功','data' => $data];
 
         });
