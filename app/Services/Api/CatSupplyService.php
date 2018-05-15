@@ -79,7 +79,7 @@ Class CatSupplyservice extends Service{
     {
         set_time_limit(0);
         #TODO 文件显示 加个接口
-        $filePath = 'storage/attachments/'.iconv('UTF-8', 'GBK', 'cam').'.xlsx';
+        $filePath = 'storage/attachments/'.iconv('UTF-8', 'GBK', 'cam').'.xls';
 
         Excel::load($filePath, function($reader) {
 
@@ -90,7 +90,6 @@ Class CatSupplyservice extends Service{
             $reader = $reader->getSheet(0);
 
             $data = $reader->toArray();
-
             /*用户信息*/
             $user = $this->jwtUser();
 
@@ -126,19 +125,20 @@ Class CatSupplyservice extends Service{
      */
     public function importExcelShow()
     {
+        $list = request()->post('list','');
+
         set_time_limit(0);
 
-        $filePath = 'storage/attachments/'.iconv('UTF-8', 'GBK', 'cam').'.xlsx';
+        $filePath = 'storage/app/uploads/'.iconv('UTF-8', 'GBK', $list);
 
-        Excel::load($filePath, function($reader) {
+        $data = Excel::load($filePath, function($reader) {
 
-            $reader = $reader->getSheet(0);
-
-            $data = $reader->toArray();
-            dd($data);
-            return ['code' => '200' ,'message' => '显示成功','data' => $data];
+            $reader = $reader->getSheet(0)->toArray();
+            return $reader;
 
         });
+         return ['code' => '200' ,'message' => '显示成功','data' => $data->toArray()];
+
     }
 
     /**
