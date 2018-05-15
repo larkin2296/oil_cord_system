@@ -44,6 +44,5 @@ class LoginController extends Controller
 
        return response()->json($result);
     }
-    public function logout(){
-    }
+
 }

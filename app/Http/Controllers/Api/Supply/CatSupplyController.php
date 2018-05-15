@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Supply;
 
-use App\Services\APi\CatSupplyService as Service;
+use App\Services\Api\CatSupplyService as Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 

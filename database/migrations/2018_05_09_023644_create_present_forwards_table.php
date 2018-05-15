@@ -4,9 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Class CreateOilSuppliesTable.
+ * Class CreatePresentForwardsTable.
  */
-class CreateOilSuppliesTable extends Migration
+class CreatePresentForwardsTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -15,7 +15,7 @@ class CreateOilSuppliesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('oil_supplies', function(Blueprint $table) {
+		Schema::create('present_forwards', function(Blueprint $table) {
             $table->increments('id');
 
             $table->timestamps();
@@ -29,6 +29,6 @@ class CreateOilSuppliesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('oil_supplies');
+		Schema::drop('present_forwards');
 	}
 }
