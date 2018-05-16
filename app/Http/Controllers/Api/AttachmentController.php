@@ -17,6 +17,7 @@ class AttachmentController extends Controller {
      */
      public function upload()
      {
+
          $results = $this->service->upload();
 
          return response()->json($results);
@@ -26,14 +27,26 @@ class AttachmentController extends Controller {
       * 查看附件
       * @return [type] [description]
       */
-      public function uploadList($id)
+      public function show($id)
       {
-           $results = $this->service->uploadList($id);
+           $results = $this->service->show($id);
 
            return response()->json($results);
       }
 
-     /**
+    /**
+     * 下载附件
+     * @return [type] [description]
+     */
+    public function download($id)
+    {
+        $results = $this->service->show($id);
+
+        return response()->json($results);
+    }
+
+
+    /**
      * 查看头像
      * @return [type] [description]
      */

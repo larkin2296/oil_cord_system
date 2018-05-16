@@ -77,7 +77,7 @@ $router->group(['middleware' => ['api']],function($router){
             ]);
         });
 
-        /*用户信息*/
+        /*jwt auth token 验证*/
         $router->group(['middleware' => 'jwt.auth'],function($router){
 
             $router->group(['prefix' => 'user'],function($router){
@@ -132,7 +132,7 @@ $router->group(['middleware' => ['api']],function($router){
             });
 
             /*文件上传*/
-            require(__DIR__.'/common/api.php');
+          //  require(__DIR__.'/common/api.php');
         });
 
         $router->group(['prefix' => 'logout'],function($router){

@@ -4,13 +4,14 @@ namespace App\Services;
 use App\Traits\ResultTrait;
 use App\Traits\ExceptionTrait;
 use App\Traits\UserTrait;
+use App\Traits\DataTrait;
 use Exception;
 use DB;
 use Storage;
 
 Class AttachmentService extends Service{
 
-    use ResultTrait, ExceptionTrait, UserTrait;
+    use ResultTrait, ExceptionTrait, UserTrait, DataTrait;
 
     protected $disk = 'local';
 
@@ -22,7 +23,7 @@ Class AttachmentService extends Service{
          */
     public function upload()
     {
-        $exception = DB::transaction(function(){
+        $exception = DB::transaction(function() {
 
             if( !request()->hasFile('cam_file') ) {
                 throw new Exception('文件不能空',2);
@@ -34,8 +35,8 @@ Class AttachmentService extends Service{
             $path = $file->store('attachments',$this->disk);
 
             /*用户信息*/
-            $user = $this->jwtUser();
-
+            $user = $this->userByJwt();
+            //dd($user);
             /*文件信息*/
             $fileName = $file->hashName();
 
@@ -58,7 +59,7 @@ Class AttachmentService extends Service{
                     'name' => str_replace('.' .$attachment->ext ,'',$attachment->origin_name),
                     'ext' => $attachment->ext,
                     'size' => $attachment->size,
-                    'url' => route('api.attachement.cam.list', [$attachment->id]),
+                    'url' => route('api.attachment.cam.show', [$attachment->id]),
                     'created_at' => $attachment->created_at->format('Y-m-d H:i:s'),
 
                 ]);
@@ -83,7 +84,7 @@ Class AttachmentService extends Service{
      * 查看附件
      * return [type] [description]
      */
-    public function uploadList($id)
+    public function show($id)
     {
         try{
             /*检测文件是否存在*/

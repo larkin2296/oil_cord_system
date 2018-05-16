@@ -3,8 +3,10 @@
 namespace App\Repositories\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use App\Traits\ModelTrait;
 
 /**
  * Class Attachment.
@@ -14,6 +16,8 @@ use Prettus\Repository\Traits\TransformableTrait;
 class Attachment extends Model implements Transformable
 {
     use TransformableTrait;
+    use ModelTrait;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +27,14 @@ class Attachment extends Model implements Transformable
     protected $table = 'cam_attachment';
 
     protected $fillable = [
-        'name','origin_name','size','ext','ext_info','path','user_id','created_at',
+        'name','origin_name','size','ext','ext_info','path','user_id','created_at','updated_at','deleted_at'
     ];
+
+    protected $appends = ['id_hash'];
+
+    public function getIdHashAttribute()
+    {
+        return $this->encodeId('attachment', $this->id);
+    }
 
 }
