@@ -51,7 +51,6 @@ Class ForwardController extends Controller{
      */
     public function show()
     {
-
         $results = $this->service->presentRecord();
 
         return response()->json($results);

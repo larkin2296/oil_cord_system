@@ -42,9 +42,9 @@ Class AttachmentService extends Service{
 
             $data = [
                 'name' => $fileName,
-                'origin_name' => $file-> getClientOriginalName(),
+                'origin_name' => $file->getClientOriginalName(),
                 'size' => $file->getClientSize(),
-                'path' => $path,
+                'path' =>$path,
                 'ext' => $file->getClientOriginalExtension(),
                 'ext_info' => '',
                 'status' => request()->post('status',''),

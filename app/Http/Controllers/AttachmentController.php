@@ -53,6 +53,6 @@ class AttachmentController extends Controller {
      {
           $results = $this->service->avatar($id);
 
-          return response()->json($results);
+          return response()->file($results['path']);
      }
 }

@@ -8,10 +8,10 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
+use App\Traits\UserTrait;
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, UserTrait;
     public function __construct() {
         header("Access-Control-Allow-Origin: *");
         header('content-type:application/json;charset=utf8');
@@ -36,12 +36,38 @@ class Controller extends BaseController
             $realPath = $file->getRealPath();
             //重新设置文件名
             $filename = date('Y-m-d-H-i-S').'-'.uniqid().'.'.$ext;
+            $user = $this->jwtUser();
             //文件存储
-            $bool = Storage::disk('uploads')->put($filename, file_get_contents($realPath));
-            return response()->json([
-                'code' => 200,
-                'message' => 'success',
+            $path = Storage::disk('uploads')->put($filename, file_get_contents($realPath));
+            $data = [
                 'name' => $filename,
+                'origin_name' => $file-> getClientOriginalName(),
+                'size' => $file->getClientSize(),
+                'path' => $path,
+                'ext' => $file->getClientOriginalExtension(),
+                'ext_info' => '',
+                'status' => request()->status,
+                'user_id' => $user->id,
+            ];
+
+            if( $attachment = $this->attachmentRepo->create($data) ){
+
+                $this->results = array_merge($this->results,[
+
+                    'id' => $attachment->id,
+                    'name' => str_replace('.' .$attachment->ext ,'',$attachment->origin_name),
+                    'ext' => $attachment->ext,
+                    'size' => $attachment->size,
+                    'url' => route('api.attachement.cam.list', [$attachment->id]),
+                    'created_at' => $attachment->created_at->format('Y-m-d H:i:s'),
+
+                ]);
+
+            } else {
+                throw new EXception('附件上传失败',2);
+            }
+            return array_merge($this->results,[
+                'code' => 200
             ]);
 
         } else {

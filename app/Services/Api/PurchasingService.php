@@ -210,6 +210,17 @@ class PurchasingService extends Service {
     }
     /*采购商直充长期查询*/
     public function get_ldirectly_detail(){
-//        $this->supplysingeRepo->findWhere(['card_code'=>request('card_code',''),'time'=>['bewteen',request('order_time','')]]);
+        $card = request()->post('card','');
+        $where['oil_number'] = $card;
+        $where['supply_status'] = 1;
+        $data = $this->supplySingleRepo->orderBy('end_time','desc')->findWhere($where)->map(function($item,$key){
+            return [
+                'id' => $item->id,
+                'oil_number' => $item->oil_number,
+                'end_time' => $item->end_time,
+                'already_card' => $item->already_card
+            ];
+        });
+        return ['code' => 200, 'message' => '直充查询成功', 'data' => $data];
     }
 }
