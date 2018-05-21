@@ -156,7 +156,7 @@ Class CatSupplyservice extends Service{
                     ]
                 );
 
-            })->export('xlsx');
+            })->export('xls');
         });
     }
 

@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Traits;
+use App\Repositories\Interfaces\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use JWTAuth;
+use Exception;
 Trait UserTrait
 {
     /**
@@ -46,6 +48,30 @@ Trait UserTrait
         } else {
            return false;
         }
-
     }
+
+    /**
+     *  根据ID用户信息
+     * return [type] [deception]
+     */
+    public function getIdUserInfo($id)
+    {
+        return app(UserRepository::class)->find($id);
+    }
+
+    /**
+     * 验证管理员
+     * return [type] [deception]
+     */
+    public function checkAdminUser()
+    {
+        $user = $this->jwtUser();
+
+        if( $user->role_status == config('back.global.status.order.complete') ) {
+            return true;
+        } else {
+            throw new Exception('您没有管理员权限',2);
+        }
+    }
+
 }

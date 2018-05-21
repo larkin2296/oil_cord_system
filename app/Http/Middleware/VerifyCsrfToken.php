@@ -12,6 +12,19 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        //lt测试 验证接口 跳过csrf
+        //'admin/user/*',
+        //'admin/dictionaries/*',
+        //'wechat*',
+        'common*',
     ];
+
+    public function handle($request, \Closure $next)
+    {
+        /*启用csrf*/
+        return parent::handle($request, $next);
+
+        /*禁用csrf*/
+        //return $next($request);
+    }
 }

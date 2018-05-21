@@ -56,6 +56,20 @@ Trait CatSupplyTrait{
         ];
         return $data[$status];
     }
+    /**
+     * 成功失败状态
+     * return [type] [deception]
+     */
+    public function globalStatusGet($status)
+    {
+        $data = [
+            '1' => '成功',
+            '2' => '失败',
+        ];
+        return $data[$status];
+    }
+
+
 
     /**
      * 卡密状态
@@ -99,5 +113,6 @@ Trait CatSupplyTrait{
 
         return $serviceType . $businessType . date("Ymd") .substr(time(),2) .$user_id . rand(0, 9);
     }
+
 
 }

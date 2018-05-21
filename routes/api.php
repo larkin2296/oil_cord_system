@@ -131,8 +131,13 @@ $router->group(['middleware' => ['api']],function($router){
                 require(__DIR__.'/api/accommed/api.php');
             });
 
-            /*文件上传*/
-          //  require(__DIR__.'/common/api.php');
+            /*采购供应管理*/
+            $router->group(['prefix' => 'system','as' => 'system.'],function($router){
+                require(__DIR__.'/api/system/api.php');
+            });
+
+            /*管理员公用接口*/
+            require(__DIR__.'/admin/common.php');
         });
 
         $router->group(['prefix' => 'logout'],function($router){
@@ -164,6 +169,5 @@ $router->group(['middleware' => ['api']],function($router){
         });
     });
 
-
-
 });
+

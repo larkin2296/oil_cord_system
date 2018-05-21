@@ -1,17 +1,19 @@
 <?php
 
+
 $router->group(['prefix' => 'common','as' => 'common.'],function($router){
 
     /*附件上传专用接口*/
-        $router->group(['middleware' => 'debug'], function($router){
+
 
         $router->group(['prefix' => 'attach','as' => 'attach.'],function($router){
 
             /*附件上传*/
             $router->post('upload',[
-               'uses' => 'Api\AttachmentController@upload',
+               'uses' => 'AttachmentController@upload',
                'as' => 'upload'
             ]);
+
 
             /*附件查看*/
             $router->get('show/{id}',[
@@ -36,5 +38,5 @@ $router->group(['prefix' => 'common','as' => 'common.'],function($router){
             });
 
         });
-    });
+
 });

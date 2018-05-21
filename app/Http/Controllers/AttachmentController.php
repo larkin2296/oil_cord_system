@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,7 +17,6 @@ class AttachmentController extends Controller {
      */
      public function upload()
      {
-
          $results = $this->service->upload();
 
          return response()->json($results);
@@ -31,7 +30,7 @@ class AttachmentController extends Controller {
       {
            $results = $this->service->show($id);
 
-           return response()->json($results);
+           return response()->file($results['path']);
       }
 
     /**
@@ -42,7 +41,7 @@ class AttachmentController extends Controller {
     {
         $results = $this->service->show($id);
 
-        return response()->json($results);
+        return response()->download($results['path'], $results['name']);
     }
 
 

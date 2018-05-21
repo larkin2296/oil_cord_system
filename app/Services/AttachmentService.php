@@ -25,18 +25,18 @@ Class AttachmentService extends Service{
     {
         $exception = DB::transaction(function() {
 
-            if( !request()->hasFile('cam_file') ) {
+            if( !request()->hasFile('file') ) {
                 throw new Exception('文件不能空',2);
             }
 
-            $file = request()->file('cam_file','');
+            $file = request()->file('file','');
 
             /*上传文件路径*/
             $path = $file->store('attachments',$this->disk);
 
             /*用户信息*/
             $user = $this->userByJwt();
-            //dd($user);
+
             /*文件信息*/
             $fileName = $file->hashName();
 
@@ -47,23 +47,22 @@ Class AttachmentService extends Service{
                 'path' => $path,
                 'ext' => $file->getClientOriginalExtension(),
                 'ext_info' => '',
-                'status' => request()->status,
+                'status' => request()->post('status',''),
                 'user_id' => $user->id,
             ];
 
             if( $attachment = $this->attachmentRepo->create($data) ){
 
                 $this->results = array_merge($this->results,[
-
-                    'id' => $attachment->id,
+                    'data' => [
+                    'id_hash' => $attachment->id,
                     'name' => str_replace('.' .$attachment->ext ,'',$attachment->origin_name),
                     'ext' => $attachment->ext,
                     'size' => $attachment->size,
-                    'url' => route('api.attachment.cam.show', [$attachment->id]),
+                    'url' => route('common.attach.show', [$attachment->id]),
                     'created_at' => $attachment->created_at->format('Y-m-d H:i:s'),
-
+                    ],
                 ]);
-
             } else {
                 throw new EXception('附件上传失败',2);
             }
@@ -78,8 +77,6 @@ Class AttachmentService extends Service{
 
     }
 
-
-
     /**
      * 查看附件
      * return [type] [description]
@@ -89,24 +86,20 @@ Class AttachmentService extends Service{
         try{
             /*检测文件是否存在*/
             $attachments = $this->attachmentRepo->find($id);
-
             if( Storage::disk($this->disk)->exists($attachments->path) ) {
                 /* 获取文件 */
-                $path =  Storage::disk($this->disk)->exists($attachments->path);
+                $path =  Storage::disk($this->disk)->path($attachments->path);
                 $name = $attachments->origin_name;
-
                 return [
                     'path' => $path,
                     'name' => $name,
                 ];
-
             } else {
                 abort(404,'文件不存在');
             }
 
         } catch(Exception $e) {
             abort(404,'文件不存在');
-
         }
     }
 

@@ -16,6 +16,7 @@ use App\Repositories\Interfaces\PurchasingCamiloDetailRepository;
 use App\Repositories\Interfaces\OilSupplyRepository;
 use App\Repositories\Interfaces\ForwardRepository;
 use App\Repositories\Interfaces\PresentForwardRepository;
+use App\Repositories\Interfaces\PresentSettingRepository;
 
 
 
@@ -37,6 +38,7 @@ class Service
     public $oilSupplyRepo;
     public $forwardRepo;
     public $presentForwardRepo;
+    public $presentSettingRepo;
 
 
 
@@ -58,6 +60,7 @@ class Service
         $this->oilSupplyRepo = app(OilSupplyRepository::class);
         $this->forwardRepo = app(ForwardRepository::class);
         $this->presentForwardRepo = app(PresentForwardRepository::class);
+        $this->presentSettingRepo = app(PresentSettingRepository::class);
 
     }
 }

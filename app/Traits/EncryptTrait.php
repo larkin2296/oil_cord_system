@@ -2,7 +2,8 @@
 
 namespace App\Traits;
 
-use Hashids\Hashids;
+use Hashids;
+//use Mockery\Exception;
 
 Trait EncryptTrait
 {
@@ -31,7 +32,8 @@ Trait EncryptTrait
      * @date		2016-05-12 10:47:11
      * @return
      */
-    public function encodeId($id){
+    public function encodeId($id)
+    {
 
         // id无效直接返回
         if(!$id) return $id;
@@ -56,10 +58,17 @@ Trait EncryptTrait
     public function decodeId($id){
         // id无效直接返回
         if(!$id) return $id;
-
+//
         $hashId = new Hashids();
 
-        return $hashId->decode($id);
+        $ids = $hashId->decode($id);
+
+        if(isset($ids[0])) {
+            return $ids[0];
+        } else {
+            throw new Exception('解密失败',2);
+        }
+
 //        if(checkEncrypt($this->getEncryptConnection())){
 //            $ids = Hashids::connection($this->getEncryptConnection())->decode($id);
 //            if(isset($ids[0])){
