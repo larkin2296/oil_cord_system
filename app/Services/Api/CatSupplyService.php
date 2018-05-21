@@ -31,20 +31,31 @@ Class CatSupplyservice extends Service{
     {
         try{
             $exception = DB::transaction( function() {
+                $res = request()->post('list','');
 
                 $now = new Carbon();
 
                 #TODO 供应单号表  卡密表
-                $cam[] = request()->post('cam',[]);
+                $cam = $res['cam'];
 
                 /*用户信息*/
                 $user = $this->jwtUser();
 
                 /*面额*/
-                $platform_money_id = request()->post('money_id','');
+                $money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$res['money_id']])->map(function($item,$key){
+                    return [
+                       'id'=>$item['id']
+                    ];
+                });
+                $platform_money_id = $money_id[0]['id'];
 
                 /*平台*/
-                $platform_id = request()->post('platform_id','');
+                $platform_id = $this->platformRepo->findWhere(['platform_name'=>$res['platform_id']])->map(function($item,$key){
+                    return [
+                        'id'=>$item['id']
+                    ];
+                });
+                $platform_id = $platform_id[0]['id'];
 
                 /*卡密信息*/
 
@@ -66,7 +77,7 @@ Class CatSupplyservice extends Service{
             });
 
         }catch(EXception $e){
-
+            return $e;
         }
         return array_merge($this->results,$exception);
     }
@@ -137,7 +148,14 @@ Class CatSupplyservice extends Service{
             return $reader;
 
         });
-         return ['code' => '200' ,'message' => '显示成功','data' => $data->toArray()];
+        $array = $data->getSheet(0)->toArray();
+        foreach($array as $key=>&$val){
+            if($key > 0){
+                $arr[$key-1]['cam_name'] = $val[0];
+                $arr[$key-1]['cam_other_name'] = $val[1];
+            }
+        }
+         return ['code' => '200' ,'message' => '显示成功','data' =>$arr ];
 
     }
 
@@ -286,7 +304,9 @@ Class CatSupplyservice extends Service{
             $exception = DB::transaction(function() {
                 #TODO 生成供应单记录 增加附件信息 关联上附件信息 direct_id 附件id
                 /*充值油卡*/
-                $id = request()->post('id','');
+
+                $res = request()->post('list','');
+                $id = $res['id'];
 
                 $oilInfo = $this->oilSupplyRepo->model()::where('oil_id',$id)
                     ->with('hasManyOilCard')
@@ -300,16 +320,23 @@ Class CatSupplyservice extends Service{
                 /* 冗余油卡 */
                 $oilCard =  $this->oilcardRepo->find($id);
 
+                /*用户信息*/
+                $user = $this->jwtUser();
+
                 $arr = [
                     'suoil_id' => $oilInfo['id'],
-                    'already_card' => request()->already_card,
+                    'already_card' => $res['price'],
                     'end_time' => request()->end_time,
                     'oil_number' => $oilCard->oil_card_code,
+                    'user_id' => $user->id,
+                    'end_time' => $res['recharge_time'],
+                    'direct_id' => $res['pic_add'],
+                    'status' => 1,
+                    'supply_status' => 2
                 ];
                 $supply = $this->supplySingleRepo->create($arr);
 
-                /*用户信息*/
-                $user = $this->jwtUser();
+
                 /*供应单号*/
                 $supplySingleNumber = $this->generateSupplyNumber($supply,$user);
 

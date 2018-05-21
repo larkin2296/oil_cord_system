@@ -207,4 +207,9 @@ Trait ServiceTrait
         $result = $this->platformMoneyRepo->find($id);
         return $result;
     }
+    //获取截图信息
+    public function get_attachment_data($id){
+        $result = $this->attachmentRepo->find($id);
+        return $result;
+    }
 }

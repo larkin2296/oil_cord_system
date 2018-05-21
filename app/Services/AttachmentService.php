@@ -24,29 +24,40 @@ Class AttachmentService extends Service{
     {
         $exception = DB::transaction(function(){
 
-            if( !request()->hasFile('cam_file') ) {
+            if( !request()->hasFile('file') ) {
                 throw new Exception('文件不能空',2);
             }
 
-            $file = request()->file('cam_file','');
-
+            $file = request()->file('file','');
+            $status = request()->post('status','');
             /*上传文件路径*/
-            $path = $file->store('attachments',$this->disk);
+            $originalName = $file->getClientOriginalName();
+            //扩展名
+            $ext = $file->getClientOriginalExtension();
+            //文件类型
+            $type = $file->getClientMimeType();
+            //临时绝对路径
+            $realPath = $file->getRealPath();
+            //重新设置文件名
+            $filename = date('Y-m-d-H-i-S').'-'.uniqid().'.'.$ext;
+            $user = $this->jwtUser();
+            //文件存储
+            $path = Storage::disk('uploads')->put($filename, file_get_contents($realPath));
 
             /*用户信息*/
             $user = $this->jwtUser();
 
-            /*文件信息*/
-            $fileName = $file->hashName();
+//            /*文件信息*/
+//            $fileName = $file->hashName();
 
             $data = [
-                'name' => $fileName,
+                'name' => $filename,
                 'origin_name' => $file-> getClientOriginalName(),
                 'size' => $file->getClientSize(),
-                'path' => $path,
+                'path' => 'storage/app/uploads/'.$filename,
                 'ext' => $file->getClientOriginalExtension(),
                 'ext_info' => '',
-                'status' => request()->status,
+                'status' => $status,
                 'user_id' => $user->id,
             ];
 
@@ -58,7 +69,7 @@ Class AttachmentService extends Service{
                     'name' => str_replace('.' .$attachment->ext ,'',$attachment->origin_name),
                     'ext' => $attachment->ext,
                     'size' => $attachment->size,
-                    'url' => route('api.attachement.cam.list', [$attachment->id]),
+//                    'url' => route('api.attachment.cam.list', [$attachment->id]),
                     'created_at' => $attachment->created_at->format('Y-m-d H:i:s'),
 
                 ]);
