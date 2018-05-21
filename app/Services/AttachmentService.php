@@ -4,13 +4,14 @@ namespace App\Services;
 use App\Traits\ResultTrait;
 use App\Traits\ExceptionTrait;
 use App\Traits\UserTrait;
+use App\Traits\DataTrait;
 use Exception;
 use DB;
 use Storage;
 
 Class AttachmentService extends Service{
 
-    use ResultTrait, ExceptionTrait, UserTrait;
+    use ResultTrait, ExceptionTrait, UserTrait, DataTrait;
 
     protected $disk = 'local';
 
@@ -22,7 +23,7 @@ Class AttachmentService extends Service{
          */
     public function upload()
     {
-        $exception = DB::transaction(function(){
+        $exception = DB::transaction(function() {
 
             if( !request()->hasFile('file') ) {
                 throw new Exception('文件不能空',2);
@@ -44,11 +45,11 @@ Class AttachmentService extends Service{
             //文件存储
             $path = Storage::disk('uploads')->put($filename, file_get_contents($realPath));
 
-            /*用户信息*/
-            $user = $this->jwtUser();
 
-//            /*文件信息*/
-//            $fileName = $file->hashName();
+
+
+            $fileName = $file->hashName();
+
 
             $data = [
                 'name' => $filename,
@@ -94,7 +95,7 @@ Class AttachmentService extends Service{
      * 查看附件
      * return [type] [description]
      */
-    public function uploadList($id)
+    public function show($id)
     {
         try{
             /*检测文件是否存在*/
