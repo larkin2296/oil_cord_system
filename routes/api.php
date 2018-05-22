@@ -136,6 +136,12 @@ $router->group(['middleware' => ['api']],function($router){
                 require(__DIR__.'/api/system/api.php');
             });
 
+            /*管理员*/
+            $router->group(['prefix' => 'administrator'],function ($router) {
+
+                require(__DIR__.'/api/administrator/api.php');
+            });
+
             /*管理员公用接口*/
             require(__DIR__.'/admin/common.php');
         });

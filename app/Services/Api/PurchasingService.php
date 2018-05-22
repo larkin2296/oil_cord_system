@@ -7,6 +7,7 @@ use App\Traits\ServiceTrait;
 use App\Traits\CodeTrait;
 use App\Traits\UserTrait;
 use App\Services\Service;
+use App\Traits\CatSupplyTrait;
 use Exception;
 use DB;
 use Redis;
@@ -15,7 +16,7 @@ use JWTAuth;
 
 
 class PurchasingService extends Service {
-    use ServiceTrait,ResultTrait,ExceptionTrait,CodeTrait,UserTrait;
+    use ServiceTrait,ResultTrait,ExceptionTrait,CodeTrait,UserTrait,CatSupplyTrait;
 
     protected $builder;
     public function __construct()
@@ -38,9 +39,39 @@ class PurchasingService extends Service {
                 break;
         }
     }
-    public function get_data($table,$param){
+    private function get_data($table,$param){
         $result = $this->r_object($table)->findWhere($param);
         return $result;
+    }
+    //获取卡密订单数据
+    public function get_camilo_order($request){
+        $results = $this->get_data('purchasing_order',['order_type'=>1]);
+        foreach($results as &$val){
+            $val['platform'] = $this->handlePlatform($val['platform']);
+//            $val['unit_price'] = $this->handlePlatform($val['unit_price']);
+            switch($val['order_status']){
+                case 1:
+                    $val['order_status'] = '未完成';
+                    break;
+                case 2:
+                    $val['order_status'] = '已完成';
+                    break;
+                case 3:
+                    $val['order_status'] = '问题订单';
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $results;
+    }
+    //获取长充数据
+    public function ldirectly_order($request){
+        $results = $this->get_data('user_oil_card',['is_longtrem'=>1]);
+    }
+    //获取短充数据
+    public function sdirectly_order($request){
+        $results = $this->get_data('purchasing_order',['order_type'=>2]);
     }
     //将购物车数据添加到数据库
     public function add($request){
@@ -49,6 +80,7 @@ class PurchasingService extends Service {
             foreach($request as $val){
                 $re = $val;
                 $re['order_code'] = $order;
+                $re['order_status'] = 1;
                 $this->purorderRepo->create($re);
             }
             return ['code' => '200','message' => '添加成功'];
@@ -144,8 +176,10 @@ class PurchasingService extends Service {
                     ->join('platform','platform.id','=','supply_cam.platform_id')
                     ->join('platform_money','platform_money.id','=','supply_cam.denomination')
                     ->where('purchasing_camilo_detail.order_code','=',$order_code)
-                    ->select('platform.platform_name', 'platform_money.denomination','supply_cam.cam_name','supply_cam.id','supply_cam.cam_two_name','supply_cam.status')
+                    ->select('platform.platform_name', 'platform_money.denomination','supply_cam.cam_name','supply_cam.id','supply_cam.cam_other_name','supply_cam.status')
                     ->get();
+        $order = $this->purorderRepo->model()::where(['id'=>$order_code])->get();
+        $results['msg']['order'] = $order[0]['order_code'];
         $results['msg']['num'] = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$order_code])->count();
         $results['msg']['is_usd'] = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$order_code,'is_used'=>1])->count();
         $results['msg']['is_error'] = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$order_code,'is_problem'=>1])->count();
