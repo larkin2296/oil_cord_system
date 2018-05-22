@@ -120,7 +120,6 @@ class AccommedService extends Service {
         ]);
 
         $data = $this->supplySingleRepo->findWhere($where)->map(function($item,$key){
-            $res = $this->get_attachment_data($item->direct_id);
             //return $item;
             return [
                 'id' => $item->id,
@@ -129,7 +128,7 @@ class AccommedService extends Service {
                 'end_time' => $item->end_time,
                 'created_at' => $item->created_at->format("Y-m-d H:i"),
                 'already_card' => $item->already_card,
-                'direct_id' => $res['path'],
+                'direct_id' => $item->direct_id,
                 'supply_status' => $this->checkSupplyStatus($item->supply_status),
             ];
         });

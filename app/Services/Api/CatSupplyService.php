@@ -330,7 +330,7 @@ Class CatSupplyservice extends Service{
                     'oil_number' => $oilCard->oil_card_code,
                     'user_id' => $user->id,
                     'end_time' => $res['recharge_time'],
-                    'direct_id' => $res['pic_add'],
+                    'direct_id' => $res['id_hash'],
                     'status' => 1,
                     'supply_status' => 2
                 ];
