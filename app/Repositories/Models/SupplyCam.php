@@ -5,6 +5,8 @@ namespace App\Repositories\Models;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 /**
  * Class SupplyCam.
@@ -14,6 +16,7 @@ use Prettus\Repository\Traits\TransformableTrait;
 class SupplyCam extends Model implements Transformable
 {
     use TransformableTrait;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.

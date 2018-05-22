@@ -8,6 +8,22 @@ $router->group(['prefix' => 'order','as' => 'order'],function($router){
        'as' => 'index',
 
    ]);
+
+    /*删除卡密*/
+    $router->post('destroy',[
+        'uses' => 'System\Supply\OrderManagementController@destroy',
+        'as' => 'destroy',
+
+    ]);
+
+    /*恢复卡密*/
+    $router->post('recover',[
+        'uses' => 'System\Supply\OrderManagementController@recover',
+        'as' => 'recover',
+
+    ]);
+
+
     /*直充查询*/
     $router->match(['get','post'],'show',[
         'uses' => 'System\Supply\OrderManagementController@show',

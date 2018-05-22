@@ -55,9 +55,11 @@ class SystemOrderService extends Service
                 /*处理查询*/
                 $where = $this->searchArray($field);
 
-                $data = $this->supplyCamRepo->findWhere($where)->map(function($item, $key){
+                $data = $this->supplyCamRepo->findWhere($where)
+                    ->map(function($item, $key){
 
                     return [
+                        'id' => $item->id,
                         'user_id' => $item->user_id,
                         'userName' => $this->getIdUserInfo($item->user_id)->truename ?? $this->getIdUserInfo($item->user_id)->mobile ,
                         'cam_name' => $item->cam_name,
@@ -89,6 +91,68 @@ class SystemOrderService extends Service
 
     }
 
+    /**
+     * 删除卡密
+     * return [type] [deception]
+     */
+    public function destroy()
+    {
+        try{
+            $exception = DB::transaction(function() {
+
+                /*验证管理员*/
+                $isAdmin =  $this->checkAdminUser();
+
+                if( $data = $this->supplyCamRepo->delete(request()->id) ) {
+
+                } else {
+                    throw new Exception('删除卡密失败',2);
+                }
+
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '删除成功',
+                    'data' => $data,
+                ]);
+            });
+
+        } catch(Exception $e ) {
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
+    /**
+     * 恢复卡密
+     * return [type] [deception]
+     */
+    public function recover()
+    {
+        try{
+            $exception = DB::transaction(function() {
+
+                /*验证管理员*/
+                $isAdmin =  $this->checkAdminUser();
+
+                if( $data = $this->supplyCamRepo->model()::withTrashed()->where('id',request()->id)->restore() ) {
+
+                } else {
+                    throw new Exception('恢复卡密失败',2);
+                }
+
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '恢复成功',
+                    'data' => $data,
+                ]);
+            });
+
+        } catch(Exception $e ) {
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
 
     /**
      *代充管理列表
@@ -116,7 +180,8 @@ class SystemOrderService extends Service
 
                $where = $this->searchArray($field);
 
-               $data =  $this->supplySingleRepo->findWhere($where)->map(function($item, $key){
+               $data =  $this->supplySingleRepo->findWhere($where)
+                   ->map(function($item, $key){
                     return [
                         'id' => $item->id,
                         'oil_number' => $item->oil_number,

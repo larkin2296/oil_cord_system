@@ -45,6 +45,7 @@ class MessageController extends Controller
     public function resetpassMessage(MobileValidRequest $request)
     {
         $results = $this->service->resetpassMessage();
+
         return response()->json($results);
     }
     /**

@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api\System\Supply;
 
-use App\Services\Api\PresentService as Service;
+use App\Services\Api\PresentAdministrationService as Service;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-Class PresentManagementController extends Controller {
+Class PresentShowsController extends Controller {
 
     public function __construct(Service $service)
     {
@@ -13,7 +13,7 @@ Class PresentManagementController extends Controller {
     }
 
     /**
-     * 提现金额设置列表
+     * 提现管理列表
      * return [type] [deception]
      */
     public function index()

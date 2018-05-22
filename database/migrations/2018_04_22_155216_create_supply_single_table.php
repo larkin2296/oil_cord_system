@@ -29,6 +29,9 @@ class CreateSupplySingleTable extends Migration
             $table->string('direct_id')->nullable()->comment('直充文件id');
             $table->string('status', 30)->nullable()->comment('1-卡密供货2-直充供货');
             $table->timestamps();
+
+            /*软删除*/
+            $table->softDeletes();
         });
     }
 

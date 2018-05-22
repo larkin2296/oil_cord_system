@@ -30,7 +30,8 @@ Class PresentService extends Service{
     public function index()
     {
         try{
-            $exception = DB::transaction(function(){
+            $exception = DB::transaction(function() {
+
                 /* 验证身份 */
                $isAdmin =  $this->checkAdminUser();
 

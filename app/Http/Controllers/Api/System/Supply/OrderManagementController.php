@@ -24,6 +24,28 @@ class OrderManagementController extends Controller
     }
 
     /**
+     * 删除卡密订单
+     * return [type] [deception]
+     */
+    public function destroy()
+    {
+        $results = $this->service->destroy();
+
+        return response()->json($results);
+    }
+
+    /**
+     * 恢复卡密
+     * return [type] [deception]
+     */
+    public function recover()
+    {
+        $results = $this->service->recover();
+
+        return response()->json($results);
+    }
+
+    /**
      * 直充订单查询
      * @return [type] [deception]
      */

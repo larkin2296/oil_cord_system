@@ -1,5 +1,5 @@
 <?php
-$router->group(['prefix' => 'present','as' => 'present'],function($router){
+$router->group(['prefix' => 'present','as' => 'present .'],function($router){
 
     /*提现管理列表*/
     $router->get('index',[
