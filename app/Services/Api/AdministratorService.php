@@ -133,4 +133,29 @@ class AdministratorService extends Service {
         $this->purorderRepo->update(['order_status'=>2],$order);
         return true;
     }
+
+    public function get_card(){
+        $result = $this->oilcardRepo->model()::orderBy('user_id')->get()->map(function($item,$index){
+            $user = $this->userRepo->find($item['user_id']);
+           return [
+             'id'=>$item['id'],
+             'name' => $user['truename'],
+             'serial_number'=>$item['serial_number'],
+             'oil_card_code' => $item['oil_card_code'],
+             'card_status' => $item['card_status'],
+             'is_longtrem' => $item['is_longtrem']
+           ];
+        });
+        return ['code' => '200', 'message' => '查询成功', 'data' => $result];
+    }
+
+    public function get_purchasing_user(){
+        $user = $this->userRepo->findWhere(['role_status'=>1])->map(function($item,$index){
+            return [
+                'id'=>$item['id'],
+                'name' => $item['truename']
+            ];
+        });
+        return ['code' => '200', 'message' => '查询成功', 'data' => $user];
+    }
 }

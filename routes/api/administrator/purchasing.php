@@ -11,4 +11,15 @@ $router->group(['prefix' => 'purchasing'],function($router){
         'uses' => 'Administrator\PurchasingController@send_camilo',
         'as' => 'send_camilo',
     ]);
+    /*油卡获取*/
+    $router->post('get_purchasing_card',[
+        'uses' => 'Administrator\PurchasingController@get_purchasing_card',
+        'as' => 'get_purchasing_card',
+    ]);
+    /*采购商用户获取*/
+    $router->post('get_purchasing_user',[
+        'uses' => 'Administrator\PurchasingController@get_purchasing_user',
+        'as' => 'get_purchasing_user',
+    ]);
+
 });
