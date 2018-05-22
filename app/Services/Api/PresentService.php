@@ -90,6 +90,5 @@ Class PresentService extends Service{
             dd($e);
         }
         return array_merge($this->results,$exception);
-
     }
 }
