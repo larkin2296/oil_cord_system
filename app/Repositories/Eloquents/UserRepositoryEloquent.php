@@ -46,7 +46,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     }
     /*验证手机号是否注册*/
 
-    public function checkMobile($mobile)
+    public function checkedMobile($mobile)
     {
         if( $this->model->where('mobile',$mobile)->first() ) {
             return true;

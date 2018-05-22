@@ -34,6 +34,7 @@ class MessageController extends Controller
     public function registerMessage(MobileValidRequest $request)
     {
         $results = $this->service->registerMessage();
+
         return response()->json($results);
     }
 

@@ -9,7 +9,7 @@ use App\Traits\CodeTrait;
 use App\Services\Service;
 use Exception;
 use DB;
-use App\Repositories\Models\User;
+use App\User;
 use JWTAuth;
 use phpDocumentor\Reflection\Types\Integer;
 use Redis;
@@ -41,7 +41,7 @@ class RegisterService extends Service {
             $invitation_code = request()->post('invitation_code');
             $code = request()->post('code');
 
-               if($this->userRepo->checkMobile($mobile)) {
+               if($this->userRepo->checkedMobile($mobile)) {
 
                 throw new Exception("对不起，手机号已存在！", 2);
             }
@@ -58,7 +58,7 @@ class RegisterService extends Service {
                'password' => bcrypt($password),
                'invitation_code' => $invitation_code,
                'role_status' => $register->role_status ?? 0,
-               'invitation_id' => $register->id ?? 0,
+               'invitation_id' => $register->id ?? '',
 
            ];
 
@@ -90,7 +90,7 @@ class RegisterService extends Service {
         } else {
 
             /*直接返回id*/
-            return $id??0 ;
+            return $id ?? '';
 
         }
     }

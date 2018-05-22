@@ -23,7 +23,6 @@ class RegisterController extends Controller
      */
     public function register( $id = null)
     {
-
         $results = $this->service->register($id);
 
         return response()->json($results);

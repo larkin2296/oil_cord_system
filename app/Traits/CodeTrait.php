@@ -14,7 +14,6 @@ Trait CodeTrait
         if(	PhpRedis::command('exists', [$key]) ) {
             $code = $this->getRedis($key);
 
-
             if( $code == $verifyCode ) {
                 $this->clearRedis($key);
                 return true;

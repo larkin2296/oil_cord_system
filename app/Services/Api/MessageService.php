@@ -60,6 +60,7 @@ class MessageService extends Service {
     public function registerMessage()
     {
         try {
+
             $mobile = request()->get('mobile');
 
             //验证手机号是否正确
