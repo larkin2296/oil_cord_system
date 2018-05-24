@@ -62,7 +62,53 @@ class AdministratorService extends Service {
         }
         return array_merge($this->results, $exception);
     }
+    //直充数据获取
+    public function get_directly_list(){
+        try{
+            $exception = DB::transaction(function(){
 
+                /*用户信息*/
+                $user = $this->jwtUser();
+
+                $field= [
+                    'supply_status' => '='
+                ];
+                $fieldWhere =  $this->searchArray($field);
+
+                $where = array_merge($fieldWhere,[
+                    'supply_status' => 1,
+                ]);
+
+                $data =  $this->supplySingleRepo->findWhere($where)->map(function($item,$key){
+                    $result = $this->oilcardRepo->model()::where(['oil_card_code'=>$item['oil_number']])->get();
+                    $user = $this->userRepo->find($result[0]['user_id']);
+//                    dd($user);
+                    return [
+                        'id' => $item['id'],
+                        'supply_single_number' => $item['supply_single_number'],
+                        'already_card' => $item['already_card'],
+                        'discount' => $item['discount'],
+                        'end_time' => $item['end_time'],
+                        'oil_number' => $item['oil_number'],
+                        'serial_number' => $result[0]['serial_number'],
+                        'ture_name' => $result[0]['ture_name'],
+                        'purchasing_name' => $user['truename']
+                    ];
+
+                })->all();
+                //->model()::with(['denomination','platform'])->get();
+                if( $data ) {
+                } else {
+                    throw new EXception('卡密查询异常,请重试','2');
+                }
+                return ['code' => '200', 'message' => '查询成功', 'data' => $data];
+
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+    }
     public function send_camilo(){
         try{
             $exception = DB::transaction(function(){
@@ -151,11 +197,35 @@ class AdministratorService extends Service {
 
     public function get_purchasing_user(){
         $user = $this->userRepo->findWhere(['role_status'=>1])->map(function($item,$index){
+            $perrmission = $this->purperrmissonRepo->findWhere(['user_id'=>$item['id']]);
             return [
-                'id'=>$item['id'],
-                'name' => $item['truename']
+                'id' => $perrmission[0]['id'],
+                'user_id'=>$item['id'],
+                'name' => $item['truename'],
+                'recharge_camilo' => $perrmission[0]['recharge_camilo'] == 1 ? true : false,
+                'recharge_short_directly' => $perrmission[0]['recharge_short_directly'] == 1 ? true : false,
+                'recharge_long_directly' => $perrmission[0]['recharge_long_directly'] == 1 ? true : false,
+                'pay_camilo' => "{$perrmission[0]['pay_camilo']}",
+                'pay_directly' => "{$perrmission[0]['pay_directly']}"
             ];
         });
         return ['code' => '200', 'message' => '查询成功', 'data' => $user];
+    }
+
+    public function set_user_perrmission() {
+        $post = request()->post('list','');
+        $where = [
+            'recharge_camilo' => $post['recharge_camilo'] == true ? 1 : 0,
+            'recharge_short_directly' => $post['recharge_short_directly'] == true ? 1 : 0,
+            'recharge_long_directly' => $post['recharge_long_directly'] == true ? 1 : 0,
+            'pay_camilo' => $post['pay_camilo'],
+            'pay_directly' => $post['pay_directly']
+        ];
+        $result = $this->purperrmissonRepo->update($where,$post['id']);
+        if ($result) {
+            return ['code' => '200','message' => '修改成功'];
+        } else {
+            return ['message' => '修改失败'];
+        }
     }
 }

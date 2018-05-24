@@ -17,6 +17,7 @@ use App\Repositories\Interfaces\OilSupplyRepository;
 use App\Repositories\Interfaces\ForwardRepository;
 use App\Repositories\Interfaces\PresentForwardRepository;
 use App\Repositories\Interfaces\PresentSettingRepository;
+use App\Repositories\Interfaces\PurchasingPerrmissonRepository;
 
 
 
@@ -24,6 +25,7 @@ class Service
 {
     public $userRepo;
     public $purorderRepo;
+    public $purperrmissonRepo;
     public $oilcardRepo;
     public $attachmentRepo;
     public $platformRepo;
@@ -57,6 +59,7 @@ class Service
         $this->supplySingleRepo = app(SupplySingleRepository::class);
 
         $this->purchasingcamilodetailRepo = app(PurchasingCamiloDetailRepository::class);
+        $this->purperrmissonRepo = app (PurchasingPerrmissonRepository::class);
         $this->oilSupplyRepo = app(OilSupplyRepository::class);
         $this->forwardRepo = app(ForwardRepository::class);
         $this->presentForwardRepo = app(PresentForwardRepository::class);

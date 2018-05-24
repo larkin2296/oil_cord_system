@@ -17,7 +17,10 @@ class PurchasingController extends Controller
         $results = $this->service->get_camilo_list();
         return response()->json($results);
     }
-
+    public function get_directly() {
+        $results = $this->service->get_directly_list();
+        return response()->json($results);
+    }
     public function send_camilo(){
         $results = $this->service->send_camilo();
         return response()->json($results);
@@ -31,6 +34,11 @@ class PurchasingController extends Controller
     //采购商获取
     public function get_purchasing_user() {
         $results = $this->service->get_purchasing_user();
+        return response()->json($results);
+    }
+    //采购商权限修改
+    public function set_user_perrmission() {
+        $results = $this->service->set_user_perrmission();
         return response()->json($results);
     }
 }

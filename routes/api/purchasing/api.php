@@ -81,7 +81,7 @@ $router->group([],function($router){
     ]);
     /*采购商圈存数据获取*/
     $router->match(['get','post'],'get_initialize',[
-        'uses' => 'Purchasing\PurchasingController@get_initializea',
+        'uses' => 'Purchasing\PurchasingController@get_initialize',
         'as' => 'get_initialize',
     ]);
     /*采购商圈存详情*/

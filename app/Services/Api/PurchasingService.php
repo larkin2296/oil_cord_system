@@ -213,8 +213,19 @@ class PurchasingService extends Service {
     }
     /*获取圈存数据*/
     public function get_initialize(){
-        'select from supplier_order a inner join oil_card_code b on card_code=card_code where 
-         b.user_id=X and a.time< and a.time> group by order_code';
+//        'select from supplier_order a inner join oil_card_code b on card_code=card_code where
+//         b.user_id=X and a.time< and a.time> group by order_code';
+        $user = $this->jwtUser();
+        $where['user_id'] = $user->id;
+        $where['card_status'] = 1;
+        $result = $this->oilcardRepo->findWhere($where)->map(function($item,$index){
+           return [
+              'oil_card_code' => $item['oil_card_code'],
+               'save_money' => $item['save_money'],
+               'initialize_price' => $item['initialize_price']
+           ] ;
+        });
+        return ['code'=>200,'message'=>'获取成功','data'=>$result];
     }
     /*圈存详细数据*/
     public function get_initialize_detail(){
