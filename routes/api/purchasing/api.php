@@ -69,7 +69,7 @@ $router->group([],function($router){
         'uses' => 'Purchasing\PurchasingController@get_ldirectly_detail',
         'as' => 'get_ldirectly_detail',
     ]);
-    /*采购商长期直充详情*/
+    /*采购商短期直充详情*/
     $router->match(['get','post'],'get_sdirectly_detail',[
         'uses' => 'Purchasing\PurchasingController@get_sdirectly_detail',
         'as' => 'get_sdirectly_detail',

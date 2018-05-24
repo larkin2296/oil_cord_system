@@ -32,4 +32,21 @@ $router->group(['prefix' => 'purchasing'],function($router){
         'uses' => 'Administrator\PurchasingController@set_user_perrmission',
         'as' => 'set_user_perrmission',
     ]);
+
+    /*直充短期查询*/
+    $router->post('get_sdirectly',[
+        'uses' => 'Administrator\PurchasingController@get_sdirectly',
+        'as' => 'get_sdirectly',
+    ]);
+    /*短期充值*/
+    $router->post('charge',[
+        'uses' => 'Administrator\PurchasingController@charge',
+        'as' => 'charge',
+    ]);
+
+    /*短期充值详情*/
+    $router->post('get_sdirectly_detail',[
+        'uses' => 'Administrator\PurchasingController@get_sdirectly_detail',
+        'as' => 'get_sdirectly_detail',
+    ]);
 });

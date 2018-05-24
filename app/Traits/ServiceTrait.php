@@ -212,4 +212,12 @@ Trait ServiceTrait
         $result = $this->attachmentRepo->find($id);
         return $result;
     }
+    public function get_platform_id($name){
+        $result = $this->platformRepo->model()::where(['platform_name'=> "$name"])->pluck('id');
+        return $result[0];
+    }
+    public function get_denomination_id($name){
+        $result = $this->platformMoneyRepo->model()::where(['denomination'=> "$name"])->pluck('id');
+        return $result[0];
+    }
 }

@@ -18,7 +18,9 @@ class PurchasingController extends Controller
     //购物车添加接口
     public function camilo_order(Request $request){
         $res = $request['list'];
-        $results = $this->service->add($res);
+        foreach($res as $val){
+            $results = $this->service->add($val);
+        }
         return response()->json($results);
     }
     //获取卡密订单查询数据

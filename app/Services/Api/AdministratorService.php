@@ -228,4 +228,133 @@ class AdministratorService extends Service {
             return ['message' => '修改失败'];
         }
     }
+    public function get_sdirectly_list() {
+        try{
+            $exception = DB::transaction(function(){
+
+                /*用户信息*/
+                $user = $this->jwtUser();
+
+                $field= [
+                    'order_type' => '='
+                ];
+                $fieldWhere =  $this->searchArray($field);
+
+                $where = array_merge($fieldWhere,[
+                    'order_type' => 2,
+                ]);
+
+                $data =  $this->purorderRepo->findWhere($where)->map(function($item,$key){
+                    $res = $this->supplySingleRepo->model()::where(['notes'=>$item['order_code']])->sum('already_card');
+                    return [
+                        'id' => $item['id'],
+                        'order_code' => $item['order_code'],
+                        'discount' => $item['discount'],
+                        'oil_card_code' => explode(',',$item['oil_card_code']),
+                        'price' => $item['price'],
+                        'created_at' => $item['created_at'],
+                        'history_price' =>$res
+                    ];
+
+                })->all();
+                //->model()::with(['denomination','platform'])->get();
+                if( $data ) {
+                } else {
+                    throw new EXception('卡密查询异常,请重试','2');
+                }
+                return ['code' => '200', 'message' => '查询成功', 'data' => $data];
+
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+    }
+    public function charge()
+    {
+        try{
+            $exception = DB::transaction(function() {
+                #TODO 生成供应单记录 增加附件信息 关联上附件信息 direct_id 附件id
+                /*充值油卡*/
+
+                $res = request()->post('list','');
+
+
+                /*用户信息*/
+                $user = $this->jwtUser();
+
+                $arr = [
+                    'already_card' => $res['price'],
+                    'end_time' => request()->end_time,
+                    'oil_number' => $res['oil_card'],
+                    'user_id' => $user->id,
+                    'end_time' => $res['recharge_time'],
+                    'direct_id' => $res['id_hash'],
+                    'status' => 1,
+                    'supply_status' => 2,
+                    'notes' => $res['order_code']
+                ];
+                $supply = $this->supplySingleRepo->create($arr);
+
+
+                /*供应单号*/
+                $supplySingleNumber = $this->generateSupplyNumber($supply,$user);
+
+                $data = $this->supplySingleRepo->update(['supply_single_number' => $supplySingleNumber],$supply->id);
+
+                if( $data ) {
+                } else {
+                    throw new Exception('直充失败','2');
+                }
+
+                return ['code' => 200, 'message' => '直充成功', 'data' => $data];
+
+            });
+
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+
+    }
+
+    public function get_sdirectly_detail() {
+        try{
+            $exception = DB::transaction(function(){
+                $res = request()->post('list','');
+
+                /*用户信息*/
+                $user = $this->jwtUser();
+
+                $field= [
+                    'notes' => '='
+                ];
+                $fieldWhere =  $this->searchArray($field);
+
+                $where = array_merge($fieldWhere,[
+                    'notes' => $res,
+                ]);
+
+                $data =  $this->supplySingleRepo->findWhere($where)->map(function($item,$key){
+                    return [
+                        'id' => $item['id'],
+                        'supply_single_number' => $item['supply_single_number'],
+                        'oil_number' => $item['oil_number'],
+                        'already_card' => $item['already_card']
+                    ];
+
+                })->all();
+                //->model()::with(['denomination','platform'])->get();
+                if( $data ) {
+                } else {
+                    throw new EXception('卡密查询异常,请重试','2');
+                }
+                return ['code' => '200', 'message' => '查询成功', 'data' => $data];
+
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+    }
 }
