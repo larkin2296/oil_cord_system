@@ -326,7 +326,6 @@ Class CatSupplyservice extends Service{
                 $arr = [
                     'suoil_id' => $oilInfo['id'],
                     'already_card' => $res['price'],
-                    'end_time' => request()->end_time,
                     'oil_number' => $oilCard->oil_card_code,
                     'user_id' => $user->id,
                     'end_time' => $res['recharge_time'],
