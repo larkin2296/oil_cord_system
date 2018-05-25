@@ -166,8 +166,8 @@ Class CatSupplyservice extends Service{
 
             $reader = $reader->getSheet(0)->toArray();
             return $reader;
-
         });
+
         $array = $data->getSheet(0)->toArray();
         foreach($array as $key=>&$val){
             if($key > 0){
@@ -245,7 +245,6 @@ Class CatSupplyservice extends Service{
                         ->with('hasManyOilCard')->get()
                         ->map(function($item,$key){
                             $arr = $item->hasManyOilCard;
-                            //return $arr[0]['id'];
                             return [
                                 'id' => $arr[0]['id'],
                                 'user_id' => $arr[0]['user_id'],
@@ -323,9 +322,8 @@ Class CatSupplyservice extends Service{
     {
         try{
             $exception = DB::transaction(function() {
-                #TODO 生成供应单记录 增加附件信息 关联上附件信息 direct_id 附件id
-                /*充值油卡*/
 
+                /*充值油卡*/
                 $res = request()->post('list','');
                 $id = $res['id'];
 
@@ -375,7 +373,6 @@ Class CatSupplyservice extends Service{
             dd($e);
         }
             return array_merge($this->results,$exception);
-
     }
 
 }
