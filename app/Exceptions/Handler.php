@@ -11,6 +11,7 @@ use App\Traits\ExceptionTrait;
 class Handler extends ExceptionHandler
 {
     use ResultTrait, ExceptionTrait;
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -52,7 +53,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        dd($exception);
+
         $results = [];
 
         /*验证规则*/

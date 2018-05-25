@@ -94,8 +94,8 @@ if( !function_exists('getCommonCheck') ) {
 if( !function_exists('getCommonCheckValue') ) {
 	function getCommonCheckValue($bool = true)
 	{
-	    return 1;
-		//return $bool ? getGlobalConfig('commoncheck.map.true') : getGlobalConfig('commoncheck.map.false');
+
+		return $bool ? getGlobalConfig('commoncheck.map.true') : getGlobalConfig('commoncheck.map.false');
 	}
 }
 
@@ -156,3 +156,5 @@ function my_sort($arrays,$sort_key,$sort_order=SORT_ASC,$sort_type=SORT_NUMERIC 
     array_multisort($key_arrays,$sort_order,$sort_type,$arrays);   
     return $arrays;   
 }  
+
+

@@ -39,7 +39,14 @@
         ],
         "psr-4": {
             "App\\": "app/"
-        }
+        },
+        "files": [
+            "app/helpers/cache.php",
+            "app/helpers/common.php",
+            "app/helpers/deal.php",
+            "app/helpers/encrypt.php",
+            "app/helpers/global.php"
+        ]
 
     },
     "autoload-dev": {

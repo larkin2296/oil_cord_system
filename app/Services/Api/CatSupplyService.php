@@ -31,16 +31,16 @@ Class CatSupplyservice extends Service{
     {
         try{
             $exception = DB::transaction( function() {
+
                 $res = request()->post('list','');
 
-                $now = new Carbon();
-
-                #TODO 供应单号表  卡密表
                 $cam = $res['cam'];
 
+                $now = new Carbon();
                 /*用户信息*/
                 $user = $this->jwtUser();
 
+                $this->checkCardPermission($user);
                 /*面额*/
                 $money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$res['money_id']])->map(function($item,$key){
                     return [
@@ -58,7 +58,6 @@ Class CatSupplyservice extends Service{
                 $platform_id = $platform_id[0]['id'];
 
                 /*卡密信息*/
-
                 foreach( $cam as $item ) {
 
                     $arr = [
@@ -69,19 +68,30 @@ Class CatSupplyservice extends Service{
                         'user_id' => $user->id,
                     ];
 
-                    $info = $this->supplyCamRepo->create($arr);
+                    $data = $this->supplyCamRepo->create($arr);
                 }
 
-                return ['code' => 200, 'message' => '显示成功', 'data' => $info];
-
+               return $this->results = array_merge([
+                  'code' => '200',
+                  'message' => '卡密供货成功',
+                  'data' => $data,
+               ]);
             });
 
-        }catch(EXception $e){
-            return $e;
+        }catch(Exception $e){
+           dd($e);
         }
         return array_merge($this->results,$exception);
     }
 
+    public function checkCardPermission($user)
+    {
+        /*验证卡密权限*/
+        if( getSupplierCardPermission($user) != getCommonCheckValue(true) ) {
+
+            throw new Exception('您还没有卡密供应权限,请联系管理员开通',2);
+        }
+    }
     /**
      * 导入模版
      * return [type][deception]
@@ -89,44 +99,54 @@ Class CatSupplyservice extends Service{
     public function importExcelData()
     {
         set_time_limit(0);
-        #TODO 文件显示 加个接口
         $filePath = 'storage/attachments/'.iconv('UTF-8', 'GBK', 'cam').'.xls';
+        /*用户信息*/
+        $user = $this->jwtUser();
+        try{
+            $exception = Excel::load($filePath, function($reader) use($user){
 
-        Excel::load($filePath, function($reader) {
+                $this->checkCardPermission($user);
 
-            $platform_money = request()->get('money_id','');
+                $platform_money = request()->get('money_id','');
 
-            $platform_id = request()->post('platform_id','');
+                $platform_id = request()->post('platform_id','');
 
-            $reader = $reader->getSheet(0);
+                $reader = $reader->getSheet(0);
 
-            $data = $reader->toArray();
-            /*用户信息*/
-            $user = $this->jwtUser();
+                $data = $reader->toArray();
+                /*用户信息*/
+                $user = $this->jwtUser();
 
-            unset($data[0]);
+                unset($data[0]);
 
-            foreach( $data as $k=>$v ){
+                foreach( $data as $k=>$v ){
 
-                /* 清除标题 */
-                unset($v[2]);
+                    /* 清除标题 */
+                    unset($v[2]);
+                    $arr = [
+                        'cam_name' => $v[0],
+                        'cam_other_name' => $v[1],
+                        'denomination' => $platform_money,
+                        'platform_id' => $platform_id,
+                        'user_id' => $user->id,
+                    ];
 
-                $arr = [
-                    'cam_name' => $v[0],
-                    'cam_other_name' => $v[1],
-                    'denomination' => $platform_money,
-                    'platform_id' => $platform_id,
-                    'user_id' => $user->id,
-                ];
-
-                if( $info =  $this->supplyCamRepo->create($arr) ) {
-
-                } else {
-                    throw new Exception('导入卡密数据失败,请数据检查格式','2');
+                    if( $info =  $this->supplyCamRepo->create($arr) ) {
+                    } else {
+                        throw new Exception('导入卡密数据失败,请数据检查格式','2');
+                    }
                 }
-            }
-            return ['code' => '200' ,'message' => '导入卡密成功'];
-        });
+                return $this->results = array_merge([
+                    'code' => '200' ,
+                    'message' => '导入卡密成功',
+                    'data' => collect([]),
+                ]);
+            });
+        } catch(Exception $e) {
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+
 
     }
 

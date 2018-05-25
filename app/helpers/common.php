@@ -1,4 +1,4 @@
-common.php<?php 
+<?php
 
 if ( !function_exists('getRouteParam') ) {
 	function getRouteParam($key)
@@ -28,6 +28,33 @@ if ( !function_exists('getUserId') ) {
 		return $user->id;
 	}
 }
+/**
+* 查看供应商是否获取卡密权限
+* @param [type] $status [description]
+* @param [type] $user_id [description]
+*/
+
+
+    if( !function_exists('getSupplierCardPermission') )
+    {
+        function getSupplierCardPermission($users)
+        {
+           $user = app(\App\Repositories\Interfaces\UserRepository::class)->find($users->id);
+
+           return buildSupplierPermission($user->cam_permission);
+        }
+    }
+    if( !function_exists('buildSupplierPermission') )
+    {
+        function buildSupplierPermission($status)
+        {
+            if( $status != getCommonCheckValue(true) )
+            {
+                return getCommonCheckValue(false);
+            }
+        }
+    }
+
 
 /**
  * 获取单位id

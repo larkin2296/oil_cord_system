@@ -63,7 +63,7 @@ class AuthorityService extends Service
 
                 if ($data) {
                 } else {
-                    throw new EXception('暂时没有供应商数据', '2');
+                    throw new Exception('暂时没有供应商数据', '2');
                 }
                 return ['code' => '200', 'message' => '供应商列表显示成功', 'data' => $data];
 

@@ -18,6 +18,7 @@ Class CatSupplyController extends Controller{
      */
     public function create()
     {
+
         $results = $this->service->create();
 
         return response()->json($results);
