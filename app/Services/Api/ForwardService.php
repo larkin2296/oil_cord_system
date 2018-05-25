@@ -33,9 +33,9 @@ Class ForwardService extends Service
     {
         try{
             $exception = DB::transaction(function(){
+
                 /*用户信息*/
                 $user = $this->jwtUser();
-
                 /*卡密列表*/
                 $data['cam'] = $this->supplyCamRepo->model()::where('user_id',$user->id)
                     ->where('status',4)

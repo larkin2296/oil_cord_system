@@ -78,7 +78,6 @@ class DataCommonsService extends Service
                 'role_status' => config('back.global.status.order.complete'),
             ])->all();
             if( $data ) {
-
             }else {
                 throw new Exception('获取数据失败',2);
             }
@@ -88,6 +87,36 @@ class DataCommonsService extends Service
             dd($e);
         }
     }
+
+    /**
+     * 验证用户权限
+     * return [type] [deception]
+     */
+    public function checkUserOauth()
+    {
+        try{
+            $exception = DB::transaction(function() {
+
+                /*用户信息*/
+                $user = $this->jwtUser();
+                $data = request()->data;
+                if($user->$data == getCommonCheckValue(true)) {
+                }else {
+                    throw new Exception('您暂时没有开通此权限，请联系管理员开通',2);
+                }
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '权限验证通过',
+                    'data' => collect([]),
+                ]);
+            });
+
+        } catch(Exception $e) {
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
 
 
 }

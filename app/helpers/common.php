@@ -34,7 +34,6 @@ if ( !function_exists('getUserId') ) {
 * @param [type] $user_id [description]
 */
 
-
     if( !function_exists('getSupplierCardPermission') )
     {
         function getSupplierCardPermission($users)

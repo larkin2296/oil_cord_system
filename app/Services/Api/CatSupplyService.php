@@ -102,6 +102,7 @@ Class CatSupplyservice extends Service{
         $filePath = 'storage/attachments/'.iconv('UTF-8', 'GBK', 'cam').'.xls';
         /*用户信息*/
         $user = $this->jwtUser();
+
         try{
             $exception = Excel::load($filePath, function($reader) use($user){
 
@@ -120,9 +121,9 @@ Class CatSupplyservice extends Service{
                 unset($data[0]);
 
                 foreach( $data as $k=>$v ){
-
                     /* 清除标题 */
                     unset($v[2]);
+
                     $arr = [
                         'cam_name' => $v[0],
                         'cam_other_name' => $v[1],
@@ -146,8 +147,6 @@ Class CatSupplyservice extends Service{
             dd($e);
         }
         return array_merge($this->results,$exception);
-
-
     }
 
     /**
@@ -235,11 +234,13 @@ Class CatSupplyservice extends Service{
         /* 获取供应商信息 */
         try{
             $exception = DB::transaction(function() {
+
                 $user = $this->jwtUser();
+
+                $this->checkCardPermission($user);
 
                 /*供应商是否第一次获取油卡*/
                 if( $info = $this->oilSupplyRepo->findWhere(['user_id' => $user->id])->count() > 0 ) {
-
                     /* 油卡信息 */
                     $data=  $this->oilSupplyRepo->model()::where('user_id',$user->id)
                         ->with('hasManyOilCard')->get()
@@ -266,8 +267,7 @@ Class CatSupplyservice extends Service{
                     $limit = $this->userRepo->find($user->id)->several ?? 1;
                     /* 获取油卡 */
                     $arr = $this->oilcardRepo->model()::where('status_supply',2)
-                        ->limit($limit)
-                        ->get()->map(function($item,$key){
+                        ->limit($limit)->get()->map(function($item,$key){
                             return [
                                 'id' => $item->id,
                                 'user_id' => $item->user_id,
@@ -284,7 +284,6 @@ Class CatSupplyservice extends Service{
 
                         });
                     if( $arr ) {
-
                         foreach( $arr as $item ) {
                             /* 油卡使用状态 */
                             $supplyStatus =  $this->oilcardRepo->update(['status_supply' => 1],$item['id']);
@@ -322,7 +321,10 @@ Class CatSupplyservice extends Service{
     {
         try{
             $exception = DB::transaction(function() {
+                /*用户信息*/
+                $user = $this->jwtUser();
 
+                $this->checkCardPermission($user);
                 /*充值油卡*/
                 $res = request()->post('list','');
                 $id = $res['id'];
@@ -339,9 +341,6 @@ Class CatSupplyservice extends Service{
                 /* 冗余油卡 */
                 $oilCard =  $this->oilcardRepo->find($id);
 
-                /*用户信息*/
-                $user = $this->jwtUser();
-
                 $arr = [
                     'suoil_id' => $oilInfo['id'],
                     'already_card' => $res['price'],
@@ -354,7 +353,6 @@ Class CatSupplyservice extends Service{
                 ];
                 $supply = $this->supplySingleRepo->create($arr);
 
-
                 /*供应单号*/
                 $supplySingleNumber = $this->generateSupplyNumber($supply,$user);
 
@@ -364,9 +362,7 @@ Class CatSupplyservice extends Service{
                 } else {
                     throw new Exception('直充失败','2');
                 }
-
                 return ['code' => 200, 'message' => '直充成功', 'data' => $data];
-
             });
 
         } catch(Exception $e){

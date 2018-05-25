@@ -20,6 +20,12 @@ $router->group(['prefix' => 'admin','as' => 'admin.'],function($router){
             'uses' => 'CommonsController@getAdminAll',
             'as' => 'getAdminAll',
         ]);
+
+        /*验证卡密权限*/
+        $router->match(['get','post'],'checkUserOauth',[
+            'uses' => 'CommonsController@checkUserOauth',
+            'as' => 'checkUserOauth',
+        ]);
     });
 
 });

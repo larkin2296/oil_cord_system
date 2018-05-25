@@ -48,4 +48,14 @@ Class CommonsController extends Controller {
         return response()->json($results);
     }
 
+    /**
+     * 验证用户权限
+     * return [type] [deception]
+     */
+    public function checkUserOauth()
+    {
+        $results = $this->service->checkUserOauth();
+
+        return response()->json($results);
+    }
 }
