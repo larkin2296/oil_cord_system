@@ -90,22 +90,25 @@ Class ForwardService extends Service
     {
         try{
             $exception = DB::transaction(function(){
-
-                $cam_id = request()->post('cam_id',[]);
-                $forward_id = request()->post('forward_id',[]);
+                $res = request()->post('list','');
+                $cam_id = $res['cam'];
+                $forward_id = $res['forward'];
 
                 $cam = [];
                 foreach( $cam_id as $key => $item ) {
 
-                    $cam[] = $this->supplyCamRepo->model()::where('id',$item)
+                    $cam[] = $this->supplyCamRepo->model()::where('id',$item['id'])
                         ->with(['denomination'])
                         ->get()
                         ->first()
                         ->toArray();
                 }
-
-                foreach($cam as $k => $v) {
-                    $sum[$k] = $v['denomination']['denomination'];
+                if($cam == []){
+                    $sum[0] = 0;
+                }else{
+                    foreach($cam as $k => $v) {
+                        $sum[$k] = $v['denomination']['denomination'];
+                    }
                 }
 
                 /* 卡密金额 */
@@ -114,14 +117,17 @@ Class ForwardService extends Service
                 $forward = [];
 
                 foreach ($forward_id as $is => $value){
-                    $forward[] = $this->supplySingleRepo->model()::where('id',$value)
+                    $forward[] = $this->supplySingleRepo->model()::where('id',$value['id'])
                         ->get()
                         ->first()
                         ->toArray();
                 }
-
-                foreach($forward as $ke => $val ){
-                    $sums[$ke] = $val['already_card'];
+                if($forward == []){
+                    $sums[0] = 0;
+                }else{
+                    foreach($forward as $ke => $val ){
+                        $sums[$ke] = $val['already_card'];
+                    }
                 }
 
                 /* 直充金额 */
@@ -149,10 +155,16 @@ Class ForwardService extends Service
     {
         try{
             $exception = DB::transaction(function(){
-
-                $cam_id = request()->post('cam_id',[]);
-                $forward_id = request()->post('forward_id',[]);
-                $sum = request()->post('money','');
+                $res = request()->post('list','');
+                $cam_id = [];
+                $forward_id = [];
+                foreach($res['cam'] as $val){
+                    $cam_id[] = $val['id'];
+                }
+                foreach($res['forward'] as $value){
+                    $forward_id[] = $value['id'];
+                }
+                $sum = $res['money'];
                 /*提现单号*/
                 $forwardNumber = $this->getForwardNumber($this->jwtUser());
 
@@ -209,7 +221,7 @@ Class ForwardService extends Service
                    'status' => $this->checkForWardStatus($item->status),
                    'created_at' => $item->created_at->format('Y-m-d H:i'),
                ];
-           })->first();
+           });
 
            return ['code' => '200', 'message' => '显示成功', 'data' => $data];
 
