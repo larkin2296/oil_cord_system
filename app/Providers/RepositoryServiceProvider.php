@@ -42,6 +42,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\Interfaces\ForwardRepository::class, \App\Repositories\Eloquents\ForwardRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\Interfaces\PresentForwardRepository::class, \App\Repositories\Eloquents\PresentForwardRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\Interfaces\PresentSettingRepository::class, \App\Repositories\Eloquents\PresentSettingRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\Interfaces\PurchasingPerrmissonRepository::class,\App\Repositories\Eloquents\PurchasingPerrmissonRepositoryEloquent::class);
         //:end-bindings:
     }
 }

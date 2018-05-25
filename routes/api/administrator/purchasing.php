@@ -6,6 +6,12 @@ $router->group(['prefix' => 'purchasing'],function($router){
         'uses' => 'Administrator\PurchasingController@get_camilo',
         'as' => 'get_camilo',
     ]);
+
+    /*直充供货查询*/
+    $router->post('get_directly',[
+        'uses' => 'Administrator\PurchasingController@get_directly',
+        'as' => 'get_directly',
+    ]);
     /*卡密下发*/
     $router->post('send_camilo',[
         'uses' => 'Administrator\PurchasingController@send_camilo',
@@ -16,10 +22,31 @@ $router->group(['prefix' => 'purchasing'],function($router){
         'uses' => 'Administrator\PurchasingController@get_purchasing_card',
         'as' => 'get_purchasing_card',
     ]);
-    /*采购商用户获取*/
+    /*采购商用户权限获取*/
     $router->post('get_purchasing_user',[
         'uses' => 'Administrator\PurchasingController@get_purchasing_user',
         'as' => 'get_purchasing_user',
     ]);
+    /*修改采购商权限*/
+    $router->post('set_user_perrmission',[
+        'uses' => 'Administrator\PurchasingController@set_user_perrmission',
+        'as' => 'set_user_perrmission',
+    ]);
 
+    /*直充短期查询*/
+    $router->post('get_sdirectly',[
+        'uses' => 'Administrator\PurchasingController@get_sdirectly',
+        'as' => 'get_sdirectly',
+    ]);
+    /*短期充值*/
+    $router->post('charge',[
+        'uses' => 'Administrator\PurchasingController@charge',
+        'as' => 'charge',
+    ]);
+
+    /*短期充值详情*/
+    $router->post('get_sdirectly_detail',[
+        'uses' => 'Administrator\PurchasingController@get_sdirectly_detail',
+        'as' => 'get_sdirectly_detail',
+    ]);
 });

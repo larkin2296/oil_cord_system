@@ -64,12 +64,29 @@ Class PresentService extends Service{
                 $isAdmin =  $this->checkAdminUser();
 
                 $request = $this->presentSettingRepo->all();
+                $post = request()->post('list','');
+                foreach($post as $val){
+                    switch($val['conf_code']){
+                        case 'upper_money':
+                            $arr['upper_money'] = $val['status'];
+                            break;
+                        case 'lower_money':
+                            $arr['lower_money'] = $val['status'];
+                            break;
+                        case 'deductions':
+                            $arr['deductions'] = $val['status'];
+                            break;
+                        case 'proportion':
+                            $arr['proportion'] = $val['status'];
+                            break;
+                        case 'greater_money':
+                            $arr['greater_money'] = $val['status'];
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 $arr = [
-                    'upper_money' => request()->post('upper_money',''),
-                    'lower_money' => request()->post('lower_money',''),
-                    'deductions' => request()->post('deductions',''),
-                    'proportion' => request()->post('proportion',''),
-                    'greater_money' => request()->post('greater_money',''),
                     'status' => request()->post('status',''),
                 ];
 

@@ -67,22 +67,52 @@ class PurchasingService extends Service {
     }
     //获取长充数据
     public function ldirectly_order($request){
-        $results = $this->get_data('user_oil_card',['is_longtrem'=>1]);
+        $user = $this->jwtUser();
+        $results = $this->get_data('user_oil_card',['is_longtrem'=>1,'user_id'=>$user->id])->map(function($item,$index){
+            $res = $this->supplySingleRepo->model()::where(['oil_number'=>$item['oil_card_code'],'supply_status'=>1])->sum('already_card');
+            $time = $this->supplySingleRepo->model()::where(['oil_number'=>$item['oil_card_code'],'supply_status'=>1])->orderBy('end_time','desc')->first();
+            return [
+             'id' => $item['id'],
+             'oil_card_code'=>$item['oil_card_code'],
+             'serial_number' => $item['serial_number'],
+             'last_recharge_time' => $time['end_time'],
+             'save_money' =>   $res,
+             'initialize_price' => $item['initialize_price']
+           ];
+        });
+        return $results;
     }
     //获取短充数据
     public function sdirectly_order($request){
-        $results = $this->get_data('purchasing_order',['order_type'=>2]);
+        $user = $this->jwtUser();
+        $results = $this->get_data('purchasing_order',['order_type'=>2,'user_id'=>$user->id])->map(function($item,$index){
+            $res = $this->supplySingleRepo->model()::where(['notes'=>$item['order_code'],'supply_status'=>1])->sum('already_card');
+            $time = $this->supplySingleRepo->model()::where(['notes'=>$item['order_code'],'supply_status'=>1])->orderBy('end_time','desc')->first();
+            return [
+                'id' => $item['id'],
+                'order_code'=>$item['order_code'],
+                'price' => $item['price'],
+                'status' => $item['order_status'],
+                'real_unit_price' => $res,
+                'pageviews' => $time == '' ? '' :$time['end_time']
+            ];
+        });
+        return $results;
     }
     //将购物车数据添加到数据库
     public function add($request){
-        $order = $this->set_order_code($request[0]['order_type'],1,1);
+        $order = $this->set_order_code($request['order_type'],1,1);
         try {
-            foreach($request as $val){
-                $re = $val;
+                $re = $request;
+                if(isset($request['platform']) && $request['platform'] != ''){
+                    $re['platform'] = $this->get_platform_id($request['platform']);
+                }
+                if(isset($request['unit_price']) && $request['unit_price'] != ''){
+                    $re['unit_price'] = $this->get_denomination_id($request['unit_price']);
+                }
                 $re['order_code'] = $order;
                 $re['order_status'] = 1;
                 $this->purorderRepo->create($re);
-            }
             return ['code' => '200','message' => '添加成功'];
         } catch (Exception $e) {
             dd($e);
@@ -165,8 +195,10 @@ class PurchasingService extends Service {
             $arr = implode(',',$value['oil_card_code']);
             $result[$key]['oil_card_code'] = $arr;
         }
-        $results = $this->service->add($result);
-        return $results;
+        foreach($result as $val){
+            $this->add($val);
+        }
+        return ['code' => 200, 'message' => '添加成功'];
     }
     //获取卡密订单详情
     public function get_camilo_detail(){
@@ -213,8 +245,19 @@ class PurchasingService extends Service {
     }
     /*获取圈存数据*/
     public function get_initialize(){
-        'select from supplier_order a inner join oil_card_code b on card_code=card_code where 
-         b.user_id=X and a.time< and a.time> group by order_code';
+//        'select from supplier_order a inner join oil_card_code b on card_code=card_code where
+//         b.user_id=X and a.time< and a.time> group by order_code';
+        $user = $this->jwtUser();
+        $where['user_id'] = $user->id;
+        $where['card_status'] = 1;
+        $result = $this->oilcardRepo->findWhere($where)->map(function($item,$index){
+           return [
+              'oil_card_code' => $item['oil_card_code'],
+               'save_money' => $item['save_money'],
+               'initialize_price' => $item['initialize_price']
+           ] ;
+        });
+        return ['code'=>200,'message'=>'获取成功','data'=>$result];
     }
     /*圈存详细数据*/
     public function get_initialize_detail(){
@@ -242,7 +285,7 @@ class PurchasingService extends Service {
         $this->purchasingcamilodetailRepo->update(['is_used'=>1],['camilo_id'=>$id]);
         $this->supplyCamRepo->update(['status'=>4],['cam_name'=>$code]);
     }
-    /*采购商直充长期查询*/
+    /*采购商直充长期查询详情*/
     public function get_ldirectly_detail(){
         $card = request()->post('card','');
         $where['oil_number'] = $card;
@@ -256,5 +299,47 @@ class PurchasingService extends Service {
             ];
         });
         return ['code' => 200, 'message' => '直充查询成功', 'data' => $data];
+    }
+    public function get_sdirectly_detail() {
+        try{
+            $exception = DB::transaction(function(){
+                $res = request()->post('order','');
+
+                /*用户信息*/
+                $user = $this->jwtUser();
+
+                $field= [
+                    'notes' => '=',
+                    'supply_status' => '='
+                ];
+                $fieldWhere =  $this->searchArray($field);
+
+                $where = array_merge($fieldWhere,[
+                    'notes' => $res,
+                    'supply_status' => 1
+                ]);
+
+                $data =  $this->supplySingleRepo->findWhere($where)->map(function($item,$key){
+                    return [
+                        'id' => $item['id'],
+                        'supply_single_number' => $item['supply_single_number'],
+                        'oil_number' => $item['oil_number'],
+                        'already_card' => $item['already_card'],
+                        'end_time' => $item['end_time']
+                    ];
+
+                })->all();
+                //->model()::with(['denomination','platform'])->get();
+                if( $data ) {
+                } else {
+                    throw new EXception('卡密查询异常,请重试','2');
+                }
+                return ['code' => '200', 'message' => '查询成功', 'data' => $data];
+
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
     }
 }
