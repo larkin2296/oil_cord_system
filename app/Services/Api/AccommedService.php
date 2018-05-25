@@ -126,7 +126,7 @@ class AccommedService extends Service {
                 'supply_single_number' => $item->supply_single_number,
                 'oil_number' => $item->oil_number,
                 'end_time' => $item->end_time,
-                'created_at' => $item->created_at->format("Y-m-d H:i"),
+                'created_at' => $item->created_at->format("Y-m-d H:i:s"),
                 'already_card' => $item->already_card,
                 'direct_id' => $item->direct_id,
                 'supply_status' => $this->checkSupplyStatus($item->supply_status),
