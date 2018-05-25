@@ -110,6 +110,12 @@ $router->group([],function($router){
         'as' => 'set_camilo_userd',
     ]);
 
+    /*采购商油卡状态更改审核*/
+    $router->match(['get','post'],'confirm_status',[
+        'uses' => 'Purchasing\PurchasingController@confirm_status',
+        'as' => 'confirm_status',
+    ]);
+
 
 
 });

@@ -122,4 +122,9 @@ class PurchasingController extends Controller
             return response()->json($e);
         }
     }
+    //更改卡密状态
+    public function confirm_status() {
+        $results = $this->service->confirm_status();
+        return response()->json($results);
+    }
 }

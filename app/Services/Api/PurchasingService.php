@@ -342,4 +342,27 @@ class PurchasingService extends Service {
         }
         return array_merge($this->results, $exception);
     }
+    public function confirm_status() {
+        try{
+            $id = request()->post('id','');
+            $card = $this->oilcardRepo->find($id);
+            $res = $this->supplySingleRepo->findWhere(['oil_number'=>$card['oil_card_code'],'supply_status'=>2])->count();
+            if($res == 0){
+                if($card['card_status'] == 1){
+                    $this->oilcardRepo->update(['card_status'=>2],$id);
+                } else {
+                    $this->oilcardRepo->update(['card_status'=>1],$id);
+                }
+                return ['code' => '200', 'message' => '修改成功'];
+            }else{
+                return ['code' => '400', 'message' => '有未完成订单待处理'];
+            }
+        }catch(Exception $e){
+            $exception = [
+                'code' => '0',
+                'message' => $this->handler($e),
+            ];
+        }
+        return array_merge($this->results, $exception);
+    }
 }

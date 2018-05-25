@@ -246,6 +246,7 @@ class AdministratorService extends Service {
 
                 $data =  $this->purorderRepo->findWhere($where)->map(function($item,$key){
                     $res = $this->supplySingleRepo->model()::where(['notes'=>$item['order_code']])->sum('already_card');
+                    $success = $this->supplySingleRepo->model()::where(['notes'=>$item['order_code'],'supply_status'=>1])->sum('already_card');
                     return [
                         'id' => $item['id'],
                         'order_code' => $item['order_code'],
@@ -253,7 +254,8 @@ class AdministratorService extends Service {
                         'oil_card_code' => explode(',',$item['oil_card_code']),
                         'price' => $item['price'],
                         'created_at' => $item['created_at'],
-                        'history_price' =>$res
+                        'history_price' =>$res,
+                        'success_price' => $success
                     ];
 
                 })->all();
@@ -340,7 +342,8 @@ class AdministratorService extends Service {
                         'id' => $item['id'],
                         'supply_single_number' => $item['supply_single_number'],
                         'oil_number' => $item['oil_number'],
-                        'already_card' => $item['already_card']
+                        'already_card' => $item['already_card'],
+                        'end_time' => $item['end_time']
                     ];
 
                 })->all();
