@@ -39,8 +39,6 @@ Class CatSupplyservice extends Service{
                 $now = new Carbon();
                 /*用户信息*/
                 $user = $this->jwtUser();
-
-                $this->checkCardPermission($user);
                 /*面额*/
                 $money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$res['money_id']])->map(function($item,$key){
                     return [
@@ -84,14 +82,6 @@ Class CatSupplyservice extends Service{
         return array_merge($this->results,$exception);
     }
 
-    public function checkCardPermission($user)
-    {
-        /*验证卡密权限*/
-        if( getSupplierCardPermission($user) != getCommonCheckValue(true) ) {
-
-            throw new Exception('您还没有卡密供应权限,请联系管理员开通',2);
-        }
-    }
     /**
      * 导入模版
      * return [type][deception]
@@ -105,8 +95,6 @@ Class CatSupplyservice extends Service{
 
         try{
             $exception = Excel::load($filePath, function($reader) use($user){
-
-                $this->checkCardPermission($user);
 
                 $platform_money = request()->get('money_id','');
 
@@ -237,8 +225,6 @@ Class CatSupplyservice extends Service{
 
                 $user = $this->jwtUser();
 
-                $this->checkCardPermission($user);
-
                 /*供应商是否第一次获取油卡*/
                 if( $info = $this->oilSupplyRepo->findWhere(['user_id' => $user->id])->count() > 0 ) {
                     /* 油卡信息 */
@@ -281,7 +267,6 @@ Class CatSupplyservice extends Service{
                                 'recharge_today_num' => $item->recharge_today_num,
                                 'last_recharge_time' => $item->last_recharge_time,
                             ];
-
                         });
                     if( $arr ) {
                         foreach( $arr as $item ) {
@@ -323,8 +308,6 @@ Class CatSupplyservice extends Service{
             $exception = DB::transaction(function() {
                 /*用户信息*/
                 $user = $this->jwtUser();
-
-                $this->checkCardPermission($user);
                 /*充值油卡*/
                 $res = request()->post('list','');
                 $id = $res['id'];
@@ -348,8 +331,8 @@ Class CatSupplyservice extends Service{
                     'user_id' => $user->id,
                     'end_time' => $res['recharge_time'],
                     'direct_id' => $res['id_hash'],
-                    'status' => 1,
-                    'supply_status' => 2
+                    'status' => getCommonCheckValue(true),
+                    'supply_status' => getCommonCheckValue(false),
                 ];
                 $supply = $this->supplySingleRepo->create($arr);
 

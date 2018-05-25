@@ -110,9 +110,7 @@ class AccommedService extends Service {
             'status' => '=',
             'end_time' => 'like',
         ];
-
         $fieldWhere = $this->searchArray($field);
-
         #TODO 用户 供应商拥有的油卡  供应单的时间
 
         $where = array_merge($fieldWhere,[

@@ -67,7 +67,7 @@ Trait UserTrait
     {
         $user = $this->jwtUser();
 
-        if( $user->role_status == config('back.global.status.order.complete') ) {
+        if( $user->role_status == config('back.global.status.order.complete') || $user->role_status == config('back.global.status.order.refunding') ) {
             return true;
         } else {
             throw new Exception('您没有管理员权限',2);

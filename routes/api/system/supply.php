@@ -13,4 +13,8 @@ $router->group(['prefix' => 'supply','as' => 'supply'],function($router){
     /*权限管理*/
     require(__DIR__.'/authority.php');
 
+    /*资质审核*/
+    require(__DIR__.'/audit.php');
+
+
 });

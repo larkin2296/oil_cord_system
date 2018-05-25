@@ -4,9 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Class CreatePurchasingPerrmissonsTable.
+ * Class CreateAuditsTable.
  */
-class CreatePurchasingPerrmissonsTable extends Migration
+class CreateAuditsTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -15,7 +15,7 @@ class CreatePurchasingPerrmissonsTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('purchasing_perrmissons', function(Blueprint $table) {
+		Schema::create('audits', function(Blueprint $table) {
             $table->increments('id');
 
             $table->timestamps();
@@ -29,6 +29,6 @@ class CreatePurchasingPerrmissonsTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('purchasing_perrmissons');
+		Schema::drop('audits');
 	}
 }

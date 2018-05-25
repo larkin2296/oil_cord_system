@@ -18,6 +18,7 @@ use App\Repositories\Interfaces\ForwardRepository;
 use App\Repositories\Interfaces\PresentForwardRepository;
 use App\Repositories\Interfaces\PresentSettingRepository;
 use App\Repositories\Interfaces\PurchasingPerrmissonRepository;
+use App\Repositories\Interfaces\AuditRepository;
 
 
 
@@ -35,7 +36,7 @@ class Service
     public $supplyCamRepo;
     public $supplySingleRepo;
 
-
+    public $auditRepo;
     public $purchasingcamilodetailRepo;
     public $oilSupplyRepo;
     public $forwardRepo;
@@ -64,6 +65,7 @@ class Service
         $this->forwardRepo = app(ForwardRepository::class);
         $this->presentForwardRepo = app(PresentForwardRepository::class);
         $this->presentSettingRepo = app(PresentSettingRepository::class);
+        $this->auditRepo = app(AuditRepository::class);
 
     }
 }
