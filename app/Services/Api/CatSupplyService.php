@@ -250,7 +250,7 @@ Class CatSupplyservice extends Service{
                     return ['code' => 200, 'message' => '获取油卡信息成功','data' => $data];
                 } else {
                     /*获取油卡张数*/
-                    $limit = $this->userRepo->find($user->id)->several ?? 1;
+                    $limit = $this->userRepo->find($user->id)->several ?? getCommonCheck(true);
                     /* 获取油卡 */
                     $arr = $this->oilcardRepo->model()::where('status_supply',2)
                         ->limit($limit)->get()->map(function($item,$key){
