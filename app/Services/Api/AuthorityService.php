@@ -14,7 +14,11 @@ use App\User;
 use JWTAuth;
 class AuthorityService extends Service
 {
-    use ServiceTrait, ResultTrait, ExceptionTrait, CodeTrait, UserTrait, CatSupplyTrait;
+    use ServiceTrait, ResultTrait, ExceptionTrait;
+    use CodeTrait,
+        UserTrait,
+        CatSupplyTrait;
+
     protected $builder;
 
     public function __construct()
@@ -30,51 +34,76 @@ class AuthorityService extends Service
     {
         try {
             $exception = DB::transaction(function () {
-                dd(123);
-                /*用户信息*/
-                $user = $this->jwtUser();
 
-                $field = [
-                    'denomination' => '=',
-                    'platform_id' => '=',
-                    'status' => '=',
-                    'success_time' => 'like',
-                ];
-                $fieldWhere = $this->searchArray($field);
+                /*验证权限*/
+                $this->checkAdminUser();
 
-                $where = array_merge($fieldWhere, [
-                    'user_id' => $user->id,
+                $fieldWhere = $this->searchArray([
+                    'truename' => 'like',
                 ]);
 
-                $data = $this->supplyCamRepo->findWhere($where)->map(function ($item, $key) {
-                    //return $item;
+                $where = array_merge($fieldWhere,[
+                   'role_status' => config('back.global.status.order.doing'),
+                ]);
+
+
+                $data = $this->userRepo->findWhere($where)
+                    ->map(function ($item, $key) {
                     return [
                         'id' => $item['id'],
-                        'cam_name' => $item['cam_name'],
-                        'cam_other_name' => $item['cam_other_name'],
-                        'status' => $item['status'],
-                        'denomination' => $this->handleDenomination($item['denomination']),
-                        'platform_id' => $this->handlePlatform($item['platform_id']),
-                        'remark' => $item['remark'],
-                        'discount' => $item['discount'],
-                        'actual_money' => $item['actual_money'],
-                        'success_time' => $item['success_time'],
-                        'supplier_time' => $item['created_at'],
+                        'truename' => $item->truename ?? $item->mobile,
+                        'cam_permission' => $this->checkJurisdictionStatus($item->cam_permission) ?? '',
+                        'long_term_permission' => $this->checkJurisdictionStatus($item->long_term_permission) ?? '',
+                        'put_forward_premission' => $this->checkJurisdictionStatus($item->put_forward_premission) ?? '',
+                        'recommend_status' => $this->checkJurisdictionStatus($item->recommend_status) ?? '',
+                        'several' => $item->several,
                     ];
 
                 })->all();
-                //->model()::with(['denomination','platform'])->get();
+
                 if ($data) {
                 } else {
-                    throw new EXception('卡密查询异常,请重试', '2');
+                    throw new EXception('暂时没有供应商数据', '2');
                 }
-                return ['code' => '200', 'message' => '查询成功', 'data' => $data];
+                return ['code' => '200', 'message' => '供应商列表显示成功', 'data' => $data];
 
             });
         } catch (Exception $e) {
             dd($e);
         }
         return array_merge($this->results, $exception);
+    }
+
+    /**
+     * 修改供应商权限
+     * return [type] [deception]
+     */
+    public function store()
+    {
+        try {
+            $exception = DB::transaction(function () {
+
+                /*验证权限*/
+                $this->checkAdminUser();
+                $arr = [
+                    'recommend_status' => request()->post('recommend_status'),
+                    'put_forward_premission' => request()->post('put_forward_premission'),
+                    'long_term_permission' => request()->post('long_term_permission'),
+                    'cam_permission' => request()->post('cam_permission'),
+                    'several' => request()->post('several'),
+
+                ];
+
+                $data = $this->userRepo->update($arr,request()->id);
+
+                return ['code' => '200', 'message' => '修改权限成功', 'data' => $data];
+
+            });
+        } catch (Exception $e) {
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+
     }
 
 }

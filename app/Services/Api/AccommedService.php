@@ -60,7 +60,7 @@ class AccommedService extends Service {
                     ];
 
                })->all();
-                   //->model()::with(['denomination','platform'])->get();
+
                 if( $data ) {
                 } else {
                     throw new EXception('卡密查询异常,请重试','2');

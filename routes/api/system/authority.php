@@ -7,5 +7,10 @@ $router->group(['prefix' => 'authority','as' => 'authority .'],function($router)
         'as' => 'index',
     ]);
 
+    /*权限管理修改*/
+    $router->post('store',[
+        'uses' => 'System\Supply\AuthorityController@store',
+        'as' => 'store',
+    ]);
 
 });

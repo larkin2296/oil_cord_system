@@ -28,7 +28,7 @@ class SupplyCam extends Model implements Transformable
 
     protected $fillable = [
         'cam_name','status','remark','platform_id','denomination','user_id','success_time','status','cam_other_name',
-        'discount','actual_money','forward_status',
+        'discount','actual_money','forward_status', 'role_status',
     ];
 
     /**
@@ -48,4 +48,6 @@ class SupplyCam extends Model implements Transformable
     {
         return $this->hasOne(Platform::class,'id','platform_id');
     }
+
+
 }

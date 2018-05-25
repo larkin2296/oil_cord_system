@@ -102,6 +102,20 @@ Trait CatSupplyTrait{
     }
 
     /**
+     * 直充订单状态
+     * @param $status
+     * @return mixed
+     */
+    public function checkJurisdictionStatus($status)
+    {
+        $item = [
+            '1' => '开启',
+            '2' => '关闭',
+        ];
+        return $item[$status];
+    }
+
+    /**
      * 提现单号
      * return [type] [deception]
      */

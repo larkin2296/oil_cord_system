@@ -93,8 +93,9 @@ if( !function_exists('getCommonCheck') ) {
  */
 if( !function_exists('getCommonCheckValue') ) {
 	function getCommonCheckValue($bool = true)
-	{	
-		return $bool ? getGlobalConfig('commoncheck.map.true') : getGlobalConfig('commoncheck.map.false');
+	{
+	    return 1;
+		//return $bool ? getGlobalConfig('commoncheck.map.true') : getGlobalConfig('commoncheck.map.false');
 	}
 }
 

@@ -21,6 +21,7 @@ class CreateSupplyCamTable extends Migration
             $table->text('remark')->nullable()->comment('问题描述');
             $table->string('cam_name',200)->nullable()->comment('卡密名称');
             $table->integer('status')->default(1)->comment('状态,1上传成功,2下发采购商,3问题卡密,4销卡成功');
+            $table->integer('role_status')->default(1)->comment('状态,1-成功 2-失败');
             $table->timestamps();
 
             /*软删除*/
