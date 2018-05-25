@@ -23,4 +23,14 @@ class AuthorityController extends Controller
         return response()->json($results);
     }
 
+    /**
+     * 权限修改
+     * @return [type] [description]
+     */
+    public function store()
+    {
+        $results = $this->service->store();
+
+        return response()->json($results);
+    }
 }

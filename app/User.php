@@ -36,7 +36,8 @@ class User extends Authenticatable implements Transformable
 
     protected $fillable = [
     	'name','truename','sex','mobile','email','is_auth','notes','password','avatar','invitation_id','city',
-    	'role_status','status','auth_papers','qq_num','alipay',
+    	'role_status','status','auth_papers','qq_num','alipay', 'cam_permission', 'long_term_permission',
+        'recommend_status', 'put_forward_premission', 'several',
 
     ];
 
@@ -63,7 +64,16 @@ class User extends Authenticatable implements Transformable
      */
     public function hasManyUserOrder()
     {
-        return $this->hasMany(PurchasingOrder::class,'user_id','id');
+        return $this->hasMany(PurchasingOrder::class,'id','user_id');
+    }
+
+    /**
+     * 供应商卡密权限
+     * return [type] [deception]
+     */
+    public function supplierCardPermissions()
+    {
+        return $this->hasOne(\App\Repositories\Models\SupplyCam::class,'user_id','id');
     }
 
 }

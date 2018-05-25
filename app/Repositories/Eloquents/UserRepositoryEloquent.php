@@ -53,5 +53,21 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             return false;
         }
     }
+
+    /**
+     * 供应商关系
+     * @return [type] [deception]
+     */
+    public function supplierCardPermissions($user_id)
+    {
+        $results = $this->model()->where(function($query) use ($user_id){
+            return $query->whereHas('supplierCardPermissions',function($query) use ($user_id){
+                return $query->where('user_id',$user_id);
+            });
+        });
+        $this->resetModel();
+
+        return $results;
+    }
     
 }

@@ -57,7 +57,6 @@ class SystemOrderService extends Service
 
                 $data = $this->supplyCamRepo->findWhere($where)
                     ->map(function($item, $key){
-
                     return [
                         'id' => $item->id,
                         'user_id' => $item->user_id,
