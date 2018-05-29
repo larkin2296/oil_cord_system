@@ -4,7 +4,7 @@ namespace App\Repositories\Eloquents;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\Interfaces\auditRepository;
+use App\Repositories\Interfaces\AuditRepository;
 use App\Repositories\Models\Audit;
 use App\Repositories\Validators\AuditValidator;
 
