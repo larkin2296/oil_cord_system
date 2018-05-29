@@ -69,6 +69,20 @@ class UserController extends Controller
         return response()->json($results);
     }
 
+    public function editAvatar()
+    {
+        $results = $this->service->editAvatar();
+
+        return response()->json($results);
+    }
+
+    public function showAvatar($id)
+    {
+        $results = $this->service->showAvatar($id);
+
+        return response()->file($results);
+    }
+
     /**
      * 查看已邀请人数
      * @return [type] [description]

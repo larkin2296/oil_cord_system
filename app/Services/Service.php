@@ -19,6 +19,7 @@ use App\Repositories\Interfaces\PresentForwardRepository;
 use App\Repositories\Interfaces\PresentSettingRepository;
 use App\Repositories\Interfaces\PurchasingPerrmissonRepository;
 use App\Repositories\Interfaces\AuditRepository;
+use App\Repositories\Interfaces\UserAttachmentRepository;
 
 
 
@@ -29,6 +30,7 @@ class Service
     public $purperrmissonRepo;
     public $oilcardRepo;
     public $attachmentRepo;
+    public $userAttachmentRepo;
     public $platformRepo;
     public $platformMoneyRepo;
 
@@ -66,6 +68,7 @@ class Service
         $this->presentForwardRepo = app(PresentForwardRepository::class);
         $this->presentSettingRepo = app(PresentSettingRepository::class);
         $this->auditRepo = app(AuditRepository::class);
+        $this->userAttachmentRepo = app(UserAttachmentRepository::class);
 
     }
 }

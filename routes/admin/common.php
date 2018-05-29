@@ -26,6 +26,12 @@ $router->group(['prefix' => 'admin','as' => 'admin.'],function($router){
             'uses' => 'CommonsController@checkUserOauth',
             'as' => 'checkUserOauth',
         ]);
+
+          /*获取邀请人*/
+        $router->match(['get','post'],'getInvitationHuman',[
+            'uses' => 'CommonsController@getInvitationHuman',
+            'as' => 'getInvitationHuman',
+        ]);
     });
 
 });

@@ -62,7 +62,11 @@ class RegisterService extends Service {
 
            ];
 
-           User::create($data);
+           $user = User::create($data);
+
+           $audit = $this->auditRepo->create([
+              'user_id' => $user->id,
+           ]);
 
                return ['code' => '200','message' => '注册成功'];
            });

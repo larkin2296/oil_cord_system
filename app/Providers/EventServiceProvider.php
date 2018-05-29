@@ -14,6 +14,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $subscribe = [
         'App\Subscribes\ForwardEventSubscribe',
+        'App\Subscribes\UserEventSubscribe',
     ];
 
     protected $listen = [

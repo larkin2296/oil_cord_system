@@ -28,23 +28,174 @@ class AuditService extends Service {
     {
         try{
             $exception = DB::transaction(function(){
-                /*验证身份*/
-                $this->checkAdminUser();
 
+                /*验证权限*/
+                $this->checkAdminUser();
                 $field = [
                     'truename' => 'like',
                     'name' => 'like',
                     'mobile' => 'like',
                     'qq_num' => 'like',
-                    ''
+                    'alipay' => 'like',
+                    'invitation_id' => '=',
+                    'status_examine' => '=',
                 ];
+                /*查询条件*/
+                $whereField = $this->searchArray($field);
+                /*规范角色*/
+                $where = array_merge($whereField,[
+                   'role_status' => getCommonCheckValue(false),
+                ]);
+                 $data = $this->userRepo->with(['attachments'=>function($query){
+                      return $query;
+                 }])->findWhere($where)->map(function($item, $key){
+                      $attachmentsRebuild = $item->attachments->isNotEmpty() ? $item->attachments : collect([]);
+                      /*构造数组*/
+                      $attachments = array();
+
+                      foreach($attachmentsRebuild as $value){
+                          $attachments[] = route('common.attach.show',[$value->id_hash]);
+                      }
+                      return [
+                        'id' => $item->id,
+                        'name' => $item->name ?? '',
+                        'truename' => $item->truename ?? $item->mobile,
+                        'qq_num' => $item->qq_num ?? '',
+                        'id_card' => $item->id_card ?? '',
+                        'alipay' => $item->alipay ?? '',
+                        'notes' => $item->notes ?? '',
+                        'status_examine' => $item->status_examine ?? getCommonCheckValue(true),
+                        'avatar' => dealAvatar($item->avatar) ?? '',
+                        'attachments' => $attachments ?? collect([]),
+
+                      ];
+                 });
                 return $this->results = array_merge([
                     'code' => '200',
                     'message' => '查询成功',
-                    'data' => '',
+                    'data' => $data,
                 ]);
             });
         } catch( Exception $e ) {
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
+    /**
+     * 审核状态
+     * return [type] [deception]
+     */
+    public function store()
+    {
+        try{
+            $exception = DB::transaction(function(){
+                $status_examine = request()->post('status_examine','');
+                $arr = [
+                    'status_examine' => $status_examine,
+                ];
+                $this->checkAdminUser();
+
+                $user = $this->userRepo->update($arr,request()->id);
+
+                $user->save();
+                return $this->results = array_merge([
+                   'code' => '200',
+                   'message' => '审核状态成功',
+                   'data' => collect([]),
+                ]);
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
+    /**
+     * 逻辑删除用户信息
+     * return [type] [deception]
+     */
+    public function destroy()
+    {
+        try{
+            $exception = DB::transaction(function(){
+                /*验证权限*/
+                $this->checkAdminUser();
+
+                if( $user = $this->userRepo->delete(request()->id) ) {
+
+                } else {
+                    throw new Exception('删除失败，请重试',2);
+                }
+
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '删除成功',
+                    'data' => collect([]),
+                ]);
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
+    /**
+     * 已删除用户信息
+     * return [type] [deception]
+     */
+    public function edit()
+    {
+        try{
+            $exception = DB::transaction(function(){
+                /*验证权限*/
+                $this->checkAdminUser();
+
+                $user = $this->userRepo->model()::where('role_status',getCommonCheckValue(false))->onlyTrashed()->get();
+
+                if( $user ) {
+
+                } else {
+                    throw new Exception('查询已删除用户失败，请重试',2);
+                }
+
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '查询成功',
+                    'data' => collect([]),
+                ]);
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
+
+    /**
+     * 恢复删除用户
+     * return [type] [deception]
+     */
+    public function restore()
+    {
+        try{
+            $exception = DB::transaction(function(){
+                /*验证权限*/
+                $this->checkAdminUser();
+                $user = $this->userRepo->model()::where('id',request()->id)->restore();
+                if( $user ) {
+
+                } else {
+                    throw new Exception('恢复删除用户，请重试',2);
+                }
+
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '恢复成功',
+                    'data' => collect([]),
+                ]);
+            });
+        } catch(Exception $e){
             dd($e);
         }
         return array_merge($this->results,$exception);

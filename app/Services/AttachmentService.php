@@ -47,7 +47,6 @@ Class AttachmentService extends Service{
                 'path' =>$path,
                 'ext' => $file->getClientOriginalExtension(),
                 'ext_info' => '',
-                'status' => request()->post('status',''),
                 'user_id' => $user->id,
             ];
 

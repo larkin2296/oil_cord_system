@@ -2,17 +2,16 @@
 
 namespace App\Repositories\Models;
 
-use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class Audit.
+ * Class UserAttachment.
  *
  * @package namespace App\Repositories\Models;
  */
-class Audit extends Model implements Transformable
+class UserAttachment extends Model implements Transformable
 {
     use TransformableTrait;
 
@@ -21,19 +20,10 @@ class Audit extends Model implements Transformable
      *
      * @var array
      */
-    protected $table = 'audit';
+    protected $table = 'user_attachment';
 
     protected $fillable = [
-        'user_id',  'status',
+        'user_id', 'attachment_id', 'status'
     ];
-
-    /**
-     * 审核用户
-     * return [type] [deception]
-     */
-    public function checkUsers()
-    {
-        return $this->hasOne(User::class,'id','user_id');
-    }
 
 }

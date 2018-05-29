@@ -23,4 +23,48 @@ class AuditController extends Controller
         return response()->json($results);
     }
 
+    /**
+     * 审核状态
+     * @return [type] [deception]
+     */
+    public function store()
+    {
+        $results = $this->service->store();
+
+        return response()->json($results);
+    }
+
+
+    /**
+     * 逻辑删除用户信息
+     * return [type] [deception]
+     */
+    public function destroy()
+    {
+        $results = $this->service->destroy();
+
+        return response()->json($results);
+    }
+
+    /**
+     * 已删除用户信息
+     * return [type] [deception]
+     */
+    public function edit()
+    {
+        $results = $this->service->edit();
+
+        return response()->json($results);
+    }
+
+    /**
+     * 恢复删除用户
+     * return [type] [deception]
+     */
+    public function restore()
+    {
+        $results = $this->service->restore();
+
+        return response()->json($results);
+    }
 }

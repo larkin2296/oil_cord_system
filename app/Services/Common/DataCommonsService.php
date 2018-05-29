@@ -117,6 +117,38 @@ class DataCommonsService extends Service
         return array_merge($this->results,$exception);
     }
 
+    /**
+     * 获取邀请人
+     * return [type] [deception]
+     */
+    public function getInvitationHuman()
+    {
+        try{
+            $exception = DB::transaction(function() {
+
+                $rebuild = array(
+                  '0' => getCommonCheckValue(true),
+                  '1' => getCommonCheckValue(false),
+                );
+
+                $data = $this->userRepo->findWhereIn('role_status',$rebuild);
+                if( $data ) {
+                }else {
+                    throw new Exception('获取邀请人失败',2);
+                }
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '权限验证通过',
+                    'data' => $data ?? collect([]),
+                ]);
+            });
+
+        } catch(Exception $e) {
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
 
 
 }

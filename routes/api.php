@@ -123,6 +123,18 @@ $router->group(['middleware' => ['api']],function($router){
                     'uses' => 'UserController@show',
                     'as' => 'show',
                 ]);
+
+                /*修改头像*/
+                $router->post('editAvatar',[
+                    'uses' => 'UserController@editAvatar',
+                    'as' => 'editAvatar',
+                ]);
+
+                /*获取头像文件访问路径*/
+                $router->get('showAvatar/{id}',[
+                    'uses' => 'UserController@showAvatar',
+                    'as' => 'showAvatar',
+                ]);
             });
 
              /*供应商*/

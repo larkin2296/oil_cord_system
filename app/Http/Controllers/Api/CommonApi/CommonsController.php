@@ -58,4 +58,15 @@ Class CommonsController extends Controller {
 
         return response()->json($results);
     }
+
+    /**
+     * 获取邀请人
+     * return [type] [deception]
+     */
+    public function getInvitationHuman()
+    {
+        $results = $this->service->getInvitationHuman();
+
+        return response()->json($results);
+    }
 }

@@ -16,13 +16,10 @@ class CreateUserAttachmentTable extends Migration
         Schema::create('user_attachment', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('name')->nullable()->comment('文件存储名称');
-            $table->string('origin_name')->nullable()->comment('文件原始名称');
-            $table->string('size')->nullable()->comment('文件大小');
-            $table->string('path')->nullable()->comment('文件上传路径');
-            $table->string('ext')->nullable()->comment('文件扩展');
-            $table->string('ext_info')->nullable()->comment('文件扩展信息');
+
             $table->integer('user_id')->nullable()->comment('用户id');
+            $table->integer('attachment_id')->nullable()->comment('文件id');
+            $table->integer('status')->nullable()->comment('1-身份证 2-银行卡');
             $table->timestamps();
 
             /*软删除*/

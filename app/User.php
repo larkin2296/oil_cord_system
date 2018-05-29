@@ -2,8 +2,13 @@
 
 namespace App;
 
+use App\Repositories\Models\Attachment;
+use App\Repositories\Models\Audit;
 use App\Repositories\Models\PurchasingOrder;
+use App\Repositories\Models\SupplyCam;
+use App\Repositories\Models\UserAttachment;
 use App\Repositories\Models\UserOilCard;
+use App\Services\AttachmentService;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -37,7 +42,7 @@ class User extends Authenticatable implements Transformable
     protected $fillable = [
     	'name','truename','sex','mobile','email','is_auth','notes','password','avatar','invitation_id','city',
     	'role_status','status','auth_papers','qq_num','alipay', 'cam_permission', 'long_term_permission',
-        'recommend_status', 'put_forward_premission', 'several',
+        'recommend_status', 'put_forward_premission', 'several', 'status_examine','id_card',
 
     ];
 
@@ -73,7 +78,25 @@ class User extends Authenticatable implements Transformable
      */
     public function supplierCardPermissions()
     {
-        return $this->hasOne(\App\Repositories\Models\SupplyCam::class,'user_id','id');
+        return $this->hasOne(SupplyCam::class,'user_id','id');
+    }
+
+    /**
+     * 审核用户
+     * return [type] [deception]
+     */
+    public function checkUserInfo()
+    {
+        return $this->hasOne(Audit::class,'user_id','id');
+    }
+
+    /**
+     * 用户附件信息
+     * @return [type] [deception]
+     */
+    public function attachments()
+    {
+        return $this->belongsToMany(\App\Repositories\Models\Attachment::class,'user_attachment','user_id','attachment_id');
     }
 
 }

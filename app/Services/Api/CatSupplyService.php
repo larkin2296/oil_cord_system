@@ -54,7 +54,6 @@ Class CatSupplyservice extends Service{
                     ];
                 });
                 $platform_id = $platform_id[0]['id'];
-
                 /*卡密信息*/
                 foreach( $cam as $item ) {
 
@@ -65,7 +64,6 @@ Class CatSupplyservice extends Service{
                         'platform_id' => $platform_id,
                         'user_id' => $user->id,
                     ];
-
                     $data = $this->supplyCamRepo->create($arr);
                 }
 
@@ -218,13 +216,11 @@ Class CatSupplyservice extends Service{
      */
     public function relationshipSupply()
     {
-        #TODO 根据供应商的等级去设定油卡数量 生成关联关系 管理员可对查看每个供应商所持有的直充油卡 可对进行编辑操作
         /* 获取供应商信息 */
         try{
             $exception = DB::transaction(function() {
 
                 $user = $this->jwtUser();
-
                 /*供应商是否第一次获取油卡*/
                 if( $info = $this->oilSupplyRepo->findWhere(['user_id' => $user->id])->count() > 0 ) {
                     /* 油卡信息 */
@@ -252,7 +248,7 @@ Class CatSupplyservice extends Service{
                     /*获取油卡张数*/
                     $limit = $this->userRepo->find($user->id)->several ?? getCommonCheck(true);
                     /* 获取油卡 */
-                    $arr = $this->oilcardRepo->model()::where('status_supply',2)
+                    $arr = $this->oilcardRepo->model()::where('status_supply',getCommonCheckValue(false))
                         ->limit($limit)->get()->map(function($item,$key){
                             return [
                                 'id' => $item->id,
@@ -271,7 +267,7 @@ Class CatSupplyservice extends Service{
                     if( $arr ) {
                         foreach( $arr as $item ) {
                             /* 油卡使用状态 */
-                            $supplyStatus =  $this->oilcardRepo->update(['status_supply' => 1],$item['id']);
+                            $supplyStatus =  $this->oilcardRepo->update(['status_supply' => getCommonCheckValue(true)],$item['id']);
 
                             $arrNew = [
                                 'user_id' => $user->id,

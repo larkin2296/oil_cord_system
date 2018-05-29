@@ -33,6 +33,8 @@ class LoginService extends Service {
 
         if( $token = JWTAuth::attempt($credentials) ) {
             $user = $this->userRepo->findByField('mobile', $mobile)->first();
+
+            //$audits = $this->checkQualificationAudit($user);
         } else {
             throw new Exception('帐号密码不正确', 2);
         }
@@ -45,6 +47,18 @@ class LoginService extends Service {
         ];
         return array_merge($this->results, $exception);
     }
+
+    public function checkQualificationAudit($user)
+    {
+        $Audit = $this->auditRepo->findByField(['user_id',$user->id])->first();
+        $status = $Audit->status;
+        if( $status == config('back.global.status.order.complete') ) {
+            throw new Exception('您的帐号存在异常，请联系管理员重新审核');
+        }
+
+    }
+
+
     /**
      * 短信验证码登录
      * @return [type] [description]
@@ -55,7 +69,6 @@ class LoginService extends Service {
         $exception = DB::transaction(function(){
             $mobile = request('mobile', '');
             $code = request('code', '');
-
             //验证验证码
             $this->checkCode('login', $mobile, $code);
             //验证手机号是否存在
@@ -70,6 +83,8 @@ class LoginService extends Service {
                 /*重新获取用户*/
                 $user = $this->userRepo->find($user->id);
             }
+            /*验证登陆权限*/
+            $this->checkQualificationAudit($user);
             $token = JWTAuth::fromUser($user);
             return [
                 'code' => '200',
