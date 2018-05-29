@@ -30,4 +30,11 @@ $router->group(['prefix' => 'order','as' => 'order'],function($router){
         'as' => 'show',
 
     ]);
+
+    /*直充置为已到账*/
+    $router->post('set_account',[
+        'uses' => 'System\Supply\OrderManagementController@set_account',
+        'as' => 'set_account',
+
+    ]);
 });

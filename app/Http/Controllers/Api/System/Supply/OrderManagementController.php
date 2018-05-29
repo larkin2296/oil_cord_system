@@ -55,4 +55,15 @@ class OrderManagementController extends Controller
 
         return response()->json($results);
     }
+
+    /**
+     * 直充订单置为已到账
+     * @return [type] [deception]
+     */
+    public function set_account()
+    {
+        $results = $this->service->set_account();
+
+        return response()->json($results);
+    }
 }

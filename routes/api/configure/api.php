@@ -32,4 +32,10 @@ $router->group([],function($router){
         'uses' => 'Configure\ConfigureController@get_config_detail',
         'as' => 'get_config_detail',
     ]);
+
+        /*获取油卡信息*/
+    $router->post('get_oil_card',[
+        'uses' => 'Configure\ConfigureController@get_oil_card',
+        'as' => 'get_oil_card',
+    ]);
 });

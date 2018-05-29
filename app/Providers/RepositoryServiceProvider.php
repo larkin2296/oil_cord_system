@@ -47,6 +47,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\Interfaces\CamAttachmentRepository::class, \App\Repositories\Eloquents\CamAttachmentRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\Interfaces\DirectAttachmentRepository::class, \App\Repositories\Eloquents\DirectAttachmentRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\Interfaces\UserAttachmentRepository::class, \App\Repositories\Eloquents\UserAttachmentRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\Interfaces\InitializeRepository::class,\App\Repositories\Eloquents\InitializeRepositoryEloquent::class);
         //:end-bindings:
     }
 }

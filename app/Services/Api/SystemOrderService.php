@@ -16,6 +16,7 @@ use JWTAuth;
 use phpDocumentor\Reflection\Types\Integer;
 use Redis;
 use Hashids\Hashids;
+use function Sodium\increment;
 
 class SystemOrderService extends Service
 {
@@ -207,6 +208,31 @@ class SystemOrderService extends Service
         }
 
         return array_merge($this->results,$exception);
+    }
+
+    public function set_account() {
+        $post = request()->post('list','');
+        $id = $post['id'];
+        $card = $post['card'];
+        $money = $post['money'];
+        $res = $this->supplySingleRepo->update(['supply_status' => 1],$id);
+        $singe_money = $this->oilcardRepo->findWhere(['oil_card_code'=>$card]);
+        $already_money = $singe_money[0]['save_money'] + $money;
+        $total_money = $singe_money[0]['total_money'] + $money;
+        $data = $this->oilcardRepo->model()::where(['oil_card_code'=>$card])->update(['save_money'=>$already_money,'total_money'=>$total_money]);
+        if($res) {
+            return $this->results = array_merge([
+                'code' => '200',
+                'message' => '设置成功',
+                'data' => $res,
+            ]);
+        } else {
+            return $this->results = array_merge([
+                'code' => '400',
+                'message' => '设置失败',
+                'data' => $res,
+            ]);
+        }
     }
 
 }
