@@ -16,7 +16,6 @@ class UserEventSubscribe extends Service
         $user = $event->user;
         /*附件id*/
         $attachment_id = $event->attachment_id;
-
         /*修改数据*/
         $data = $event->data;
         /*获取列表*/

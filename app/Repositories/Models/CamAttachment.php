@@ -26,4 +26,7 @@ class CamAttachment extends Model implements Transformable
         'cam_id', 'attachment_id',
     ];
 
+
+
+
 }

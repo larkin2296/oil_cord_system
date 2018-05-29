@@ -49,5 +49,13 @@ class SupplyCam extends Model implements Transformable
         return $this->hasOne(Platform::class,'id','platform_id');
     }
 
+    /**
+     * 处理附件
+     * return [type] [deception]
+     */
+    public function attachments()
+    {
+        return $this->belongsToMany(Attachment::class,'cam_attachment','cam_id','attachment_id');
+    }
 
 }

@@ -39,24 +39,22 @@ Class CatSupplyservice extends Service{
                 $now = new Carbon();
                 /*用户信息*/
                 $user = $this->jwtUser();
-                /*面额*/
-                $money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$res['money_id']])->map(function($item,$key){
+                /*处理面额*/
+                $platform_money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$res['money_id']])->map(function($item,$key){
                     return [
                        'id'=>$item['id']
                     ];
-                });
-                $platform_money_id = $money_id[0]['id'];
+                })->first();
 
-                /*平台*/
+                /*处理平台*/
                 $platform_id = $this->platformRepo->findWhere(['platform_name'=>$res['platform_id']])->map(function($item,$key){
                     return [
                         'id'=>$item['id']
                     ];
-                });
-                $platform_id = $platform_id[0]['id'];
+                })->first();
+
                 /*卡密信息*/
                 foreach( $cam as $item ) {
-
                     $arr = [
                         'cam_name' => $item['cam_name'],
                         'cam_other_name' => $item['cam_other_name'],
@@ -80,36 +78,56 @@ Class CatSupplyservice extends Service{
         return array_merge($this->results,$exception);
     }
 
+    /*处理附件*/
+    public function checkAttachments()
+    {
+        try{
+            $exception = DB::transaction(function(){
+                /*附件id*/
+               $attachmentIds = request()->attachment_id;
+
+               /*验证附件关系*/
+
+                return $this->results = array_merge([
+                   'code' => '200',
+                   'message' => '处理附件关系成功',
+                   'data' => collect([]),
+                ]);
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
     /**
      * 导入模版
      * return [type][deception]
      */
     public function importExcelData()
     {
+        /*设置请求时间*/
         set_time_limit(0);
-        $filePath = 'storage/attachments/'.iconv('UTF-8', 'GBK', 'cam').'.xls';
-        /*用户信息*/
-        $user = $this->jwtUser();
-
         try{
-            $exception = Excel::load($filePath, function($reader) use($user){
+            /*获取上传路径*/
+            $path = request()->post('path',[]);
 
-                $platform_money = request()->get('money_id','');
+            foreach($path as $key => $item) {
+                $filePath = 'storage/app/' . $item;
+                $exception = Excel::load($filePath, function ($reader) {
+                    /*金额*/
+                    $platform_money = request()->get('money_id', '');
+                    /*平台*/
+                    $platform_id = request()->post('platform_id', '');
+                    $reader = $reader->getSheet(0);
+                    $data = $reader->toArray();
+                    /*用户信息*/
+                    $user = $this->jwtUser();
+                    /*格式数据*/
+                    unset($data[0]);
 
-                $platform_id = request()->post('platform_id','');
-
-                $reader = $reader->getSheet(0);
-
-                $data = $reader->toArray();
-                /*用户信息*/
-                $user = $this->jwtUser();
-
-                unset($data[0]);
-
-                foreach( $data as $k=>$v ){
-                    /* 清除标题 */
+                    foreach( $data as $k=>$v ){
+                    /*清除标题*/
                     unset($v[2]);
-
                     $arr = [
                         'cam_name' => $v[0],
                         'cam_other_name' => $v[1],
@@ -117,8 +135,12 @@ Class CatSupplyservice extends Service{
                         'platform_id' => $platform_id,
                         'user_id' => $user->id,
                     ];
-
+                $attachmentsIds = request()->post('attachment_id',[]);
                     if( $info =  $this->supplyCamRepo->create($arr) ) {
+                    /*验证附件*/
+                    $attachmentId = $this->attachmentRepo->listByIds($attachmentsIds,$user->id)->keyBy('id')->keys()->toArray();
+                    /*处理关系*/
+                    $info->attachments()->attach($attachmentId);
                     } else {
                         throw new Exception('导入卡密数据失败,请数据检查格式','2');
                     }
@@ -126,13 +148,15 @@ Class CatSupplyservice extends Service{
                 return $this->results = array_merge([
                     'code' => '200' ,
                     'message' => '导入卡密成功',
-                    'data' => collect([]),
+                    'data' => $data,
                 ]);
-            });
+                });
+
+            }
         } catch(Exception $e) {
             dd($e);
         }
-        return array_merge($this->results,$exception);
+        return array_merge($this->results,[]);
     }
 
     /**
@@ -142,10 +166,10 @@ Class CatSupplyservice extends Service{
     public function importExcelShow()
     {
         $list = request()->post('list','');
-
+        /*设置时间*/
         set_time_limit(0);
 
-        $filePath = 'storage/app/uploads/'.iconv('UTF-8', 'GBK', $list);
+        $filePath = 'storage/app/'.iconv('UTF-8', 'GBK', $list);
 
         $data = Excel::load($filePath, function($reader) {
 
@@ -154,13 +178,14 @@ Class CatSupplyservice extends Service{
         });
 
         $array = $data->getSheet(0)->toArray();
+
         foreach($array as $key=>&$val){
             if($key > 0){
                 $arr[$key-1]['cam_name'] = $val[0];
                 $arr[$key-1]['cam_other_name'] = $val[1];
             }
         }
-         return ['code' => '200' ,'message' => '显示成功','data' =>$arr ];
+         return ['code' => '200' ,'message' => '显示成功','data' => $arr];
 
     }
 
@@ -308,10 +333,7 @@ Class CatSupplyservice extends Service{
                 $res = request()->post('list','');
                 $id = $res['id'];
 
-                $oilInfo = $this->oilSupplyRepo->model()::where('oil_id',$id)
-                    ->with('hasManyOilCard')
-                    ->get()
-                    ->map(function($item,$key){
+                $oilInfo = $this->oilSupplyRepo->model()::where('oil_id',$id)->with('hasManyOilCard')->get()->map(function($item,$key){
                     return [
                       'id' => $item->id
                     ];
@@ -330,8 +352,8 @@ Class CatSupplyservice extends Service{
                     'status' => getCommonCheckValue(true),
                     'supply_status' => getCommonCheckValue(false),
                 ];
-                $supply = $this->supplySingleRepo->create($arr);
 
+                $supply = $this->supplySingleRepo->create($arr);
                 /*供应单号*/
                 $supplySingleNumber = $this->generateSupplyNumber($supply,$user);
 

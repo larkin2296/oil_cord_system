@@ -17,10 +17,10 @@ Class AttachmentService extends Service{
 
 
 
-        /**
-         *上传附件
-         * @return [type] [description]
-         */
+    /**
+    *上传附件
+    * @return [type] [description]
+    */
     public function upload()
     {
         $exception = DB::transaction(function() {
@@ -56,6 +56,8 @@ Class AttachmentService extends Service{
                     'data' => [
                     'id_hash' => $attachment->id,
                     'name' => str_replace('.' .$attachment->ext ,'',$attachment->origin_name),
+                    'origin_name' => $attachment->name,
+                    'path' => $attachment->path,
                     'ext' => $attachment->ext,
                     'size' => $attachment->size,
                     'url' => route('common.attach.show', [$attachment->id]),

@@ -7,10 +7,16 @@ $router->group(['prefix' => 'commodity'],function($router){
         'as' => 'show',
     ]);
 
-    /*卡密添加 单张 多张*/
+    /*卡密添加 单张&多张*/
     $router->post('create',[
         'uses' => 'Supply\CatSupplyController@create',
         'as' => 'create',
+    ]);
+
+    /*处理附件关系*/
+    $router->match(['put','post'],'checks',[
+        'uses' => 'Supply\CatSupplyController@checks',
+        'as' => 'checks',
     ]);
 
     /*批量添加*/

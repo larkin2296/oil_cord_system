@@ -36,6 +36,17 @@ Class CatSupplyController extends Controller{
     }
 
     /**
+     * 处理附件信息
+     * return [type\[deception]
+     */
+    public function checks()
+    {
+        $results = $this->service->checkAttachments();
+
+        return response()->json($results);
+    }
+
+    /**
      * 卡密供货-导入
      * return [type\[deception]
      */

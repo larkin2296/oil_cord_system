@@ -67,7 +67,6 @@ class AuditService extends Service {
                         'status_examine' => $item->status_examine ?? getCommonCheckValue(true),
                         'avatar' => dealAvatar($item->avatar) ?? '',
                         'attachments' => $attachments ?? collect([]),
-
                       ];
                  });
                 return $this->results = array_merge([
