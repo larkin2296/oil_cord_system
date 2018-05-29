@@ -20,6 +20,7 @@ use App\Repositories\Interfaces\PresentSettingRepository;
 use App\Repositories\Interfaces\PurchasingPerrmissonRepository;
 use App\Repositories\Interfaces\AuditRepository;
 use App\Repositories\Interfaces\UserAttachmentRepository;
+use App\Repositories\Interfaces\InitializeRepository;
 
 
 
@@ -44,6 +45,7 @@ class Service
     public $forwardRepo;
     public $presentForwardRepo;
     public $presentSettingRepo;
+    public $initializeRepo;
 
 
 
@@ -69,6 +71,7 @@ class Service
         $this->presentSettingRepo = app(PresentSettingRepository::class);
         $this->auditRepo = app(AuditRepository::class);
         $this->userAttachmentRepo = app(UserAttachmentRepository::class);
+        $this->initializeRepo = app(InitializeRepository::class);
 
     }
 }

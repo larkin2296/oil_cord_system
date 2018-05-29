@@ -33,4 +33,9 @@ class ConfigureController extends Controller
         $results = $this->service->get_config_data();
         return response()->json($results);
     }
+    //获取用户油卡
+    public function get_oil_card() {
+        $results = $this->service->get_oil_card();
+        return response()->json($results);
+    }
 }

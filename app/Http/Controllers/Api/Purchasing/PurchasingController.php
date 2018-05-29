@@ -127,4 +127,14 @@ class PurchasingController extends Controller
         $results = $this->service->confirm_status();
         return response()->json($results);
     }
+    //提交圈存记录
+    public function send_initialize() {
+        $results = $this->service->send_initialize();
+        return response()->json($results);
+    }
+    //获取对账数据
+    public function get_reconciliation_data() {
+        $results = $this->service->get_reconciliation_data();
+        return response()->json($results);
+    }
 }

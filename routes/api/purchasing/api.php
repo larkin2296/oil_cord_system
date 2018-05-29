@@ -116,6 +116,15 @@ $router->group([],function($router){
         'as' => 'confirm_status',
     ]);
 
+    /*采购商提交圈存记录*/
+    $router->post('send_initialize',[
+        'uses' => 'Purchasing\PurchasingController@send_initialize',
+        'as' => 'send_initialize',
+    ]);
 
+    $router->post('get_reconciliation_data',[
+        'uses' => 'Purchasing\PurchasingController@get_reconciliation_data',
+        'as' => 'get_reconciliation_data',
+    ]);
 
 });

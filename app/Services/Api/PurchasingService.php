@@ -365,4 +365,102 @@ class PurchasingService extends Service {
         }
         return array_merge($this->results, $exception);
     }
+
+    //上报圈存
+    public function send_initialize() {
+        try{
+            $exception = DB::transaction( function() {
+
+                $post = request()->post('list','');
+                $card = $post['oil_card'];
+                $time = $post['recharge_time'];
+                $money = $post['money'];
+                $user = $this->jwtUser();
+                $singe_money = $this->oilcardRepo->findWhere(['oil_card_code'=>$card]);
+                $already_money = $singe_money[0]['save_money'] - $money;
+                $initialize_money = $singe_money[0]['initialize_price'] + $money;
+                $result = $this->oilcardRepo->model()::where(['oil_card_code'=>$card])->update(['save_money'=>$already_money,'initialize_price'=>$initialize_money]);
+
+
+                $arr = [
+                    'user_id' => $user->id,
+                    'in_price' => $money,
+                    'card_code' => $card,
+                    'in_time' => $time
+                ];
+
+                $data = $this->initializeRepo->create($arr);
+
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '圈存成功',
+                    'data' => $data,
+                ]);
+            });
+
+        }catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
+    public function get_reconciliation_data() {
+        try{
+            $exception = DB::transaction( function() {
+
+                $post = request()->post('list','');
+                $card = $post['oil_card_code'];
+                $end_time = $post['end_time'].' 23:59:59';
+                $start_time = $post['start_time'].' 00:00:00';
+//                DB::connection()->enableQueryLog();
+                $initialize = [];
+                $supplysingle = [];
+                $initialize = $this->initializeRepo->model()::where(['card_code'=>$card,['in_time','>',$start_time],['in_time','<',$end_time]])->get()->map(function($item,$index){
+                    $serial_number = $this->oilcardRepo->findWhere(['oil_card_code'=>$item['card_code']])->pluck('serial_number');
+                    return [
+                        'serial_number' => $serial_number[0],
+                        'oil_card_code' => $item['card_code'],
+                        'time' => $item['in_time'],
+                        'money' => $item['in_price'],
+                        'type' => 'sub'
+                    ];
+                })->all();
+//                print_r(DB::getQueryLog());
+                $supplysingle = $this->supplySingleRepo->model()::where(['oil_number'=>$card,['end_time','>',$start_time],['end_time','<',$end_time],'supply_status'=>1])->get()->map(function($item,$index){
+                    $serial_number = $this->oilcardRepo->findWhere(['oil_card_code'=>$item['oil_number']])->pluck('serial_number');
+                    return [
+                        'serial_number' => $serial_number[0],
+                        'oil_card_code' => $item['oil_number'],
+                        'time' => $item['end_time'],
+                        'money' => $item['already_card'],
+                        'type' => 'add'
+                    ];
+                })->all();
+                $data['data'] = array_merge($initialize,$supplysingle);
+                $sub = 0;
+                $add = 0;
+                foreach($data['data'] as $val){
+                    if($val['type'] == 'sub'){
+                        $sub += $val['money'];
+                    }else if($val['type'] == 'add'){
+                        $add += $val['money'];
+                    }
+                }
+                $data['total'] = [
+                  'sub' => $sub,
+                  'add' => $add,
+                  'sum' => $add-$sub
+                ];
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '查询',
+                    'data' => $data
+                ]);
+            });
+
+        }catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
 }
