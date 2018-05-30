@@ -77,7 +77,8 @@ class PurchasingService extends Service {
              'serial_number' => $item['serial_number'],
              'last_recharge_time' => $time['end_time'],
              'save_money' =>   $res,
-             'initialize_price' => $item['initialize_price']
+             'initialize_price' => $item['initialize_price'],
+             'total_money' => $item['total_money']
            ];
         });
         return $results;
@@ -259,14 +260,14 @@ class PurchasingService extends Service {
         });
         return ['code'=>200,'message'=>'获取成功','data'=>$result];
     }
-    /*圈存详细数据*/
-    public function get_initialize_detail(){
-        'select from supplier_order where card_code=X and a.time< and a.time>';
-        'select from initialize where card_code=X and a.time< and a.time>';
-    }
-    public function set_initialize_data(){
-        'inset into initialize () values()';
-    }
+//    /*圈存详细数据*/
+//    public function get_initialize_detail(){
+//        'select from supplier_order where card_code=X and a.time< and a.time>';
+//        'select from initialize where card_code=X and a.time< and a.time>';
+//    }
+//    public function set_initialize_data(){
+//        'inset into initialize () values()';
+//    }
     /*采购商自动补货*/
     public function auto_recharge(){
         $platform = request('platform','');

@@ -61,6 +61,7 @@ class AuditService extends Service {
                         'name' => $item->name ?? '',
                         'truename' => $item->truename ?? $item->mobile,
                         'qq_num' => $item->qq_num ?? '',
+                        'mobile' => $item->mobile ?? '',
                         'id_card' => $item->id_card ?? '',
                         'alipay' => $item->alipay ?? '',
                         'notes' => $item->notes ?? '',
@@ -194,6 +195,50 @@ class AuditService extends Service {
                     'data' => collect([]),
                 ]);
             });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
+    public function create() {
+        try{
+            $exception = DB::transaction(function() {
+                #TODO 生成供应单记录 增加附件信息 关联上附件信息 direct_id 附件id
+                /*充值油卡*/
+
+                $res = request()->post('list','');
+
+                /*用户信息*/
+                $user = $this->jwtUser();
+
+                $arr = [
+                    'truename' => $res['true_name'],
+                    'alipay' => $res['alipay'],
+                    'city' => $res['city'],
+                    'qq_num' => $res['qq_num'],
+                    'sex' => $res['sex'],
+                    'id_card' => $res['id_card']
+                ];
+                //更新user表字段
+                $data = $this->userRepo->update($arr,$user->id);
+
+                foreach($res['img_url'] as $val){
+                    $array = [
+                      'attachment_id' => $val['id']
+                    ];
+                    $this->userAttachmentRepo->updateOrCreate(['user_id' => $user->id,'status' => 1],$array);
+                }
+                foreach($res['card_url'] as $val){
+                    $array = [
+                        'attachment_id' => $val['id']
+                    ];
+                    $this->userAttachmentRepo->updateOrCreate(['user_id' => $user->id,'status' => 2],$array);
+                }
+                return ['code' => 200, 'message' => '提交成功', 'data' => $data];
+
+            });
+
         } catch(Exception $e){
             dd($e);
         }

@@ -57,9 +57,10 @@ Class CatSupplyservice extends Service{
                     $arr = [
                         'cam_name' => $item['cam_name'],
                         'cam_other_name' => $item['cam_other_name'],
-                        'denomination' => $platform_money_id,
-                        'platform_id' => $platform_id,
+                        'denomination' => $platform_money_id['id'],
+                        'platform_id' => $platform_id['id'],
                         'user_id' => $user->id,
+                        'discount' => $res['discount']
                     ];
                     $data = $this->supplyCamRepo->create($arr);
                 }
@@ -344,6 +345,7 @@ Class CatSupplyservice extends Service{
                     'user_id' => $user->id,
                     'end_time' => $res['recharge_time'],
                     'direct_id' => $res['id_hash'],
+                    'discount' => $res['discount'],
                     'status' => getCommonCheckValue(true),
                     'supply_status' => getCommonCheckValue(false),
                 ];

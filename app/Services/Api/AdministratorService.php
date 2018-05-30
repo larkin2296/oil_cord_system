@@ -197,16 +197,30 @@ class AdministratorService extends Service {
 
     public function get_purchasing_user(){
         $user = $this->userRepo->findWhere(['role_status'=>1])->map(function($item,$index){
-            $perrmission = $this->purperrmissonRepo->findWhere(['user_id'=>$item['id']]);
             return [
-                'id' => $perrmission[0]['id'],
-                'user_id'=>$item['id'],
+                'id' => $item['id'],
                 'name' => $item['truename'],
-                'recharge_camilo' => $perrmission[0]['recharge_camilo'] == 1 ? true : false,
-                'recharge_short_directly' => $perrmission[0]['recharge_short_directly'] == 1 ? true : false,
-                'recharge_long_directly' => $perrmission[0]['recharge_long_directly'] == 1 ? true : false,
-                'pay_camilo' => "{$perrmission[0]['pay_camilo']}",
-                'pay_directly' => "{$perrmission[0]['pay_directly']}"
+                'recharge_camilo' => $item['recharge_camilo'] == 1 ? true : false,
+                'recharge_short_directly' => $item['recharge_short_directly'] == 1 ? true : false,
+                'recharge_long_directly' => $item['recharge_long_directly'] == 1 ? true : false,
+                'pay_camilo' => "{$item['pay_camilo']}",
+                'pay_directly' => "{$item['pay_directly']}"
+            ];
+        });
+        return ['code' => '200', 'message' => '查询成功', 'data' => $user];
+    }
+
+    public function get_supplier_user(){
+        $user = $this->userRepo->findWhere(['role_status'=>2])->map(function($item,$index){
+            return [
+                'id' => $item['id'],
+                'name' => $item['truename'],
+                'recommend_status' => $item['recommend_status'] == 1 ? true : false,
+                'put_forward_premission' => $item['put_forward_premission'] == 1 ? true : false,
+                'long_term_permission' => $item['long_term_permission'] == 1 ? true : false,
+                'cam_permission' => $item['cam_permission'] == 1 ? true : false,
+                'several' => $item['several'],
+                'edit' => false
             ];
         });
         return ['code' => '200', 'message' => '查询成功', 'data' => $user];
@@ -215,13 +229,29 @@ class AdministratorService extends Service {
     public function set_user_perrmission() {
         $post = request()->post('list','');
         $where = [
-            'recharge_camilo' => $post['recharge_camilo'] == true ? 1 : 0,
-            'recharge_short_directly' => $post['recharge_short_directly'] == true ? 1 : 0,
-            'recharge_long_directly' => $post['recharge_long_directly'] == true ? 1 : 0,
+            'recharge_camilo' => $post['recharge_camilo'] == true ? 1 : 2,
+            'recharge_short_directly' => $post['recharge_short_directly'] == true ? 1 : 2,
+            'recharge_long_directly' => $post['recharge_long_directly'] == true ? 1 : 2,
             'pay_camilo' => $post['pay_camilo'],
             'pay_directly' => $post['pay_directly']
         ];
-        $result = $this->purperrmissonRepo->update($where,$post['id']);
+        $result = $this->userRepo->update($where,$post['id']);
+        if ($result) {
+            return ['code' => '200','message' => '修改成功'];
+        } else {
+            return ['message' => '修改失败'];
+        }
+    }
+    public function set_supplier_perrmission() {
+        $post = request()->post('list','');
+        $where = [
+            'cam_permission' => $post['cam_permission'] == true ? 1 : 2,
+            'long_term_permission' => $post['long_term_permission'] == true ? 1 : 2,
+            'put_forward_premission' => $post['put_forward_premission'] == true ? 1 : 2,
+            'recommend_status' => $post['recommend_status'] == true ? 1 : 2,
+            'several' => $post['several']
+        ];
+        $result = $this->userRepo->update($where,$post['id']);
         if ($result) {
             return ['code' => '200','message' => '修改成功'];
         } else {
@@ -359,5 +389,68 @@ class AdministratorService extends Service {
             dd($e);
         }
         return array_merge($this->results, $exception);
+    }
+    /**
+     * 审核管理列表
+     * return [type] [deception]
+     */
+    public function audit_list()
+    {
+        try{
+            $exception = DB::transaction(function(){
+
+                /*验证权限*/
+                $this->checkAdminUser();
+                $field = [
+                    'truename' => 'like',
+                    'name' => 'like',
+                    'mobile' => 'like',
+                    'qq_num' => 'like',
+                    'alipay' => 'like',
+                    'invitation_id' => '=',
+                    'status_examine' => '=',
+                ];
+                /*查询条件*/
+                $whereField = $this->searchArray($field);
+                /*规范角色*/
+                $where = array_merge($whereField,[
+                    'role_status' => getCommonCheckValue(true),
+                ]);
+//                DB::connection()->enableQueryLog();
+                $data = $this->userRepo->with(['attachments'=>function($query){
+                    return $query;
+                }])->findWhere($where)->map(function($item, $key){
+                    $attachmentsRebuild = $item->attachments->isNotEmpty() ? $item->attachments : collect([]);
+                    /*构造数组*/
+                    $attachments = array();
+
+                    foreach($attachmentsRebuild as $value){
+                        $attachments[] = route('common.attach.show',[$value->id_hash]);
+                    }
+                    return [
+                        'id' => $item->id,
+                        'name' => $item->name ?? '',
+                        'truename' => $item->truename ?? $item->mobile,
+                        'qq_num' => $item->qq_num ?? '',
+                        'id_card' => $item->id_card ?? '',
+                        'mobile' => $item->mobile ?? '',
+                        'alipay' => $item->alipay ?? '',
+                        'notes' => $item->notes ?? '',
+                        'status_examine' => $item->status_examine ?? getCommonCheckValue(true),
+                        'avatar' => dealAvatar($item->avatar) ?? '',
+                        'attachments' => $attachments ?? collect([]),
+                    ];
+                });
+//                print_r(DB::getQueryLog());
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '查询成功',
+                    'data' => $data,
+                ]);
+            });
+        } catch( Exception $e ) {
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
     }
 }

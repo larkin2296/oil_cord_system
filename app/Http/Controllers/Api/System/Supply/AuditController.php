@@ -67,4 +67,13 @@ class AuditController extends Controller
 
         return response()->json($results);
     }
+
+    /*
+     * 用户信息创建
+     * */
+    public function create(){
+        $results = $this->service->create();
+
+        return response()->json($results);
+    }
 }

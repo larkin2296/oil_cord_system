@@ -7,7 +7,6 @@ $router->group(['prefix' => 'common','as' => 'common.'],function($router){
 
 
         $router->group(['prefix' => 'attach','as' => 'attach.'],function($router){
-
             /*附件上传*/
             $router->post('upload',[
                'uses' => 'AttachmentController@upload',

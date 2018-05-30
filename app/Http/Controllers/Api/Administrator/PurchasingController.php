@@ -40,9 +40,18 @@ class PurchasingController extends Controller
         $results = $this->service->get_purchasing_user();
         return response()->json($results);
     }
+    //供应商获取
+    public function get_supplier_user() {
+        $results = $this->service->get_supplier_user();
+        return response()->json($results);
+    }
     //采购商权限修改
     public function set_user_perrmission() {
         $results = $this->service->set_user_perrmission();
+        return response()->json($results);
+    }
+    public function set_supplier_perrmission() {
+        $results = $this->service->set_supplier_perrmission();
         return response()->json($results);
     }
     //短期充值
@@ -53,6 +62,11 @@ class PurchasingController extends Controller
     //短期充值详情
     public function get_sdirectly_detail() {
         $results = $this->service->get_sdirectly_detail();
+        return response()->json($results);
+    }
+
+    public function get_audit_data() {
+        $results = $this->service->audit_list();
         return response()->json($results);
     }
 }

@@ -30,4 +30,10 @@ $router->group(['prefix' => 'audit','as' => 'audit.'],function($router){
         'uses' => 'System\Supply\AuditController@restore',
         'as' => 'restore',
     ]);
+
+    /*创建用户信息*/
+    $router->match(['get','post'],'create',[
+        'uses' => 'System\Supply\AuditController@create',
+        'as' => 'create',
+    ]);
 });
