@@ -38,4 +38,14 @@ class ConfigureController extends Controller
         $results = $this->service->get_oil_card();
         return response()->json($results);
     }
+    //获取配置数据
+    public function get_config_set() {
+        $results = $this->service->get_config_set();
+        return response()->json($results);
+    }
+    //更改配置
+    public function save_config() {
+        $results = $this->service->save_config();
+        return response()->json($results);
+    }
 }

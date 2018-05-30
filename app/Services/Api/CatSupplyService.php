@@ -58,9 +58,10 @@ Class CatSupplyservice extends Service{
                     $arr = [
                         'cam_name' => $item['cam_name'],
                         'cam_other_name' => $item['cam_other_name'],
-                        'denomination' => $platform_money_id,
-                        'platform_id' => $platform_id,
+                        'denomination' => $platform_money_id['id'],
+                        'platform_id' => $platform_id['id'],
                         'user_id' => $user->id,
+                        'discount' => $res['discount']
                     ];
                     $data = $this->supplyCamRepo->create($arr);
                 }

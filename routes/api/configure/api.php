@@ -38,4 +38,16 @@ $router->group([],function($router){
         'uses' => 'Configure\ConfigureController@get_oil_card',
         'as' => 'get_oil_card',
     ]);
+
+    /*获取商品配置信息*/
+    $router->post('get_config_set',[
+        'uses' => 'Configure\ConfigureController@get_config_set',
+        'as' => 'get_config_set',
+    ]);
+
+    /*更改配置*/
+    $router->post('save_config',[
+        'uses' => 'Configure\ConfigureController@save_config',
+        'as' => 'save_config',
+    ]);
 });

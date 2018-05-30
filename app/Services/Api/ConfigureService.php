@@ -30,4 +30,38 @@ class ConfigureService extends Service {
         return ['code' => 200, 'message' => '获取油卡信息成功','data' => $result];
     }
 
+    public function get_config_set() {
+        try{
+            $exception = DB::transaction(function(){
+
+                $data =  $this->configureRepo->find(1)->all();
+
+                if( $data ) {
+                } else {
+                    throw new EXception('卡密查询异常,请重试','2');
+                }
+                return ['code' => '200', 'message' => '查询成功', 'data' => $data[0]];
+
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+    }
+
+    public function save_config() {
+        try{
+            $exception = DB::transaction(function(){
+                $post = request()->post('list','');
+
+                $res = $this->configureRepo->updateOrCreate(['id'=>$post['id']],$post);
+
+                return ['code' => 200, 'message' => '修改成功', 'data' => $res];
+
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+    }
 }
