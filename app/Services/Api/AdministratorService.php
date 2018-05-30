@@ -49,7 +49,7 @@ class AdministratorService extends Service {
                     ];
 
                 })->all();
-                //->model()::with(['denomination','platform'])->get();
+
                 if( $data ) {
                 } else {
                     throw new EXception('卡密查询异常,请重试','2');
@@ -82,7 +82,7 @@ class AdministratorService extends Service {
                 $data =  $this->supplySingleRepo->findWhere($where)->map(function($item,$key){
                     $result = $this->oilcardRepo->model()::where(['oil_card_code'=>$item['oil_number']])->get();
                     $user = $this->userRepo->find($result[0]['user_id']);
-//                    dd($user);
+
                     return [
                         'id' => $item['id'],
                         'supply_single_number' => $item['supply_single_number'],
@@ -96,7 +96,7 @@ class AdministratorService extends Service {
                     ];
 
                 })->all();
-                //->model()::with(['denomination','platform'])->get();
+
                 if( $data ) {
                 } else {
                     throw new EXception('卡密查询异常,请重试','2');
@@ -347,7 +347,7 @@ class AdministratorService extends Service {
                     ];
 
                 })->all();
-                //->model()::with(['denomination','platform'])->get();
+
                 if( $data ) {
                 } else {
                     throw new EXception('卡密查询异常,请重试','2');

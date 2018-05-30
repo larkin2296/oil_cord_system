@@ -155,7 +155,7 @@ class AccommedService extends Service {
                           'notes' => $item->notes,
                           'end_time' => $item->end_time,
                           'already_card' => $item->already_card,
-                          'direct_id' => $item->attachmentCharge,   //调用获取附件接口
+                          'direct_id' => route('common.attach.show',[$item->attachmentCharge]),   //调用获取附件接口
                           'status' => $item->status,
 
                         ];

@@ -79,6 +79,42 @@ Trait CodeTrait
         return $mobile . ':count';
     }
 
+    public function setData($user,$data)
+    {
+       $data =  $this->checkRole($user,$data);
+       return $data;
+    }
+
+    public function checkRole($user,$data)
+    {
+        //管理员不可以设定超级管理员 超级管理员可以设定管理员与超级管理员
+        if( !$role = $user->role_status ) {
+            throw new Exception('您没有操作当前功能的权限',2);
+        }
+
+        if( $role == config('back.global.status.order.refunding') ){
+           return [
+                'name' => $data['name'],
+                'password' => bcrypt($data['password']),
+                'truename' => $data['truename'],
+                'sex' => $data['sex'],
+                'mobile' => $data['mobile'],
+                'role_status' => $data['role_status'],
+                'invitation_id' => $user->id
+            ];
+        } else if( $role == config('back.global.status.order.complete') ) {
+            return [
+                'name' => $data['name'],
+                'password' => bcrypt($data['password']),
+                'truename' => $data['truename'],
+                'sex' => $data['sex'],
+                'mobile' => $data['mobile'],
+                'role_status' => config('back.global.status.order.complete'), //管理员
+                'invitation_id' => $user->id
+            ];
+        }
+    }
+
 
 
 }

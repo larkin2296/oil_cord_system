@@ -99,4 +99,12 @@ class User extends Authenticatable implements Transformable
         return $this->belongsToMany(\App\Repositories\Models\Attachment::class,'user_attachment','user_id','attachment_id');
     }
 
+    /**
+     * 管理员权限
+     * return [type] [deception]
+     */
+    public function jurisdiction()
+    {
+        return $this->hasOne(\App\Repositories\Models\Jurisdiction::class,'user_id','id');
+    }
 }

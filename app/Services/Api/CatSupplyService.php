@@ -33,7 +33,6 @@ Class CatSupplyservice extends Service{
             $exception = DB::transaction( function() {
 
                 $res = request()->post('list','');
-
                 $cam = $res['cam'];
 
                 $now = new Carbon();
@@ -218,7 +217,6 @@ Class CatSupplyservice extends Service{
             $exception = DB::transaction(function(){
                 /*获取平台*/
                 $platform = $this->platformRepo->all();
-
                 /*获取面额*/
                 $platformMoney = $this->platformMoneyRepo->all();
 
@@ -333,17 +331,14 @@ Class CatSupplyservice extends Service{
                 $res = request()->post('list','');
                 $id = $res['id'];
 
-                $oilInfo = $this->oilSupplyRepo->model()::where('oil_id',$id)->with('hasManyOilCard')->get()->map(function($item,$key){
-                    return [
-                      'id' => $item->id
-                    ];
-                })->first();
+                $oilInfo = $this->oilSupplyRepo->model()::where('oil_id',$id)
+                    ->with('hasManyOilCard')->first();
 
-                /* 冗余油卡 */
+                /*冗余油卡*/
                 $oilCard =  $this->oilcardRepo->find($id);
 
                 $arr = [
-                    'suoil_id' => $oilInfo['id'],
+                    'suoil_id' => $oilInfo->id,
                     'already_card' => $res['price'],
                     'oil_number' => $oilCard->oil_card_code,
                     'user_id' => $user->id,

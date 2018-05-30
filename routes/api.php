@@ -145,6 +145,7 @@ $router->group(['middleware' => ['api']],function($router){
 
             /*采购供应管理*/
             $router->group(['prefix' => 'system','as' => 'system.'],function($router){
+
                 require(__DIR__.'/api/system/api.php');
             });
 

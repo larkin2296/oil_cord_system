@@ -41,9 +41,7 @@ class SystemOrderService extends Service
                 /*用户信息*/
                 $user = $this->jwtUser();
 
-                if($user->role_status != 3) {
-                    throw new Exception('您没有管理员权限,请联系管理员',2);
-                }
+                $this->checkAdminUser();
 
                 $field = [
                    'platform_id' => '=',
@@ -162,13 +160,8 @@ class SystemOrderService extends Service
     {
         try{
             $exception = DB::transaction(function() {
-                /*用户信息*/
-                $user = $this->jwtUser();
-
-                if($user->role_status != 3) {
-                    throw new Exception('您没有管理员权限,请联系管理员',2);
-                }
-                #TODO 这里写个获取所有供应商的公共接口
+                /*验证权限*/
+                $this->checkAdminUser();
 
                 $field = [
                     'user_id' => '=',
@@ -177,11 +170,10 @@ class SystemOrderService extends Service
                     'end_time' => 'like',
                     'status' => '=',
                 ];
-
                $where = $this->searchArray($field);
 
-               $data =  $this->supplySingleRepo->findWhere($where)
-                   ->map(function($item, $key){
+               $data =  $this->supplySingleRepo->findWhere($where)->map(function($item, $key){
+
                     return [
                         'id' => $item->id,
                         'oil_number' => $item->oil_number,

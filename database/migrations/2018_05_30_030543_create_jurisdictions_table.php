@@ -4,9 +4,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Class CreateDirectAttachmentsTable.
+ * Class CreateJurisdictionsTable.
  */
-class CreateDirectAttachmentsTable extends Migration
+class CreateJurisdictionsTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -15,7 +15,7 @@ class CreateDirectAttachmentsTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('direct_attachments', function(Blueprint $table) {
+		Schema::create('jurisdictions', function(Blueprint $table) {
             $table->increments('id');
 
             $table->timestamps();
@@ -29,6 +29,6 @@ class CreateDirectAttachmentsTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('direct_attachments');
+		Schema::drop('jurisdictions');
 	}
 }

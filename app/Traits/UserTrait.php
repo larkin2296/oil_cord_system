@@ -74,4 +74,41 @@ Trait UserTrait
         }
     }
 
+    /**
+     * 验证模块权限
+     * return [type] [deception]
+     */
+    public function checkModalJurisdiction()
+    {
+        $user = $this->jwtUser();
+
+        if($user->role_status == config('back.global.status.order.refunding') ) {
+            return true;
+        } else if ($user->role_status == config('back.global.status.order.complete') ) {
+
+          $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findByField(['user_id' => $user->id]);
+
+          if( $check->isNotEmpty() ) {
+              return $check;
+          } else {
+              throw new Exception('您还没有该权限,请联系管理员开通',2);
+          }
+        }
+    }
+
+    /**
+     * 权限校验
+     * return [type] [deception]
+     */
+    public function getRoles()
+    {
+        $user = $this->jwtUser();
+        if($user->role_status == config('back.global.status.order.refunding') ) {
+
+            return getCommonCheckValue(true);
+        } else if ($user->role_status == config('back.global.status.order.complete') ) {
+            return getCommonCheckValue(false);
+
+        }
+    }
 }

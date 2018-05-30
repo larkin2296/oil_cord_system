@@ -21,6 +21,7 @@ use App\Repositories\Interfaces\PurchasingPerrmissonRepository;
 use App\Repositories\Interfaces\AuditRepository;
 use App\Repositories\Interfaces\UserAttachmentRepository;
 use App\Repositories\Interfaces\InitializeRepository;
+use App\Repositories\Interfaces\JurisdictionRepository;
 
 
 
@@ -46,6 +47,7 @@ class Service
     public $presentForwardRepo;
     public $presentSettingRepo;
     public $initializeRepo;
+    public $jurisdictionRepo;
 
 
 
@@ -72,6 +74,7 @@ class Service
         $this->auditRepo = app(AuditRepository::class);
         $this->userAttachmentRepo = app(UserAttachmentRepository::class);
         $this->initializeRepo = app(InitializeRepository::class);
+        $this->jurisdictionRepo = app(JurisdictionRepository::class);
 
     }
 }
