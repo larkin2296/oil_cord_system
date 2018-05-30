@@ -55,4 +55,9 @@ class PurchasingController extends Controller
         $results = $this->service->get_sdirectly_detail();
         return response()->json($results);
     }
+
+    public function get_audit_data() {
+        $results = $this->service->audit_list();
+        return response()->json($results);
+    }
 }

@@ -49,4 +49,10 @@ $router->group(['prefix' => 'purchasing'],function($router){
         'uses' => 'Administrator\PurchasingController@get_sdirectly_detail',
         'as' => 'get_sdirectly_detail',
     ]);
+
+    /*身份核实*/
+    $router->post('get_audit_data',[
+        'uses' => 'Administrator\PurchasingController@get_audit_data',
+        'as' => 'get_audit_data',
+    ]);
 });

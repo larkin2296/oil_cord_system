@@ -360,4 +360,67 @@ class AdministratorService extends Service {
         }
         return array_merge($this->results, $exception);
     }
+    /**
+     * 审核管理列表
+     * return [type] [deception]
+     */
+    public function audit_list()
+    {
+        try{
+            $exception = DB::transaction(function(){
+
+                /*验证权限*/
+                $this->checkAdminUser();
+                $field = [
+                    'truename' => 'like',
+                    'name' => 'like',
+                    'mobile' => 'like',
+                    'qq_num' => 'like',
+                    'alipay' => 'like',
+                    'invitation_id' => '=',
+                    'status_examine' => '=',
+                ];
+                /*查询条件*/
+                $whereField = $this->searchArray($field);
+                /*规范角色*/
+                $where = array_merge($whereField,[
+                    'role_status' => getCommonCheckValue(true),
+                ]);
+//                DB::connection()->enableQueryLog();
+                $data = $this->userRepo->with(['attachments'=>function($query){
+                    return $query;
+                }])->findWhere($where)->map(function($item, $key){
+                    $attachmentsRebuild = $item->attachments->isNotEmpty() ? $item->attachments : collect([]);
+                    /*构造数组*/
+                    $attachments = array();
+
+                    foreach($attachmentsRebuild as $value){
+                        $attachments[] = route('common.attach.show',[$value->id_hash]);
+                    }
+                    return [
+                        'id' => $item->id,
+                        'name' => $item->name ?? '',
+                        'truename' => $item->truename ?? $item->mobile,
+                        'qq_num' => $item->qq_num ?? '',
+                        'id_card' => $item->id_card ?? '',
+                        'mobile' => $item->mobile ?? '',
+                        'alipay' => $item->alipay ?? '',
+                        'notes' => $item->notes ?? '',
+                        'status_examine' => $item->status_examine ?? getCommonCheckValue(true),
+                        'avatar' => dealAvatar($item->avatar) ?? '',
+                        'attachments' => $attachments ?? collect([]),
+                    ];
+                });
+//                print_r(DB::getQueryLog());
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '查询成功',
+                    'data' => $data,
+                ]);
+            });
+        } catch( Exception $e ) {
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
 }
