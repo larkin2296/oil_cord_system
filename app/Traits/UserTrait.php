@@ -111,4 +111,108 @@ Trait UserTrait
 
         }
     }
+
+    /**
+     * 管理员 供应商权限
+     * return [type] [deception]
+     */
+    public function checkSupplyAdminJurisdiction()
+    {
+        $user = $this->jwtUser();
+        if($user->role_status == config('back.global.status.order.refunding') ) {
+
+            return true;
+        } else if ($user->role_status == config('back.global.status.order.complete') ) {
+            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findByField(['user_id' => $user->id]);
+
+            if( $check->isNotEmpty() ) {
+                if($check->first()->supply_jurisdiction == getCommonCheckValue(true)){
+                    return true;
+                } else{
+                    throw new Exception('您还没有该权限,请联系管理员开通',2);
+                }
+            } else {
+                throw new Exception('您还没有该权限,请联系管理员开通',2);
+            }
+
+        }
+    }
+
+    /**
+     * 管理员 采购商权限
+     * return [type] [deception]
+     */
+    public function checkPurchasingAdminJurisdiction()
+    {
+        $user = $this->jwtUser();
+        if($user->role_status == config('back.global.status.order.refunding') ) {
+
+            return true;
+        } else if ($user->role_status == config('back.global.status.order.complete') ) {
+            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findByField(['user_id' => $user->id]);
+
+            if( $check->isNotEmpty() ) {
+                if($check->first()->purchase_jurisdiction == getCommonCheckValue(true)){
+                    return true;
+                } else{
+                    throw new Exception('您还没有该权限,请联系管理员开通',2);
+                }
+            } else {
+                throw new Exception('您还没有该权限,请联系管理员开通',2);
+            }
+
+        }
+    }
+
+    /**
+     * 管理员 服务商权限
+     * return [type] [deception]
+     */
+    public function checkServiceAdminJurisdiction()
+    {
+        $user = $this->jwtUser();
+        if($user->role_status == config('back.global.status.order.refunding') ) {
+
+            return true;
+        } else if ($user->role_status == config('back.global.status.order.complete') ) {
+            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findByField(['user_id' => $user->id]);
+
+            if( $check->isNotEmpty() ) {
+                if($check->first()->service_jurisdiction == getCommonCheckValue(true)){
+                    return true;
+                } else{
+                    throw new Exception('您还没有该权限,请联系管理员开通',2);
+                }
+            } else {
+                throw new Exception('您还没有该权限,请联系管理员开通',2);
+            }
+
+        }
+    }
+
+    /**
+     * 管理员 商品权限
+     * return [type] [deception]
+     */
+    public function checkCommodityAdminJurisdiction()
+    {
+        $user = $this->jwtUser();
+        if($user->role_status == config('back.global.status.order.refunding') ) {
+
+            return true;
+        } else if ($user->role_status == config('back.global.status.order.complete') ) {
+            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findByField(['user_id' => $user->id]);
+
+            if( $check->isNotEmpty() ) {
+                if($check->first()->commodity_jurisdiction == getCommonCheckValue(true)){
+                    return true;
+                } else{
+                    throw new Exception('您还没有该权限,请联系管理员开通',2);
+                }
+            } else {
+                throw new Exception('您还没有该权限,请联系管理员开通',2);
+            }
+
+        }
+    }
 }

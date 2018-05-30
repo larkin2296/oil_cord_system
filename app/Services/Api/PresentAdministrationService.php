@@ -34,8 +34,8 @@ class PresentAdministrationService extends Service {
     {
         try{
            $exception = DB::transaction(function() {
-              /*验证身份*/
-              $userRole = $this->checkAdminUser();
+               /*验证权限*/
+               $this->checkSupplyAdminJurisdiction();
 
               $field = [
                 'user_id' => '=',
@@ -80,9 +80,8 @@ class PresentAdministrationService extends Service {
     {
         try{
             $exception = DB::transaction(function(){
-
-                /*验证身份*/
-                $this->checkAdminUser();
+                /*验证权限*/
+                $this->checkSupplyAdminJurisdiction();
 
                 $id = request()->id;
 

@@ -30,7 +30,8 @@ class AuditService extends Service {
             $exception = DB::transaction(function(){
 
                 /*验证权限*/
-                $this->checkAdminUser();
+                $this->checkSupplyAdminJurisdiction();
+
                 $field = [
                     'truename' => 'like',
                     'name' => 'like',
@@ -94,7 +95,8 @@ class AuditService extends Service {
                 $arr = [
                     'status_examine' => $status_examine,
                 ];
-                $this->checkAdminUser();
+                /*验证权限*/
+                $this->checkSupplyAdminJurisdiction();
 
                 $user = $this->userRepo->update($arr,request()->id);
 
@@ -120,7 +122,7 @@ class AuditService extends Service {
         try{
             $exception = DB::transaction(function(){
                 /*验证权限*/
-                $this->checkAdminUser();
+                $this->checkSupplyAdminJurisdiction();
 
                 if( $user = $this->userRepo->delete(request()->id) ) {
 
@@ -149,7 +151,7 @@ class AuditService extends Service {
         try{
             $exception = DB::transaction(function(){
                 /*验证权限*/
-                $this->checkAdminUser();
+                $this->checkSupplyAdminJurisdiction();
 
                 $user = $this->userRepo->model()::where('role_status',getCommonCheckValue(false))->onlyTrashed()->get();
 
@@ -181,7 +183,7 @@ class AuditService extends Service {
         try{
             $exception = DB::transaction(function(){
                 /*验证权限*/
-                $this->checkAdminUser();
+                $this->checkSupplyAdminJurisdiction();
                 $user = $this->userRepo->model()::where('id',request()->id)->restore();
                 if( $user ) {
 
@@ -204,14 +206,12 @@ class AuditService extends Service {
     public function create() {
         try{
             $exception = DB::transaction(function() {
-                #TODO 生成供应单记录 增加附件信息 关联上附件信息 direct_id 附件id
+                /*验证权限*/
+                $this->checkSupplyAdminJurisdiction();
                 /*充值油卡*/
-
                 $res = request()->post('list','');
-
                 /*用户信息*/
                 $user = $this->jwtUser();
-
                 $arr = [
                     'truename' => $res['true_name'],
                     'alipay' => $res['alipay'],

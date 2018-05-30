@@ -32,8 +32,8 @@ Class PresentService extends Service{
         try{
             $exception = DB::transaction(function() {
 
-                /* 验证身份 */
-               $isAdmin =  $this->checkAdminUser();
+                /*验证权限*/
+                $this->checkSupplyAdminJurisdiction();
 
                $data = $this->presentSettingRepo->all();
 
@@ -60,8 +60,8 @@ Class PresentService extends Service{
         try{
             $exception = DB::transaction(function() {
 
-                /* 验明身份 */
-                $isAdmin =  $this->checkAdminUser();
+                /*验证权限*/
+                $this->checkSupplyAdminJurisdiction();
 
                 $request = $this->presentSettingRepo->all();
                 $post = request()->post('list','');

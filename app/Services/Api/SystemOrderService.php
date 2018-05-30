@@ -41,7 +41,8 @@ class SystemOrderService extends Service
                 /*用户信息*/
                 $user = $this->jwtUser();
 
-                $this->checkAdminUser();
+                /*验证权限*/
+                $this->checkSupplyAdminJurisdiction();
 
                 $field = [
                    'platform_id' => '=',
@@ -98,8 +99,8 @@ class SystemOrderService extends Service
         try{
             $exception = DB::transaction(function() {
 
-                /*验证管理员*/
-                $isAdmin =  $this->checkAdminUser();
+                /*验证权限*/
+                $this->checkSupplyAdminJurisdiction();
 
                 if( $data = $this->supplyCamRepo->delete(request()->id) ) {
 
@@ -129,8 +130,8 @@ class SystemOrderService extends Service
         try{
             $exception = DB::transaction(function() {
 
-                /*验证管理员*/
-                $isAdmin =  $this->checkAdminUser();
+                /*验证权限*/
+                $this->checkSupplyAdminJurisdiction();
 
                 if( $data = $this->supplyCamRepo->model()::withTrashed()->where('id',request()->id)->restore() ) {
 
@@ -161,7 +162,7 @@ class SystemOrderService extends Service
         try{
             $exception = DB::transaction(function() {
                 /*验证权限*/
-                $this->checkAdminUser();
+                $this->checkSupplyAdminJurisdiction();
 
                 $field = [
                     'user_id' => '=',

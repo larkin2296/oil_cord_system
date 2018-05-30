@@ -36,7 +36,7 @@ class AuthorityService extends Service
             $exception = DB::transaction(function () {
 
                 /*验证权限*/
-                $this->checkAdminUser();
+                $this->checkSupplyAdminJurisdiction();
 
                 $fieldWhere = $this->searchArray([
                     'truename' => 'like',
@@ -84,7 +84,7 @@ class AuthorityService extends Service
             $exception = DB::transaction(function () {
 
                 /*验证权限*/
-                $this->checkAdminUser();
+                $this->checkSupplyAdminJurisdiction();
                 $arr = [
                     'recommend_status' => request()->post('recommend_status'),
                     'put_forward_premission' => request()->post('put_forward_premission'),
