@@ -350,6 +350,7 @@ Class CatSupplyservice extends Service{
                     'user_id' => $user->id,
                     'end_time' => $res['recharge_time'],
                     'direct_id' => $res['id_hash'],
+                    'discount' => $res['discount'],
                     'status' => getCommonCheckValue(true),
                     'supply_status' => getCommonCheckValue(false),
                 ];

@@ -46,6 +46,7 @@ Class ForwardService extends Service
                            'cam_name' => $item->cam_name,
                            'cam_other_name' => $item->cam_other_name,
                            'denomination' => $this->handleDenomination($item->denomination),
+                           'real_money'=>  (int)$this->handleDenomination($item->denomination) * $item->discount,
                            'status' => $this->checkCamStatus($item->status),
                            'forward_status' => $this->checkForWardStatus($item->forward_status),
                         ];
@@ -62,6 +63,7 @@ Class ForwardService extends Service
                         'supply_single_number' => $item->supply_single_number,
                         'oil_number' => $item->oil_number,
                         'already_card' => $item->already_card,
+                        'real_money'=>  (int)$item->already_card * $item->discount,
                         'supply_status' => $this->checkSupplyStatus($item->supply_status),
                         'forward_status' => $this->checkForWardStatus($item->forward_status),
                         'suoil_id' => $item->suoil_id,
@@ -126,7 +128,7 @@ Class ForwardService extends Service
                     $sums[0] = 0;
                 }else{
                     foreach($forward as $ke => $val ){
-                        $sums[$ke] = $val['already_card'];
+                        $sums[$ke] = $val['already_card'] * $val['discount'];
                     }
                 }
 

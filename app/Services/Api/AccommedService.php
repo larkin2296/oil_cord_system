@@ -117,7 +117,7 @@ class AccommedService extends Service {
            'user_id' => $user->id,
         ]);
 
-        $data = $this->supplySingleRepo->findWhere($where)->map(function($item,$key){
+        $data = $this->supplySingleRepo->orderBy('created_at','desc')->findWhere($where)->map(function($item,$key){
             //return $item;
             return [
                 'id' => $item->id,
