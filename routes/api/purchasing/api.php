@@ -126,10 +126,25 @@ $router->group([],function($router){
         'uses' => 'Purchasing\PurchasingController@send_initialize',
         'as' => 'send_initialize',
     ]);
-
+    /*获取对账数据*/
     $router->post('get_reconciliation_data',[
         'uses' => 'Purchasing\PurchasingController@get_reconciliation_data',
         'as' => 'get_reconciliation_data',
+    ]);
+    /*设置对账列表*/
+    $router->post('set_reconciliation_data',[
+        'uses' => 'Purchasing\PurchasingController@set_reconciliation_data',
+        'as' => 'set_reconciliation_data',
+    ]);
+    /*获取对账列表*/
+    $router->post('get_reconciliation_list',[
+        'uses' => 'Purchasing\PurchasingController@get_reconciliation_list',
+        'as' => 'get_reconciliation_list',
+    ]);
+
+    $router->post('get_reconciliation_detail',[
+        'uses' => 'Purchasing\PurchasingController@get_reconciliation_detail',
+        'as' => 'get_reconciliation_detail',
     ]);
 
 });

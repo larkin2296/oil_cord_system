@@ -39,8 +39,8 @@ class PurchasingController extends Controller
         return response()->json($results);
     }
     //油卡绑定功能
-    public function binding_card(Request $request){
-        $results = $this->service->card_binding($request);
+    public function binding_card(){
+        $results = $this->service->card_binding();
         return response()->json($results);
     }
     //油卡查询
@@ -139,6 +139,21 @@ class PurchasingController extends Controller
     //获取对账数据
     public function get_reconciliation_data() {
         $results = $this->service->get_reconciliation_data();
+        return response()->json($results);
+    }
+    //设置对账单
+    public function set_reconciliation_data() {
+        $results = $this->service->set_reconciliation_data();
+        return response()->json($results);
+    }
+    //获取对账单
+    public function get_reconciliation_list() {
+        $results = $this->service->get_reconciliation_list();
+        return response()->json($results);
+    }
+    //获取对账详情
+    public function get_reconciliation_detail() {
+        $results = $this->service->get_reconciliation_detail();
         return response()->json($results);
     }
 }

@@ -165,14 +165,17 @@ class PurchasingService extends Service {
         }
         return array_merge($this->results, $exception);
     }
-    public function card_binding($request){
+    public function card_binding(){
         try{
-            $res = $this->oilcardRepo->findWhere(['oil_card_code'=>$request['list']['oil_card_code']])->count();
-            if($res == 0){
-                $this->oilcardRepo->create($request['list']);
-                return ['code' => '200','message' => '添加成功'];
-            }else{
-                return ['code' => '500','message' => '此卡已存在'];
+            $data = request()->post('list','');
+            foreach($data as $val){
+                $res = $this->oilcardRepo->findWhere(['oil_card_code'=>$val['oil_card_code']])->count();
+                if($res == 0){
+                    $this->oilcardRepo->create($val);
+                    return ['code' => '200','message' => '添加成功'];
+                }else{
+                    return ['code' => '500','message' => '此卡已存在'];
+                }
             }
 
         }catch(Exception $e){
@@ -500,9 +503,10 @@ class PurchasingService extends Service {
 //                DB::connection()->enableQueryLog();
                 $initialize = [];
                 $supplysingle = [];
-                $initialize = $this->initializeRepo->model()::where(['card_code'=>$card,['in_time','>',$start_time],['in_time','<',$end_time]])->get()->map(function($item,$index){
+                $initialize = $this->initializeRepo->model()::where(['card_code'=>$card,['in_time','>',$start_time],['in_time','<',$end_time],'check_money'=>0])->get()->map(function($item,$index){
                     $serial_number = $this->oilcardRepo->findWhere(['oil_card_code'=>$item['card_code']])->pluck('serial_number');
                     return [
+                        'id' => $item['id'],
                         'serial_number' => $serial_number[0],
                         'oil_card_code' => $item['card_code'],
                         'time' => $item['in_time'],
@@ -511,9 +515,10 @@ class PurchasingService extends Service {
                     ];
                 })->all();
 //                print_r(DB::getQueryLog());
-                $supplysingle = $this->supplySingleRepo->model()::where(['oil_number'=>$card,['end_time','>',$start_time],['end_time','<',$end_time],'supply_status'=>1])->get()->map(function($item,$index){
+                $supplysingle = $this->supplySingleRepo->model()::where(['oil_number'=>$card,['end_time','>',$start_time],['end_time','<',$end_time],'supply_status'=>1,'check_money'=>0])->get()->map(function($item,$index){
                     $serial_number = $this->oilcardRepo->findWhere(['oil_card_code'=>$item['oil_number']])->pluck('serial_number');
                     return [
+                        'id' => $item['id'],
                         'serial_number' => $serial_number[0],
                         'oil_card_code' => $item['oil_number'],
                         'time' => $item['end_time'],
@@ -536,6 +541,119 @@ class PurchasingService extends Service {
                   'add' => $add,
                   'sum' => $add-$sub
                 ];
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '查询',
+                    'data' => $data
+                ]);
+            });
+
+        }catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
+    public function set_reconciliation_data() {
+        try{
+            $exception = DB::transaction( function() {
+                $user = $this->jwtUser();
+
+                $data = request()->post('data','');
+                $initialize_money = request()->post('initialize_money','');
+                $recharge_money = request()->post('recharge_money','');
+                $sum_money = request()->post('sum_money','');
+                $recon_end = request()->post('recon_end','');
+                $recon_start = request()->post('recon_start','');
+
+                $order = $this->set_order_code(3,1,7);
+                    $arr = [
+                        'order_code' => $order,
+                        'user_id' => $user->id,
+                        'status' => 1,
+                        'recon_start' => $recon_start,
+                        'recon_end' => $recon_end,
+                        'total_price' => $sum_money,
+                        'initialize_price' => $initialize_money,
+                        'recharge_price' => $recharge_money
+                    ];
+                    $info =  $this->reconRepo->create($arr);
+                    foreach($data as $value){
+                        if($value['type'] == 'sub') {
+                            $this->initializeRepo->update(['reconciliation'=>$info->id,'check_money'=>1],$value['id']);
+                        } else {
+                            $this->supplySingleRepo->update(['reconciliation'=>$info->id,'check_money'=>1],$value['id']);
+                        }
+                    }
+                    return $this->results = array_merge([
+                        'code' => '200',
+                        'message' => '查询',
+                        'data' => $info
+                    ]);
+            });
+
+        }catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+    public function get_reconciliation_list() {
+        try{
+            $exception = DB::transaction( function() {
+                $user = $this->jwtUser();
+                $where = [];
+                if($user->id != 3 && $user->id != 4){
+                    $where = [
+                        'user_id' => $user->id
+                    ];
+                }
+                $info =  $this->reconRepo->findWhere($where);
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '查询',
+                    'data' => $info
+                ]);
+            });
+
+        }catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
+    public function get_reconciliation_detail() {
+        try{
+            $exception = DB::transaction( function() {
+
+                $id = request()->post('id','');
+
+                $initialize = [];
+                $supplysingle = [];
+                $initialize = $this->initializeRepo->model()::where(['reconciliation'=>$id,'check_money'=>1])->get()->map(function($item,$index){
+                    $serial_number = $this->oilcardRepo->findWhere(['oil_card_code'=>$item['card_code']])->pluck('serial_number');
+                    return [
+                        'id' => $item['id'],
+                        'serial_number' => $serial_number[0],
+                        'oil_card_code' => $item['card_code'],
+                        'time' => $item['in_time'],
+                        'money' => $item['in_price'],
+                        'type' => 'sub'
+                    ];
+                })->all();
+//                print_r(DB::getQueryLog());
+                $supplysingle = $this->supplySingleRepo->model()::where(['reconciliation'=>$id,'check_money'=>1])->get()->map(function($item,$index){
+                    $serial_number = $this->oilcardRepo->findWhere(['oil_card_code'=>$item['oil_number']])->pluck('serial_number');
+                    return [
+                        'id' => $item['id'],
+                        'serial_number' => $serial_number[0],
+                        'oil_card_code' => $item['oil_number'],
+                        'time' => $item['end_time'],
+                        'money' => $item['already_card'],
+                        'type' => 'add'
+                    ];
+                })->all();
+                $data = array_merge($initialize,$supplysingle);
+
                 return $this->results = array_merge([
                     'code' => '200',
                     'message' => '查询',

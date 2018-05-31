@@ -525,4 +525,14 @@ class AdministratorService extends Service {
         }
         return array_merge($this->results,$exception);
     }
+
+    public function set_reconciliation_status() {
+        $id = request()->post('id','');
+        $data = $this->reconRepo->update(['status'=>2],$id);
+        return $this->results = array_merge([
+            'code' => '200',
+            'message' => '修改成功',
+            'data' => $data,
+        ]);
+    }
 }

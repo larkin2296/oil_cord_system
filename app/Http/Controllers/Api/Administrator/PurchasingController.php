@@ -69,4 +69,9 @@ class PurchasingController extends Controller
         $results = $this->service->audit_list();
         return response()->json($results);
     }
+    //核实对账
+    public function set_reconciliation_status() {
+        $results = $this->service->set_reconciliation_status();
+        return response()->json($results);
+    }
 }

@@ -65,4 +65,10 @@ $router->group(['prefix' => 'purchasing'],function($router){
         'uses' => 'Administrator\PurchasingController@get_audit_data',
         'as' => 'get_audit_data',
     ]);
+
+    /*核实对账*/
+    $router->post('set_reconciliation_status',[
+        'uses' => 'Administrator\PurchasingController@set_reconciliation_status',
+        'as' => 'set_reconciliation_status',
+    ]);
 });

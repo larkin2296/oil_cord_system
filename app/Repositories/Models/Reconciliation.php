@@ -7,11 +7,11 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class Initialize.
+ * Class Reconciliation.
  *
  * @package namespace App\Repositories\Models;
  */
-class Initialize extends Model implements Transformable
+class Reconciliation extends Model implements Transformable
 {
     use TransformableTrait;
 
@@ -20,10 +20,7 @@ class Initialize extends Model implements Transformable
      *
      * @var array
      */
-    protected $table = 'initialize';
-
-    protected $fillable = [
-        'user_id','in_price','card_code','in_time','reconciliation','check_money'
-    ];
+    protected $table = 'reconciliation';
+    protected $fillable = ['id','order_code','type','order_id','user_id','status','recon_start','recon_end','total_price','initialize_price','recharge_price'];
 
 }
