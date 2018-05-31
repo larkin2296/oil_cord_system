@@ -82,6 +82,7 @@ class UserService extends Service
             'grade' => $result->grade ? $result->grade : '',
             'notes' => $result->notes ? $result->notes : '',
             'roles' => $result->role_status ? [$result->role_status] : '',
+            'status_examine' => $result->status_examine ? $result->status_examine : '',
             'avatar' => dealAvatar($result->avatar),
             'attachments' => $attachments,
 

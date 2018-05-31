@@ -24,8 +24,8 @@ class PurchasingController extends Controller
         return response()->json($results);
     }
     //获取卡密订单查询数据
-    public function get_camilo_order(Request $request){
-        $results = $this->service->get_camilo_order($request);
+    public function get_camilo_order(){
+        $results = $this->service->get_camilo_order();
         return response()->json($results);
     }
     //获取长期直充订单查询数据
@@ -47,6 +47,10 @@ class PurchasingController extends Controller
     public function get_card(Request $request){
         $results = $this->service->get_card();
         return response()->json($results);
+    }
+    public function get_oilcard_upload() {
+        $result = $this->service->get_oilcard_upload();
+        return response()->json($result);
     }
     //油卡启动
     public function card_start(Request $request){

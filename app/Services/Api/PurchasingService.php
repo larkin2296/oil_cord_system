@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Api;
 
+namespace App\Services\Api;
 use App\Traits\ResultTrait;
 use App\Traits\ExceptionTrait;
 use App\Traits\ServiceTrait;
@@ -11,8 +12,10 @@ use App\Traits\CatSupplyTrait;
 use Exception;
 use DB;
 use Redis;
-use App\Repositories\Models\PurchasingOrder;
+use App\User;
 use JWTAuth;
+use Carbon\Carbon;
+use Excel;
 
 
 class PurchasingService extends Service {
@@ -44,8 +47,27 @@ class PurchasingService extends Service {
         return $result;
     }
     //获取卡密订单数据
-    public function get_camilo_order($request){
-        $results = $this->get_data('purchasing_order',['order_type'=>1]);
+    public function get_camilo_order(){
+        $user = $this->jwtUser();
+        $post = request()->post('list','');
+
+        if(!empty($post)) {
+            if(isset($post['goods_type']) && $post['goods_type'] != ''){
+                $where['platform'] = $this->get_platform_id($post['goods_type']);
+            }
+            if(isset($post['card_price']) && $post['card_price'] != ''){
+                $where['unit_price'] = $this->get_denomination_id($post['card_price']);
+            }
+            isset($post['order_status']) ? $where['order_status'] = $post['order_status'] : '';
+            isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
+            isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
+            isset($post['order_code']) ? $where['order_code'] = ['order_code','like','%'.$post['order_code'].'%'] : '';
+        }
+        $where['order_type'] = 1;
+        $where['user_id'] = $user->id;
+//        DB::connection()->enableQueryLog();
+        $results = $this->purorderRepo->findWhere($where);
+//        print_r(DB::getQueryLog());
         foreach($results as &$val){
             $val['platform'] = $this->handlePlatform($val['platform']);
 //            $val['unit_price'] = $this->handlePlatform($val['unit_price']);
@@ -67,8 +89,17 @@ class PurchasingService extends Service {
     }
     //获取长充数据
     public function ldirectly_order($request){
+        $post = request()->post('list','');
+
+        if(!empty($post)) {
+            isset($post['serial_number']) ? $where['serial_number'] = $post['serial_number'] : '';
+            isset($post['ture_name']) ? $where['ture_name'] = ['ture_name','like','%'.$post['ture_name'].'%'] : '';
+            isset($post['oil_card_code']) ? $where['oil_card_code'] = ['oil_card_code','like','%'.$post['oil_card_code'].'%'] : '';
+        }
         $user = $this->jwtUser();
-        $results = $this->get_data('user_oil_card',['is_longtrem'=>1,'user_id'=>$user->id])->map(function($item,$index){
+        $where['is_longtrem'] = 1;
+        $where['user_id'] = $user->id;
+        $results = $this->oilcardRepo->findWhere($where)->map(function($item,$index){
             $res = $this->supplySingleRepo->model()::where(['oil_number'=>$item['oil_card_code'],'supply_status'=>1])->sum('already_card');
             $time = $this->supplySingleRepo->model()::where(['oil_number'=>$item['oil_card_code'],'supply_status'=>1])->orderBy('end_time','desc')->first();
             return [
@@ -85,8 +116,18 @@ class PurchasingService extends Service {
     }
     //获取短充数据
     public function sdirectly_order($request){
+        $post = request()->post('list','');
+
+        if(!empty($post)) {
+            isset($post['order_status']) ? $where['order_status'] = $post['order_status'] : '';
+//            isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
+//            isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
+            isset($post['order_code']) ? $where['order_code'] = ['order_code','like','%'.$post['order_code'].'%'] : '';
+        }
         $user = $this->jwtUser();
-        $results = $this->get_data('purchasing_order',['order_type'=>2,'user_id'=>$user->id])->map(function($item,$index){
+        $where['order_type'] = 2;
+        $where['user_id'] = $user->id;
+        $results = $this->purorderRepo->findWhere($where)->map(function($item,$index){
             $res = $this->supplySingleRepo->model()::where(['notes'=>$item['order_code'],'supply_status'=>1])->sum('already_card');
             $time = $this->supplySingleRepo->model()::where(['notes'=>$item['order_code'],'supply_status'=>1])->orderBy('end_time','desc')->first();
             return [
@@ -151,7 +192,17 @@ class PurchasingService extends Service {
         return $code;
     }
     public function get_card(){
-        $results = $this->oilcardRepo->all();
+        $post = request()->post('list','');
+
+        if(!empty($post)) {
+            isset($post['serial_number']) ? $where['serial_number'] = $post['serial_number'] : '';
+            isset($post['ture_name']) ? $where['ture_name'] = ['ture_name','like','%'.$post['ture_name'].'%'] : '';
+            isset($post['oil_card_code']) ? $where['oil_card_code'] = ['oil_card_code','like','%'.$post['oil_card_code'].'%'] : '';
+            isset($post['is_longtrem']) ? $where['is_longtrem'] = $post['is_longtrem'] : '';
+        }
+        $user = $this->jwtUser();
+        $where['user_id'] = $user->id;
+        $results = $this->oilcardRepo->findWhere($where);
         foreach($results as &$val){
             if($val['card_status'] == 0){
                 $val['is_start'] = true;
@@ -171,6 +222,31 @@ class PurchasingService extends Service {
             }
         }
         return $results;
+    }
+    public function get_oilcard_upload() {
+        $list = request()->post('list','');
+        /*设置时间*/
+        set_time_limit(0);
+
+        $filePath = 'storage/app/'.iconv('UTF-8', 'GBK', $list);
+
+        $data = Excel::load($filePath, function($reader) {
+
+            $reader = $reader->getSheet(0)->toArray();
+            return $reader;
+        });
+
+        dd($data);
+
+        $array = $data->getSheet(0)->toArray();
+
+        foreach($array as $key=>&$val){
+            if($key > 0){
+                $arr[$key-1]['cam_name'] = $val[0];
+                $arr[$key-1]['cam_other_name'] = $val[1];
+            }
+        }
+        return ['code' => '200' ,'message' => '显示成功','data' => $arr];
     }
     public function card_start($request){
         $result = $this->oilcardRepo->update(['card_status'=>1],$request->card);
@@ -249,6 +325,12 @@ class PurchasingService extends Service {
 //        'select from supplier_order a inner join oil_card_code b on card_code=card_code where
 //         b.user_id=X and a.time< and a.time> group by order_code';
         $user = $this->jwtUser();
+        $post = request()->post('list','');
+
+        if(!empty($post)) {
+            isset($post['oil_card_code']) ? $where['oil_card_code'] = ['oil_card_code','like','%'.$post['oil_card_code'].'%'] : '';
+            isset($post['save_money']) && $post['save_money'] == 0 ? $where['save_money'] = 0 : $where['save_money'] = ['save_money','<>',0];
+        }
         $where['user_id'] = $user->id;
         $where['card_status'] = 1;
         $result = $this->oilcardRepo->findWhere($where)->map(function($item,$index){

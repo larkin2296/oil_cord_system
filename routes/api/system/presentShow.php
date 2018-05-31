@@ -2,7 +2,7 @@
 $router->group(['prefix' => 'presentShow','as' => 'presentShow .'],function($router){
 
     /*提现管理列表*/
-    $router->get('index',[
+    $router->post('index',[
         'uses' => 'System\Supply\PresentShowsController@index',
         'as' => 'index',
     ]);

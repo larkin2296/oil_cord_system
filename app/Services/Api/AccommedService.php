@@ -42,6 +42,17 @@ class AccommedService extends Service {
                 $where = array_merge($fieldWhere,[
                     'user_id' => $user->id,
                 ]);
+                $post = request()->post('list','');
+
+                if(isset($post['goods_type']) && $post['goods_type'] != ''){
+                    $where['platform_id'] = $this->get_platform_id($post['goods_type']);
+                }
+                if(isset($post['card_price']) && $post['card_price'] != ''){
+                    $where['denomination'] = $this->get_denomination_id($post['card_price']);
+                }
+                isset($post['status']) ? $where['status'] = $post['status'] : '';
+                isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
+                isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
 
                 $data =  $this->supplyCamRepo->findWhere($where)->map(function($item,$key){
                    //return $item;
@@ -116,6 +127,13 @@ class AccommedService extends Service {
         $where = array_merge($fieldWhere,[
            'user_id' => $user->id,
         ]);
+        $post = request()->post('list','');
+
+        isset($post['supply_status']) ? $where['supply_status'] = $post['supply_status'] : '';
+        isset($post['oil_number']) ? $where['oil_number'] = ['oil_number','like','%'.$post['supply_status'].'%'] : '';
+        isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
+        isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
+
 
         $data = $this->supplySingleRepo->orderBy('created_at','desc')->findWhere($where)->map(function($item,$key){
             //return $item;

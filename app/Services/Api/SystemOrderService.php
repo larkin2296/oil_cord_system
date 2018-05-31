@@ -55,6 +55,13 @@ class SystemOrderService extends Service
                 /*处理查询*/
                 $where = $this->searchArray($field);
 
+                    if(request()->post('goods_type','')){
+                        $where['platform_id'] = $this->get_platform_id(request()->post('goods_type',''));
+                    }
+                    if(request()->post('card_price','')){
+                        $where['denomination'] = $this->get_denomination_id(request()->post('card_price',''));
+                    }
+
                 $data = $this->supplyCamRepo->findWhere($where)
                     ->map(function($item, $key){
                     return [
@@ -66,6 +73,7 @@ class SystemOrderService extends Service
                         'platform_id' => $this->handlePlatform($item->platform_id)['platform_name'],
                         'denomination' => $this->handleDenomination($item->denomination)['denomination'],
                         'success_time' => $item->success_time,
+                        'created_at' => $item->created_at,
                         'discount' => $item->discount,
                         'status' => $this->checkCamStatus($item->status),
 
@@ -161,34 +169,43 @@ class SystemOrderService extends Service
     {
         try{
             $exception = DB::transaction(function() {
-                /*验证权限*/
-                $this->checkSupplyAdminJurisdiction();
+                /*用户信息*/
+                $user = $this->jwtUser();
+
+                if($user->role_status != 3) {
+                    throw new Exception('您没有管理员权限,请联系管理员',2);
+                }
+                #TODO 这里写个获取所有供应商的公共接口
 
                 $field = [
                     'user_id' => '=',
                     'supply_single_number' => 'like',
                     'oil_number' => '=',
                     'end_time' => 'like',
-                    'status' => '=',
+                    'supply_status' => '=',
                 ];
-               $where = $this->searchArray($field);
 
-               $data =  $this->supplySingleRepo->findWhere($where)->map(function($item, $key){
+                $where = $this->searchArray($field);
 
-                    return [
-                        'id' => $item->id,
-                        'oil_number' => $item->oil_number,
-                        'already_card' => $item->already_card,
-                        'end_time' => $item->end_time,
-                        'notes' => $item->notes,
-                        'status' => $this->globalStatusGet($item->status),
-                        'supply_status' => $this->checkSupplyStatus($item->supply_status),
-                        'forward_status' => $this->checkForWardStatus($item->forward_status),
-                        'direct_id' => route('common.attach.show', [$item->direct_id]),
-                    ];
+                $data =  $this->supplySingleRepo->orderBy('supply_status','desc')->findWhere($where)
+                    ->map(function($item, $key){
+                        return [
+                            'id' => $item->id,
+                            'userName' => $this->getIdUserInfo($item->user_id)->truename ?? $this->getIdUserInfo($item->user_id)->mobile ,
+                            'oil_number' => $item->oil_number,
+                            'already_card' => $item->already_card,
+                            'end_time' => $item->end_time,
+                            'notes' => $item->notes,
+                            'status' => $this->globalStatusGet($item->status),
+                            'supply_status' => $this->checkSupplyStatus($item->supply_status),
+                            'forward_status' => $this->checkForWardStatus($item->forward_status),
+                            'created_at' => $item->created_at,
+                            'discount' => $item->discount,
+                            'direct_id' => route('common.attach.show', [$item->direct_id]),
+                        ];
                     })->all();
 
-                    return $this->results = array_merge([
+                return $this->results = array_merge([
                     'code' => '200',
                     'message' => '代充列表显示成功',
                     'data' => $data,

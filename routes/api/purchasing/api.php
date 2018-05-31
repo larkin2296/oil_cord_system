@@ -23,6 +23,11 @@ $router->group([],function($router){
         'uses' => 'Purchasing\PurchasingController@binding_card',
         'as' => 'binding_card',
     ]);
+    /*采购商油卡上传回显*/
+    $router->match(['get','post'],'get_oilcard_upload',[
+        'uses' => 'Purchasing\PurchasingController@get_oilcard_upload',
+        'as' => 'get_oilcard_upload',
+    ]);
     /*采购商油卡*/
     $router->match(['get','post'],'get_card',[
         'uses' => 'Purchasing\PurchasingController@get_card',
