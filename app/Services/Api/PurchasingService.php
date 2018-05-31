@@ -607,6 +607,9 @@ class PurchasingService extends Service {
                         'user_id' => $user->id
                     ];
                 }
+                if($user->id == 3 || $user->id == 4){
+                    $this->checkPurchasingAdminJurisdiction();
+                }
                 $info =  $this->reconRepo->findWhere($where);
                 return $this->results = array_merge([
                     'code' => '200',
