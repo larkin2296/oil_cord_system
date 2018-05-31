@@ -4,7 +4,7 @@ namespace App\Repositories\Eloquents;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\Interfaces\jurisdictionRepository;
+use App\Repositories\Interfaces\JurisdictionRepository;
 use App\Repositories\Models\Jurisdiction;
 use App\Repositories\Validators\JurisdictionValidator;
 
