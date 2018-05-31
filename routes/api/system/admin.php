@@ -2,7 +2,7 @@
 $router->group(['prefix' => 'admin', 'as' => 'admin.'],function($router){
 
     /*管理员权限列表*/
-    $router->get('index',[
+    $router->post('index',[
        'uses' => 'System\Admin\AdminController@index',
        'as' => 'index',
     ]);

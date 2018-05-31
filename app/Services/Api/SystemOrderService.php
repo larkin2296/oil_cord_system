@@ -169,6 +169,7 @@ class SystemOrderService extends Service
     {
         try{
             $exception = DB::transaction(function() {
+                $this->checkSupplyAdminJurisdiction();
                 /*用户信息*/
                 $user = $this->jwtUser();
 

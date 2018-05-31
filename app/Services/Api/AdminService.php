@@ -56,7 +56,20 @@ class AdminService extends Service {
 
     public function select()
     {
-        $data = $this->userRepo->with('jurisdiction')->findWhereIn('role_status',[3,4])->all();
+        $data = $this->userRepo->with('jurisdiction')->findWhereIn('role_status',[3,4])->map(function($item,$index){
+            return [
+                'id' => $item['id'],
+                'name' => $item['name'],
+                'truename' => $item['truename'],
+                'sex' => $item['sex'],
+                'mobile' => $item['mobile'],
+                'role_status' => $item['role_status'],
+                'supply_jurisdiction' => isset($item['jurisdiction']['supply_jurisdiction']) && $item['jurisdiction']['supply_jurisdiction'] == 1 ? true : false ,
+                'purchase_jurisdiction' => isset($item['jurisdiction']['purchase_jurisdiction']) && $item['jurisdiction']['purchase_jurisdiction'] == 1 ? true : false ,
+                'service_jurisdiction' => isset($item['jurisdiction']['service_jurisdiction']) && $item['jurisdiction']['service_jurisdiction'] == 1 ? true : false ,
+                'commodity_jurisdiction' => isset($item['jurisdiction']['commodity_jurisdiction']) && $item['jurisdiction']['commodity_jurisdiction'] == 1 ? true : false ,
+            ];
+        })->all();
         return $data;
     }
     /**

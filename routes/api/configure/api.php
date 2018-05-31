@@ -50,4 +50,10 @@ $router->group([],function($router){
         'uses' => 'Configure\ConfigureController@save_config',
         'as' => 'save_config',
     ]);
+
+    /*获取权限*/
+    $router->post('get_permission',[
+        'uses' => 'Configure\ConfigureController@get_permission',
+        'as' => 'get_permission',
+    ]);
 });

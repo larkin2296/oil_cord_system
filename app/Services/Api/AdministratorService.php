@@ -22,6 +22,7 @@ class AdministratorService extends Service {
     public function get_camilo_list(){
         try{
             $exception = DB::transaction(function(){
+                $this->checkPurchasingAdminJurisdiction();
 
                 /*用户信息*/
                 $user = $this->jwtUser();
@@ -79,7 +80,7 @@ class AdministratorService extends Service {
     public function get_directly_list(){
         try{
             $exception = DB::transaction(function(){
-
+                $this->checkPurchasingAdminJurisdiction();
                 /*用户信息*/
                 $user = $this->jwtUser();
 
@@ -211,7 +212,9 @@ class AdministratorService extends Service {
     }
 
     public function get_card(){
+        $this->checkPurchasingAdminJurisdiction();
         $post = request()->post('list','');
+        $where = [];
         if(!empty($post)) {
             isset($post['oil_card_code']) ? $where['oil_number'] = $post['oil_card_code'] : '';
             isset($post['serial_number']) ? $where['serial_number'] = $post['serial_number'] : '';
@@ -219,8 +222,6 @@ class AdministratorService extends Service {
                 $user = $this->userRepo->findWhere(['truename'=>$post['truename']])->pluck('id');
                 $where['user_id'] = $user[0];
             }
-            isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
-            isset($post['order_code']) ? $where['order_code'] = ['order_code','like','%'.$post['order_code'].'%'] : '';
         }
         $result = $this->oilcardRepo->model()::orderBy('user_id')->where($where)->get()->map(function($item,$index){
             $user = $this->userRepo->find($item['user_id']);
@@ -237,6 +238,7 @@ class AdministratorService extends Service {
     }
 
     public function get_purchasing_user(){
+        $this->checkPurchasingAdminJurisdiction();
         $post = request()->post('list','');
         if(!empty($post)) {
             isset($post['truename']) ? $where['truename'] = ['truename','like','%'.$post['truename'].'%'] : '';
@@ -257,6 +259,7 @@ class AdministratorService extends Service {
     }
 
     public function get_supplier_user(){
+        $this->checkSupplyAdminJurisdiction();
         $post = request()->post('list','');
         if(!empty($post)) {
             isset($post['truename']) ? $where['truename'] = ['truename','like','%'.$post['truename'].'%'] : '';
@@ -311,7 +314,7 @@ class AdministratorService extends Service {
     public function get_sdirectly_list() {
         try{
             $exception = DB::transaction(function(){
-
+                $this->checkPurchasingAdminJurisdiction();
                 /*用户信息*/
                 $user = $this->jwtUser();
 
@@ -370,7 +373,7 @@ class AdministratorService extends Service {
             $exception = DB::transaction(function() {
                 #TODO 生成供应单记录 增加附件信息 关联上附件信息 direct_id 附件id
                 /*充值油卡*/
-
+                $this->checkPurchasingAdminJurisdiction();
                 $res = request()->post('list','');
 
 
@@ -460,7 +463,7 @@ class AdministratorService extends Service {
     {
         try{
             $exception = DB::transaction(function(){
-
+                $this->checkPurchasingAdminJurisdiction();
                 /*验证权限*/
                 $this->checkAdminUser();
                 $field = [
