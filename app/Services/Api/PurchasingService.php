@@ -236,14 +236,16 @@ class PurchasingService extends Service {
             return $reader;
         });
 
-        dd($data);
-
         $array = $data->getSheet(0)->toArray();
 
         foreach($array as $key=>&$val){
             if($key > 0){
-                $arr[$key-1]['cam_name'] = $val[0];
-                $arr[$key-1]['cam_other_name'] = $val[1];
+                $arr[$key-1]['serial_number'] = $val[0];
+                $arr[$key-1]['ture_name'] = $val[1];
+                $arr[$key-1]['oil_card_code'] = $val[2];
+                $arr[$key-1]['identity_card'] = $val[3];
+                $arr[$key-1]['web_account'] = $val[4];
+                $arr[$key-1]['web_password'] = $val[5];
             }
         }
         return ['code' => '200' ,'message' => '显示成功','data' => $arr];
