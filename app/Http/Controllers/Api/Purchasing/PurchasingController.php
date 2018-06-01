@@ -57,6 +57,11 @@ class PurchasingController extends Controller
         $result = $this->service->card_start($request);
         return response()->json($result);
     }
+    //油卡删除
+    public function del_card(){
+        $result = $this->service->del_card();
+        return response()->json($result);
+    }
     //设置长期
     public function set_longtrem(Request $request){
         $result = $this->service->oilcardRepo->update(['is_longtrem'=>1],$request->card);

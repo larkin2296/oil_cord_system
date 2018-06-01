@@ -189,7 +189,7 @@ Trait ServiceTrait
     //获取配置的商品和面额信息
     public function get_config_data(){
         $result['platform'] = $this->platformRepo->findWhere(['status'=>1]);
-        $result['denomination'] = $this->platformMoneyRepo->findWhere(['status'=>1]);
+        $result['denomination'] = $this->platformMoneyRepo->orderBy('denomination','asc')->findWhere(['status'=>1]);
         return $result;
     }
     //获取卡密的详细信息

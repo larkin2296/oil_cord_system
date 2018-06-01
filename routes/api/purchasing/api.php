@@ -38,6 +38,12 @@ $router->group([],function($router){
         'uses' => 'Purchasing\PurchasingController@card_start',
         'as' => 'card_start',
     ]);
+    /*采购商油卡启用*/
+    $router->match(['get','post'],'del_card',[
+        'uses' => 'Purchasing\PurchasingController@del_card',
+        'as' => 'del_card',
+    ]);
+
     /*采购商油卡设置为长期*/
     $router->match(['get','post'],'set_longtrem',[
         'uses' => 'Purchasing\PurchasingController@set_longtrem',
