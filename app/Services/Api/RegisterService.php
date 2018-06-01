@@ -40,8 +40,7 @@ class RegisterService extends Service {
             $email = request()->post('email');
             $password = request()->post('password');
             $code = request()->post('code');
-               /*解秘ID*/
-               $id = $this->decodeId($id);
+
                if($this->userRepo->checkedMobile($mobile)) {
 
                 throw new Exception("对不起，手机号已存在！", 2);
