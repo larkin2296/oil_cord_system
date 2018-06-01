@@ -230,12 +230,11 @@ class UserService extends Service
         $exception = DB::transaction(function() {
             /*获取用户信息*/
             $user = $this->jwtUser();
-
             /*用户邀请权限正常且等级大于二级*/
             if ( $user->recommend_status == getCommonCheckValue(true) && $user->grade >= getCommonCheckValue(false) ) {
 
                 /*生成邀请链接*/
-                $regsiterLink = url('api/register/index/'.$this->encodeId($user->id));
+                $regsiterLink = $this->encodeId($user->id);
 
             } else {
                 return ['code' => '200' ,'massage' => '您的等级还不够,请保持良好记录等待下次评估'];

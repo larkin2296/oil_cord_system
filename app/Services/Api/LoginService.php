@@ -24,7 +24,7 @@ class LoginService extends Service {
      */
     public function login()
     {
-        //TODO  验证规则
+        //审核通过 权限开启 否则权限则全为关闭
         $mobile = request('mobile', '');
 
         $password = request('password', '');
@@ -55,7 +55,6 @@ class LoginService extends Service {
         if( $status == config('back.global.status.order.complete') ) {
             throw new Exception('您的帐号存在异常，请联系管理员重新审核');
         }
-
     }
 
 
