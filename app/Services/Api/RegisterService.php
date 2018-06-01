@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Api;
 
+use App\Repositories\Models\Audit;
 use App\Traits\ResultTrait;
 use App\Traits\ExceptionTrait;
 use App\Traits\EncryptTrait;
@@ -39,7 +40,8 @@ class RegisterService extends Service {
             $email = request()->post('email');
             $password = request()->post('password');
             $code = request()->post('code');
-
+               /*解秘ID*/
+               $id = $this->decodeId($id);
                if($this->userRepo->checkedMobile($mobile)) {
 
                 throw new Exception("对不起，手机号已存在！", 2);
@@ -65,11 +67,9 @@ class RegisterService extends Service {
 
            $user = User::create($data);
 
-           $audit = $this->auditRepo->create([
-              'user_id' => $user->id,
-           ]);
+           Audit::create(['user_id' => $user->id]);
 
-               return ['code' => '200','message' => '注册成功'];
+           return ['code' => '200','message' => '注册成功'];
            });
        } catch (Exception $e) {
            dd($e);
@@ -86,7 +86,7 @@ class RegisterService extends Service {
     public function checkRegisterId($id)
     {
         if( isset($id) ) {
-            $registerId =  $this->decodeId($id)[0];
+            $registerId =  $this->decodeId($id);
 
             $register = $this->userRepo->find($registerId);
 
