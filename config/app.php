@@ -170,7 +170,8 @@ return [
         /*auth*/
 //        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvider::class
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+        Vinkla\Hashids\HashidsServiceProvider::class
 
     ],
 
@@ -223,8 +224,7 @@ return [
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-
-
+        'Hashids' => Vinkla\Hashids\Facades\Hashids::class
 
     ],
 
