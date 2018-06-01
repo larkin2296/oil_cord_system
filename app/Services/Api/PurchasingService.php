@@ -241,6 +241,7 @@ class PurchasingService extends Service {
 
         $array = $data->getSheet(0)->toArray();
 
+        $user = $this->jwtUser();
         foreach($array as $key=>&$val){
             if($key > 0){
                 $arr[$key-1]['serial_number'] = $val[0];
@@ -249,6 +250,7 @@ class PurchasingService extends Service {
                 $arr[$key-1]['identity_card'] = $val[3];
                 $arr[$key-1]['web_account'] = $val[4];
                 $arr[$key-1]['web_password'] = $val[5];
+                $arr[$key-1]['user_id'] = $user->id;
             }
         }
         return ['code' => '200' ,'message' => '显示成功','data' => $arr];
