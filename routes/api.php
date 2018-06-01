@@ -115,8 +115,9 @@ $router->group(['middleware' => ['api']],function($router){
                 /*生成邀请链接*/
                 $router->post('link',[
                     'uses' => 'UserController@setLink',
-                    'as' => 'link',
+               	    'as' => 'link',
                 ]);
+               
 
                 /*查看已邀请人*/
                 $router->post('show',[
