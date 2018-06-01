@@ -14,18 +14,22 @@ class ConfigureController extends Controller
         $this->service = $service;
     }
     public function get_platform_list(){
+        $this->service->checkCommodityAdminJurisdiction();
         $results = $this->service->platformRepo->all();
         return response()->json($results);
     }
     public function get_denomination_list(){
+        $this->service->checkCommodityAdminJurisdiction();
         $results = $this->service->platformMoneyRepo->all();
         return response()->json($results);
     }
     public function add_platform(Request $request){
+        $this->service->checkCommodityAdminJurisdiction();
         $results = $this->service->platformRepo->create($request['list']);
         return response()->json($results);
     }
     public function add_denomination(Request $request){
+        $this->service->checkCommodityAdminJurisdiction();
         $results = $this->service->platformMoneyRepo->create($request['list']);
         return response()->json($results);
     }
@@ -46,6 +50,11 @@ class ConfigureController extends Controller
     //更改配置
     public function save_config() {
         $results = $this->service->save_config();
+        return response()->json($results);
+    }
+    //获取权限
+    public function get_permission() {
+        $results = $this->service->get_permission();
         return response()->json($results);
     }
 }

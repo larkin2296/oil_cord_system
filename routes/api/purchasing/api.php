@@ -23,6 +23,11 @@ $router->group([],function($router){
         'uses' => 'Purchasing\PurchasingController@binding_card',
         'as' => 'binding_card',
     ]);
+    /*采购商油卡上传回显*/
+    $router->match(['get','post'],'get_oilcard_upload',[
+        'uses' => 'Purchasing\PurchasingController@get_oilcard_upload',
+        'as' => 'get_oilcard_upload',
+    ]);
     /*采购商油卡*/
     $router->match(['get','post'],'get_card',[
         'uses' => 'Purchasing\PurchasingController@get_card',
@@ -121,10 +126,25 @@ $router->group([],function($router){
         'uses' => 'Purchasing\PurchasingController@send_initialize',
         'as' => 'send_initialize',
     ]);
-
+    /*获取对账数据*/
     $router->post('get_reconciliation_data',[
         'uses' => 'Purchasing\PurchasingController@get_reconciliation_data',
         'as' => 'get_reconciliation_data',
+    ]);
+    /*设置对账列表*/
+    $router->post('set_reconciliation_data',[
+        'uses' => 'Purchasing\PurchasingController@set_reconciliation_data',
+        'as' => 'set_reconciliation_data',
+    ]);
+    /*获取对账列表*/
+    $router->post('get_reconciliation_list',[
+        'uses' => 'Purchasing\PurchasingController@get_reconciliation_list',
+        'as' => 'get_reconciliation_list',
+    ]);
+
+    $router->post('get_reconciliation_detail',[
+        'uses' => 'Purchasing\PurchasingController@get_reconciliation_detail',
+        'as' => 'get_reconciliation_detail',
     ]);
 
 });

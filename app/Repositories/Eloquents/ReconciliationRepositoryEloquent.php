@@ -4,16 +4,16 @@ namespace App\Repositories\Eloquents;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\Interfaces\JurisdictionRepository;
-use App\Repositories\Models\Jurisdiction;
-use App\Repositories\Validators\JurisdictionValidator;
+use App\Repositories\Interfaces\ReconciliationRepository;
+use App\Repositories\Models\Reconciliation;
+use App\Repositories\Validators\ReconciliationValidator;
 
 /**
- * Class JurisdictionRepositoryEloquent.
+ * Class ReconciliationRepositoryEloquent.
  *
  * @package namespace App\Repositories\Eloquents;
  */
-class JurisdictionRepositoryEloquent extends BaseRepository implements JurisdictionRepository
+class ReconciliationRepositoryEloquent extends BaseRepository implements ReconciliationRepository
 {
     /**
      * Specify Model class name
@@ -22,20 +22,10 @@ class JurisdictionRepositoryEloquent extends BaseRepository implements Jurisdict
      */
     public function model()
     {
-        return Jurisdiction::class;
+        return Reconciliation::class;
     }
 
-    /**
-    * Specify Validator class name
-    *
-    * @return mixed
-    */
-    public function validator()
-    {
-
-        return JurisdictionValidator::class;
-    }
-
+    
 
     /**
      * Boot up the repository, pushing criteria

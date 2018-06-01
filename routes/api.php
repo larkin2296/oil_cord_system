@@ -157,6 +157,15 @@ $router->group(['middleware' => ['api']],function($router){
 
             /*管理员公用接口*/
             require(__DIR__.'/admin/common.php');
+
+            $router->group(['prefix' => 'purchasing'],function($router){
+                require(__DIR__.'/api/purchasing/api.php');
+            });
+
+
+        });
+        $router->group(['prefix' => 'configure'],function($router){
+            require(__DIR__.'/api/configure/api.php');
         });
 
         $router->group(['prefix' => 'logout'],function($router){
@@ -167,13 +176,6 @@ $router->group(['middleware' => ['api']],function($router){
             ]);
         });
 
-        $router->group(['prefix' => 'purchasing'],function($router){
-            require(__DIR__.'/api/purchasing/api.php');
-        });
-
-        $router->group(['prefix' => 'configure'],function($router){
-            require(__DIR__.'/api/configure/api.php');
-        });
 
         $router->group(['middleware' => 'cors'],function($router) {
 

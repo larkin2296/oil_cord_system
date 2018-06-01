@@ -22,6 +22,7 @@ class AdministratorService extends Service {
     public function get_camilo_list(){
         try{
             $exception = DB::transaction(function(){
+                $this->checkPurchasingAdminJurisdiction();
 
                 /*用户信息*/
                 $user = $this->jwtUser();
@@ -34,6 +35,19 @@ class AdministratorService extends Service {
                 $where = array_merge($fieldWhere,[
                     'order_type' => 1,
                 ]);
+                $post = request()->post('list','');
+                if(!empty($post)) {
+                    if(isset($post['goods_type']) && $post['goods_type'] != ''){
+                        $where['platform'] = $this->get_platform_id($post['goods_type']);
+                    }
+                    if(isset($post['card_price']) && $post['card_price'] != ''){
+                        $where['unit_price'] = $this->get_denomination_id($post['card_price']);
+                    }
+                    isset($post['order_status']) ? $where['order_status'] = $post['order_status'] : '';
+                    isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
+                    isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
+                    isset($post['order_code']) ? $where['order_code'] = ['order_code','like','%'.$post['order_code'].'%'] : '';
+                }
 
                 $data =  $this->purorderRepo->findWhere($where)->map(function($item,$key){
                     //return $item;
@@ -66,7 +80,7 @@ class AdministratorService extends Service {
     public function get_directly_list(){
         try{
             $exception = DB::transaction(function(){
-
+                $this->checkPurchasingAdminJurisdiction();
                 /*用户信息*/
                 $user = $this->jwtUser();
 
@@ -78,8 +92,24 @@ class AdministratorService extends Service {
                 $where = array_merge($fieldWhere,[
                     'supply_status' => 1,
                 ]);
+                $post = request()->post('list','');
+                if(!empty($post)) {
+                    isset($post['oil_card_code']) ? $where['oil_number'] = $post['oil_card_code'] : '';
+                    isset($post['check_money']) ? $where['check_money'] = $post['check_money'] : '';
+                    if(isset($post['serial_number']) && $post['serial_number'] != ''){
+                        $number = $this->oilcardRepo->findWhere(['serial_number'=>$post['serial_number']])->pluck('oil_card_code');
+                        $where['oil_number'] = $number[0];
+                    }
+//                    if(isset($post['ture_name']) && $post['ture_name'] != ''){
+//                        $number1 = $this->oilcardRepo->findWhere(['ture_name'=>$post['ture_name']])->pluck('oil_card_code');
+//                        $arr = implode(',',$number1);
+//                        $wherein['oil_number'] = $arr;
+//                    }
+                    isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
+                    isset($post['order_code']) ? $where['order_code'] = ['order_code','like','%'.$post['order_code'].'%'] : '';
+                }
 
-                $data =  $this->supplySingleRepo->findWhere($where)->map(function($item,$key){
+                $data =  $this->supplySingleRepo->model()::where($where)->get()->map(function($item,$key){
                     $result = $this->oilcardRepo->model()::where(['oil_card_code'=>$item['oil_number']])->get();
                     $user = $this->userRepo->find($result[0]['user_id']);
 
@@ -92,15 +122,16 @@ class AdministratorService extends Service {
                         'oil_number' => $item['oil_number'],
                         'serial_number' => $result[0]['serial_number'],
                         'ture_name' => $result[0]['ture_name'],
-                        'purchasing_name' => $user['truename']
+                        'purchasing_name' => $user['truename'],
+                        'check_money' => $item['check_money']
                     ];
 
                 })->all();
 
-                if( $data ) {
-                } else {
-                    throw new EXception('卡密查询异常,请重试','2');
-                }
+//                if( $data ) {
+//                } else {
+//                    throw new EXception('卡密查询异常,请重试','2');
+//                }
                 return ['code' => '200', 'message' => '查询成功', 'data' => $data];
 
             });
@@ -181,7 +212,18 @@ class AdministratorService extends Service {
     }
 
     public function get_card(){
-        $result = $this->oilcardRepo->model()::orderBy('user_id')->get()->map(function($item,$index){
+        $this->checkPurchasingAdminJurisdiction();
+        $post = request()->post('list','');
+        $where = [];
+        if(!empty($post)) {
+            isset($post['oil_card_code']) ? $where['oil_number'] = $post['oil_card_code'] : '';
+            isset($post['serial_number']) ? $where['serial_number'] = $post['serial_number'] : '';
+            if(isset($post['truename']) && $post['truename'] != ''){
+                $user = $this->userRepo->findWhere(['truename'=>$post['truename']])->pluck('id');
+                $where['user_id'] = $user[0];
+            }
+        }
+        $result = $this->oilcardRepo->model()::orderBy('user_id')->where($where)->get()->map(function($item,$index){
             $user = $this->userRepo->find($item['user_id']);
            return [
              'id'=>$item['id'],
@@ -196,7 +238,13 @@ class AdministratorService extends Service {
     }
 
     public function get_purchasing_user(){
-        $user = $this->userRepo->findWhere(['role_status'=>1])->map(function($item,$index){
+        $this->checkPurchasingAdminJurisdiction();
+        $post = request()->post('list','');
+        if(!empty($post)) {
+            isset($post['truename']) ? $where['truename'] = ['truename','like','%'.$post['truename'].'%'] : '';
+        }
+        $where['role_status'] = 1;
+        $user = $this->userRepo->findWhere($where)->map(function($item,$index){
             return [
                 'id' => $item['id'],
                 'name' => $item['truename'],
@@ -211,6 +259,11 @@ class AdministratorService extends Service {
     }
 
     public function get_supplier_user(){
+        $this->checkSupplyAdminJurisdiction();
+        $post = request()->post('list','');
+        if(!empty($post)) {
+            isset($post['truename']) ? $where['truename'] = ['truename','like','%'.$post['truename'].'%'] : '';
+        }
         $user = $this->userRepo->findWhere(['role_status'=>2])->map(function($item,$index){
             return [
                 'id' => $item['id'],
@@ -261,7 +314,7 @@ class AdministratorService extends Service {
     public function get_sdirectly_list() {
         try{
             $exception = DB::transaction(function(){
-
+                $this->checkPurchasingAdminJurisdiction();
                 /*用户信息*/
                 $user = $this->jwtUser();
 
@@ -273,6 +326,18 @@ class AdministratorService extends Service {
                 $where = array_merge($fieldWhere,[
                     'order_type' => 2,
                 ]);
+                $post = request()->post('list','');
+                if(!empty($post)) {
+//                    if(isset($post['goods_type']) && $post['goods_type'] != ''){
+//                        $where['platform'] = $this->get_platform_id($post['goods_type']);
+//                    }
+//                    if(isset($post['card_price']) && $post['card_price'] != ''){
+//                        $where['unit_price'] = $this->get_denomination_id($post['card_price']);
+//                    }
+                    isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
+                    isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
+                    isset($post['order_code']) ? $where['order_code'] = ['order_code','like','%'.$post['order_code'].'%'] : '';
+                }
 
                 $data =  $this->purorderRepo->findWhere($where)->map(function($item,$key){
                     $res = $this->supplySingleRepo->model()::where(['notes'=>$item['order_code']])->sum('already_card');
@@ -308,7 +373,7 @@ class AdministratorService extends Service {
             $exception = DB::transaction(function() {
                 #TODO 生成供应单记录 增加附件信息 关联上附件信息 direct_id 附件id
                 /*充值油卡*/
-
+                $this->checkPurchasingAdminJurisdiction();
                 $res = request()->post('list','');
 
 
@@ -398,7 +463,7 @@ class AdministratorService extends Service {
     {
         try{
             $exception = DB::transaction(function(){
-
+                $this->checkPurchasingAdminJurisdiction();
                 /*验证权限*/
                 $this->checkAdminUser();
                 $field = [
@@ -416,6 +481,13 @@ class AdministratorService extends Service {
                 $where = array_merge($whereField,[
                     'role_status' => getCommonCheckValue(true),
                 ]);
+                $post = request()->post('list','');
+                if(!empty($post)) {
+                   isset($post['truename']) ? $where['truename'] = ['truename','like','%'.$post['truename'].'%'] : '';
+                   isset($post['mobile']) ? $where['mobile'] = ['mobile','like','%'.$post['mobile'].'%'] : '';
+                   isset($post['qq_num']) ? $where['qq_num'] = ['qq_num','like','%'.$post['qq_num'].'%'] : '';
+                   isset($post['status_examine']) ? $where['status_examine'] = $post['status_examine'] : '';
+                }
 //                DB::connection()->enableQueryLog();
                 $data = $this->userRepo->with(['attachments'=>function($query){
                     return $query;
@@ -452,5 +524,15 @@ class AdministratorService extends Service {
             dd($e);
         }
         return array_merge($this->results,$exception);
+    }
+
+    public function set_reconciliation_status() {
+        $id = request()->post('id','');
+        $data = $this->reconRepo->update(['status'=>2],$id);
+        return $this->results = array_merge([
+            'code' => '200',
+            'message' => '修改成功',
+            'data' => $data,
+        ]);
     }
 }

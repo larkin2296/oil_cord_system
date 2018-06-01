@@ -24,7 +24,7 @@ class SupplySingle extends Model implements Transformable
 
     protected $fillable = [
         'supply_single_number','supply_state','oil_card','start_time','notes','end_time','already_card','remarks',
-        'direct_id','status','suoil_id','oil_number','user_id','forward_status','discount','supply_status'
+        'direct_id','status','suoil_id','oil_number','user_id','forward_status','discount','supply_status','reconciliation','check_money'
     ];
 
     /**
