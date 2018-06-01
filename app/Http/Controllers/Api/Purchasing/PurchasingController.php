@@ -156,4 +156,9 @@ class PurchasingController extends Controller
         $results = $this->service->get_reconciliation_detail();
         return response()->json($results);
     }
+    //删除短充
+    public function del_short_order() {
+        $results = $this->service->del_short_order();
+        return response()->json($results);
+    }
 }
