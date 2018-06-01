@@ -203,6 +203,7 @@ class PurchasingService extends Service {
             isset($post['oil_card_code']) ? $where['oil_card_code'] = ['oil_card_code','like','%'.$post['oil_card_code'].'%'] : '';
             isset($post['is_longtrem']) ? $where['is_longtrem'] = $post['is_longtrem'] : '';
         }
+        $where['is_del'] = 0;
         $user = $this->jwtUser();
         $where['user_id'] = $user->id;
         $results = $this->oilcardRepo->findWhere($where);
@@ -271,6 +272,11 @@ class PurchasingService extends Service {
             $result['longtrem'] = false;
         }
         return $result;
+    }
+    public function del_card(){
+        $id = request()->post('id','');
+        $result = $this->oilcardRepo->update(['is_del'=>1],$id);
+        return ['code' => '200' ,'message' => '删除成功','data' => $result];
     }
 
     public function directly_order($request){

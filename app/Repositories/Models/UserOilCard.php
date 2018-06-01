@@ -24,7 +24,7 @@ class UserOilCard extends Model implements Transformable
 
     protected $fillable = [
         'id','user_id','serial_number','oil_card_code','identity_card','ture_name','web_account','web_password','card_status','is_longtrem','recharge_num','recharge_today_num','total_money','save_money','initialize_price','last_recharge_time',
-        'status_supply',
+        'status_supply','is_del',
     ];
 
 
