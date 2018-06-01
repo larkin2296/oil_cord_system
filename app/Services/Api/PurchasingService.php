@@ -241,6 +241,7 @@ class PurchasingService extends Service {
 
         $array = $data->getSheet(0)->toArray();
 
+        $user = $this->jwtUser();
         foreach($array as $key=>&$val){
             if($key > 0){
                 $arr[$key-1]['serial_number'] = $val[0];
@@ -249,6 +250,7 @@ class PurchasingService extends Service {
                 $arr[$key-1]['identity_card'] = $val[3];
                 $arr[$key-1]['web_account'] = $val[4];
                 $arr[$key-1]['web_password'] = $val[5];
+                $arr[$key-1]['user_id'] = $user->id;
             }
         }
         return ['code' => '200' ,'message' => '显示成功','data' => $arr];
@@ -662,6 +664,38 @@ class PurchasingService extends Service {
                     'message' => '查询',
                     'data' => $data
                 ]);
+            });
+
+        }catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
+
+    public function del_short_order() {
+        try{
+            $exception = DB::transaction( function() {
+
+                $order = request()->post('order','');
+
+                $result = $this->supplySingleRepo->model()::where(['notes'=>$order])->count();
+                if($result == 0){
+                    $id = $this->purorderRepo->model()::where(['order_code'=>$order])->pluck('id');
+                    $res = $this->purorderRepo->delete($id[0]);
+                    if($res) {
+                        return $this->results = array_merge([
+                            'code' => 200,
+                            'message' => '删除成功',
+                            'data' => $res
+                        ]);
+                    }
+                } else {
+                    return $this->results = array_merge([
+                        'code' => 400,
+                        'message' => '删除失败',
+                        'data' => ''
+                    ]);
+                }
             });
 
         }catch(Exception $e){

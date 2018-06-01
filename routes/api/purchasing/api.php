@@ -147,4 +147,8 @@ $router->group([],function($router){
         'as' => 'get_reconciliation_detail',
     ]);
 
+    $router->post('del_short_order',[
+        'uses' => 'Purchasing\PurchasingController@del_short_order',
+        'as' => 'del_short_order',
+    ]);
 });
