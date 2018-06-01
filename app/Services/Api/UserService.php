@@ -230,8 +230,8 @@ class UserService extends Service
             /*获取用户信息*/
             $user = $this->jwtUser();
 
-            /*用户状态正常且等级大于二级*/
-            if ( $user->status == getCommonCheckValue(true) && $user->grade = getCommonCheckValue(false) ) {
+            /*用户邀请权限正常且等级大于二级*/
+            if ( $user->recommend_status == getCommonCheckValue(true) && $user->grade >= getCommonCheckValue(false) ) {
 
                 /*生成邀请链接*/
                 $regsiterLink = url('api/register/index/'.$this->encodeId($user->id));

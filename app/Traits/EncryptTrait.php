@@ -2,7 +2,8 @@
 
 namespace App\Traits;
 
-use Hashids;
+//use Hashids;
+use Hashids\Hashids;
 //use Mockery\Exception;
 
 Trait EncryptTrait
