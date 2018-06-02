@@ -20,7 +20,7 @@ class ConfigureController extends Controller
     }
     public function get_denomination_list(){
         $this->service->checkCommodityAdminJurisdiction();
-        $results = $this->service->platformMoneyRepo->all();
+        $results = $this->service->platformMoneyRepo->orderBy('denomination','asc')->all();
         return response()->json($results);
     }
     public function add_platform(Request $request){

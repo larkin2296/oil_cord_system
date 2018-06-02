@@ -29,6 +29,10 @@ class PurchasingController extends Controller
         $results = $this->service->send_camilo();
         return response()->json($results);
     }
+    public function stop_send_camilo() {
+        $results = $this->service->stop_send_camilo();
+        return response()->json($results);
+    }
 
     //油卡获取
     public function get_purchasing_card() {
