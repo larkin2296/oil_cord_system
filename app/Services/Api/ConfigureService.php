@@ -106,4 +106,29 @@ class ConfigureService extends Service {
         }
         return array_merge($this->results, $exception);
     }
+
+    public function save_platform_discount() {
+        try{
+            $exception = DB::transaction(function(){
+                $id = request()->post('id','');
+                $recharge = request()->post('camilo_recharge','');
+                $sell = request()->post('camilo_sell','');
+
+                if($id != ''){
+                    $data = $this->platformRepo->update(['camilo_recharge'=>$recharge,'camilo_sell'=>$sell],$id);
+
+                    if($data) {
+                        return ['code' => 200, 'message' => '修改成功', 'data' => $data];
+                    } else {
+                        return ['code' => 300, 'message' => '修改失败', 'data' => ''];
+                    }
+                } else {
+                    return ['code' => 300, 'message' => '修改失败', 'data' => ''];
+                }
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+    }
 }

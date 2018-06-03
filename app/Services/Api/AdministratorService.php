@@ -200,7 +200,7 @@ class AdministratorService extends Service {
     public function stop_send_camilo() {
         try{
             $exception = DB::transaction(function(){
-                
+
                 $id = request()->post('id','');
                 $reason = request()->post('reason','');
                 /*用户信息*/

@@ -16,6 +16,10 @@ class ConfigureController extends Controller
     public function get_platform_list(){
         $this->service->checkCommodityAdminJurisdiction();
         $results = $this->service->platformRepo->all();
+        foreach($results as $key=>$value) {
+            $results[$key]['edit'] = false;
+            $results[$key]['edit1'] = false;
+        }
         return response()->json($results);
     }
     public function get_denomination_list(){
@@ -55,6 +59,11 @@ class ConfigureController extends Controller
     //获取权限
     public function get_permission() {
         $results = $this->service->get_permission();
+        return response()->json($results);
+    }
+    //修改平台折扣
+    public function save_platform_discount() {
+        $results = $this->service->save_platform_discount();
         return response()->json($results);
     }
 }
