@@ -56,4 +56,10 @@ $router->group([],function($router){
         'uses' => 'Configure\ConfigureController@get_permission',
         'as' => 'get_permission',
     ]);
+
+    /*修改平台折扣*/
+    $router->post('save_platform_discount',[
+        'uses' => 'Configure\ConfigureController@save_platform_discount',
+        'as' => 'save_platform_discount',
+    ]);
 });

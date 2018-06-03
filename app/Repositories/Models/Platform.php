@@ -23,7 +23,7 @@ class Platform extends Model implements Transformable
     protected $table = 'platform';
 
     protected $fillable = [
-        'platform_name','status'
+        'platform_name','status','camilo_recharge','camilo_sell'
     ];
 
 }
