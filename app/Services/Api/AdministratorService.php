@@ -197,6 +197,30 @@ class AdministratorService extends Service {
         }
         return array_merge($this->results, $exception);
     }
+    public function stop_send_camilo() {
+        try{
+            $exception = DB::transaction(function(){
+
+                $id = request()->post('id','');
+                $reason = request()->post('reason','');
+                /*用户信息*/
+                $user = $this->jwtUser();
+
+                $data =  $this->purorderRepo->update(['order_status'=>3,'remark'=>$reason],$id);
+
+
+                if( $data ) {
+                } else {
+                    throw new EXception('卡密查询异常,请重试','2');
+                }
+                return ['code' => '200', 'message' => '查询成功', 'data' => $data];
+
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+    }
     private function set_camilo_status($data){
         foreach($data as $value){
             $this->supplyCamRepo->update(['status'=>2],$value['id']);
