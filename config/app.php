@@ -168,7 +168,6 @@ return [
         /*excel*/
         //Maatwebsite\Excel\ExcelServiceProvider::class,
         /*auth*/
-//        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class
 

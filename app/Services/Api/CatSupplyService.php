@@ -33,34 +33,23 @@ Class CatSupplyservice extends Service{
             $exception = DB::transaction( function() {
 
                 $res = request()->post('list','');
-                $cam = $res['cam'];
+                $cam[] = $res['cam'];
 
                 $now = new Carbon();
-                /*用户信息*/
                 $user = $this->jwtUser();
-                /*处理面额*/
-                $platform_money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$res['money_id']])->map(function($item,$key){
-                    return [
-                       'id'=>$item['id']
-                    ];
-                })->first();
-
-                /*处理平台*/
-                $platform_id = $this->platformRepo->findWhere(['platform_name'=>$res['platform_id']])->map(function($item,$key){
-                    return [
-                        'id'=>$item['id']
-                    ];
-                })->first();
-
+                /*实际面额*/
+                $actual_money = $this->checkActualMoney($res['discount'],$res['money_id']);
                 /*卡密信息*/
                 foreach( $cam as $item ) {
+
                     $arr = [
                         'cam_name' => $item['cam_name'],
                         'cam_other_name' => $item['cam_other_name'],
-                        'denomination' => $platform_money_id['id'],
-                        'platform_id' => $platform_id['id'],
+                        'denomination' => $res['money_id'],
+                        'platform_id' => $res['platform_id'],
                         'user_id' => $user->id,
-                        'discount' => $res['discount']
+                        'discount' => $res['discount'],
+                        'actual_money' => $actual_money,
                     ];
                     $data = $this->supplyCamRepo->create($arr);
                 }
@@ -78,27 +67,8 @@ Class CatSupplyservice extends Service{
         return array_merge($this->results,$exception);
     }
 
-    /*处理附件*/
-    public function checkAttachments()
-    {
-        try{
-            $exception = DB::transaction(function(){
-                /*附件id*/
-               $attachmentIds = request()->attachment_id;
 
-               /*验证附件关系*/
 
-                return $this->results = array_merge([
-                   'code' => '200',
-                   'message' => '处理附件关系成功',
-                   'data' => collect([]),
-                ]);
-            });
-        } catch(Exception $e){
-            dd($e);
-        }
-        return array_merge($this->results,$exception);
-    }
     /**
      * 导入模版
      * return [type][deception]
@@ -114,17 +84,20 @@ Class CatSupplyservice extends Service{
             foreach($path as $key => $item) {
                 $filePath = 'storage/app/' . $item;
                 $exception = Excel::load($filePath, function ($reader) {
-                    /*金额*/
+                    /*金额id*/
                     $platform_money = request()->get('money_id', '');
-                    /*平台*/
+                    /*平台id*/
                     $platform_id = request()->post('platform_id', '');
+                    /*折扣*/
+                    $discount = request()->post('discount', '');
                     $reader = $reader->getSheet(0);
                     $data = $reader->toArray();
                     /*用户信息*/
                     $user = $this->jwtUser();
                     /*格式数据*/
                     unset($data[0]);
-
+                    /*实际面额*/
+                    $actual_money = $this->checkActualMoney($discount,$platform_money);
                     foreach( $data as $k=>$v ){
                     /*清除标题*/
                     unset($v[2]);
@@ -134,6 +107,7 @@ Class CatSupplyservice extends Service{
                         'denomination' => $platform_money,
                         'platform_id' => $platform_id,
                         'user_id' => $user->id,
+                        'actual_money' => $actual_money,
                     ];
                 $attachmentsIds = request()->post('attachment_id',[]);
                     if( $info =  $this->supplyCamRepo->create($arr) ) {
@@ -168,11 +142,9 @@ Class CatSupplyservice extends Service{
         $list = request()->post('list','');
         /*设置时间*/
         set_time_limit(0);
-
         $filePath = 'storage/app/'.iconv('UTF-8', 'GBK', $list);
 
         $data = Excel::load($filePath, function($reader) {
-
             $reader = $reader->getSheet(0)->toArray();
             return $reader;
         });
@@ -204,7 +176,7 @@ Class CatSupplyservice extends Service{
                     ]
                 );
 
-            })->export('xls');
+            })->export('xlsx');
         });
     }
 
@@ -337,10 +309,11 @@ Class CatSupplyservice extends Service{
 
                 /*冗余油卡*/
                 $oilCard =  $this->oilcardRepo->find($id);
-
+                $price = $this->checkChargeMoney($res['price'],$res['discount']);
                 $arr = [
                     'suoil_id' => $oilInfo->id,
                     'already_card' => $res['price'],
+                    'actual_money' => $price,
                     'oil_number' => $oilCard->oil_card_code,
                     'user_id' => $user->id,
                     'end_time' => $res['recharge_time'],
@@ -368,5 +341,6 @@ Class CatSupplyservice extends Service{
         }
             return array_merge($this->results,$exception);
     }
+
 
 }

@@ -83,8 +83,9 @@ class LoginService extends Service {
                 $user = $this->userRepo->find($user->id);
             }
             /*验证登陆权限*/
-            $this->checkQualificationAudit($user);
+           // $this->checkQualificationAudit($user);
             $token = JWTAuth::fromUser($user);
+
             return [
                 'code' => '200',
                 'data' => [
