@@ -33,19 +33,53 @@ Class CatSupplyservice extends Service{
             $exception = DB::transaction( function() {
 
                 $res = request()->post('list','');
-                $cam[] = $res['cam'];
+                $cam = $res['cam'];
+                $camilo_data = [];
+                // 获取去掉重复数据的数组
+                foreach( $cam as $val ) {
+                    if($val['cam_name'] == ''){
+                        return $this->results = array_merge([
+                            'code' => '400',
+                            'message' => '卡密字段一有未填写项',
+                            'data' => '',
+                        ]);
+                    }
+                    $camilo_data[] = $val['cam_name'].'-'.$val['cam_other_name'];
+                }
+                $unique_arr = array_unique ( $camilo_data );
+                // 获取重复数据的数组
+                $repeat_arr = array_diff_assoc ( $camilo_data, $unique_arr );
+                if(!empty($repeat_arr)){
+                    return $this->results = array_merge([
+                        'code' => '400',
+                        'message' => '卡密供货有重复数据，重复卡密为',
+                        'data' => implode(',',$repeat_arr),
+                    ]);
+                }
+
+                $platform_money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$res['money_id']])->map(function($item,$key){
+                    return [
+                            'id'=>$item['id']
+                            ];
+                })->first();
+
+                $platform_id = $this->platformRepo->findWhere(['platform_name'=>$res['platform_id']])->map(function($item,$key){
+                  return [
+                          'id'=>$item['id']
+                            ];
+                })->first();
 
                 $user = $this->jwtUser();
                 /*实际面额*/
-                $actual_money = $this->checkActualMoney($res['discount'],$res['money_id']);
+                $actual_money = $this->checkActualMoney($res['discount'],$platform_money_id['id']);
                 /*卡密信息*/
                 foreach( $cam as $item ) {
 
                     $arr = [
                         'cam_name' => $item['cam_name'],
                         'cam_other_name' => $item['cam_other_name'],
-                        'denomination' => $res['money_id'],
-                        'platform_id' => $res['platform_id'],
+                        'denomination' => $platform_money_id['id'],
+                        'platform_id' => $platform_id['id'],
                         'user_id' => $user->id,
                         'discount' => $res['discount'],
                         'actual_money' => $actual_money,
