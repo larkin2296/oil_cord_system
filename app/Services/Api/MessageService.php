@@ -191,7 +191,7 @@ class MessageService extends Service {
 
             $nineorange = new NineOrange;
             $send_result = $nineorange->sendCustom($template, $data, $mobile);
-            dd($send_result);
+
             if ( $send_result['result'] ) {
                 //存储验证码
                 $result = $this->setVerifyCode($action, $mobile, $code);

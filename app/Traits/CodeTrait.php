@@ -10,7 +10,6 @@ Trait CodeTrait
     {
 
         $key = $this->getCodeKey($mobile, $action);
-
         if(	PhpRedis::command('exists', [$key]) ) {
             $code = $this->getRedis($key);
 
