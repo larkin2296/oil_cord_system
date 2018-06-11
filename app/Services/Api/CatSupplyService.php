@@ -35,7 +35,6 @@ Class CatSupplyservice extends Service{
                 $res = request()->post('list','');
                 $cam[] = $res['cam'];
 
-                $now = new Carbon();
                 $user = $this->jwtUser();
                 /*实际面额*/
                 $actual_money = $this->checkActualMoney($res['discount'],$res['money_id']);
@@ -303,7 +302,8 @@ Class CatSupplyservice extends Service{
                 /*充值油卡*/
                 $res = request()->post('list','');
                 $id = $res['id'];
-
+                //验证时间
+                $this->checkTimeStamp($res['recharge_time']);
                 $oilInfo = $this->oilSupplyRepo->model()::where('oil_id',$id)
                     ->with('hasManyOilCard')->first();
 
@@ -340,6 +340,18 @@ Class CatSupplyservice extends Service{
             dd($e);
         }
             return array_merge($this->results,$exception);
+    }
+
+    //校验时间
+    public function checkTimeStamp($eventTime)
+    {
+        $timeStamp = new Carbon();
+
+        $time = $timeStamp->endOfDay()->timestamp;
+
+        if($eventTime > $time){
+            throw new Exception('您不能添加未来的时间',2);
+        }
     }
 
 

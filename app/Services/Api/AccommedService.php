@@ -67,7 +67,7 @@ class AccommedService extends Service {
                         'discount' => $item['discount'],
                         'actual_money' => $item['actual_money'],
                         'success_time' => $item['success_time'],
-                        'supplier_time' => $item['created_at'],
+                        'supplier_time' => $item['created_at']->format('Y-m-d H:i:s'),
                     ];
 
                })->all();

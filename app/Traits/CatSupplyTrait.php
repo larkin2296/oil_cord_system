@@ -8,7 +8,7 @@ use PhpRedis;
 use Exception;
 use App\Traits\UserTrait;
 Trait CatSupplyTrait{
-
+    //供应单规则 供应商id 供应数据id 类型 时间 截取时间戳 随机数 （0-9）
     /**
      * 供应单号
      * return [type] [deception]
