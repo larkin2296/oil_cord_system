@@ -62,4 +62,15 @@ $router->group([],function($router){
         'uses' => 'Configure\ConfigureController@save_platform_discount',
         'as' => 'save_platform_discount',
     ]);
+    /*获取平台金额折扣*/
+    $router->post('get_discount_data',[
+        'uses' => 'Configure\ConfigureController@get_discount_data',
+        'as' => 'get_discount_data',
+    ]);
+
+        /*修改平台金额折扣*/
+    $router->post('save_discount_data',[
+        'uses' => 'Configure\ConfigureController@save_discount_data',
+        'as' => 'save_discount_data',
+    ]);
 });

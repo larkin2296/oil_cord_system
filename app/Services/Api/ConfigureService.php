@@ -131,4 +131,67 @@ class ConfigureService extends Service {
         }
         return array_merge($this->results, $exception);
     }
+
+    public function get_discount_data() {
+        $price = request()->post('card_price','');
+        $platform = request()->post('goods_type','');
+        $platform_money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$price])->map(function($item,$key){
+            return [
+                'id'=>$item['id']
+            ];
+        })->first();
+
+        $platform_id = $this->platformRepo->findWhere(['platform_name'=>$platform])->map(function($item,$key){
+            return [
+                'id'=>$item['id']
+            ];
+        })->first();
+
+        if($result = $this->discountRepo->findWhere(['platform_id'=>$platform_id['id'],'denomination_id'=>$platform_money_id['id']])->first()){
+            $arr[] = [
+                'platform_name' => $platform,
+                'platform_id' => $platform_id['id'],
+                'denomination' => $price,
+                'denomination_id' => $platform_money_id['id'],
+                'camilo_recharge' => $result['camilo_recharge'],
+                'camilo_sell' => $result['camilo_sell'],
+                'edit' => false,
+                'edit1' => false
+            ];
+        } else {
+        $result = $this->platformRepo->find($platform_id)->first();
+            $arr[] = [
+                'platform_name' => $platform,
+                'platform_id' => $platform_id['id'],
+                'denomination' => $price,
+                'denomination_id' => $platform_money_id['id'],
+                'camilo_recharge' => $result['camilo_recharge'],
+                'camilo_sell' => $result['camilo_sell'],
+                'edit' => false,
+                'edit1' => false
+            ];
+        }
+        return ['code' => 200, 'message' => '查询成功', 'data' => $arr];
+    }
+
+    public function save_discount_data() {
+        try{
+            $exception = DB::transaction(function(){
+                $denomination_id = request()->post('denomination_id','');
+                $platform_id = request()->post('platform_id','');
+                $camilo_recharge = request()->post('camilo_recharge','');
+                $camilo_sell = request()->post('camilo_sell','');
+
+                $arr = [
+                    'camilo_recharge' => $camilo_recharge,
+                    'camilo_sell' => $camilo_sell,
+                ];
+                $result = $this->discountRepo->updateOrCreate(['platform_id'=>$platform_id,'denomination_id'=>$denomination_id],$arr);
+                return ['code' => 200, 'message' => '修改成功', 'data' => $result];
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+    }
 }

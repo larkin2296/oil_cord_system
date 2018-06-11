@@ -26,6 +26,7 @@ use App\Repositories\Interfaces\JurisdictionRepository;
 
 use App\Repositories\Interfaces\ConfigureRepository;
 use App\Repositories\Interfaces\ReconciliationRepository;
+use App\Repositories\Interfaces\DiscountRepository;
 
 
 
@@ -56,6 +57,7 @@ class Service
     public $jurisdictionRepo;
     public $configureRepo;
     public $reconRepo;
+    public $discountRepo;
 
 
 
@@ -89,6 +91,7 @@ class Service
         $this->configureRepo = app(ConfigureRepository::class);
 
         $this->reconRepo = app(ReconciliationRepository::class);
+        $this->discountRepo = app(DiscountRepository::class);
 
 
     }
