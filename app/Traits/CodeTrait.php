@@ -104,7 +104,7 @@ Trait CodeTrait
                 'sex' => $data['sex'],
                 'mobile' => $data['mobile'],
                 'role_status' => $data['role_status'],
-                'status_examine' => 1,
+                'status_examine' => getCommonCheckValue(true),
                 'invitation_id' => $user->id
             ];
         } else if( $role == config('back.global.status.order.complete') ) {
@@ -114,7 +114,7 @@ Trait CodeTrait
                 'truename' => $data['truename'],
                 'sex' => $data['sex'],
                 'mobile' => $data['mobile'],
-                'status_examine' => 1,
+                'status_examine' => getCommonCheckValue(true),
                 'role_status' => config('back.global.status.order.complete'), //管理员
                 'invitation_id' => $user->id
             ];
