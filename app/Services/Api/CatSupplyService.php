@@ -44,7 +44,7 @@ Class CatSupplyservice extends Service{
                             'data' => '',
                         ]);
                     }
-                    $camilo_data[] = $val['cam_name'].$val['cam_other_name'];
+                    $camilo_data[] = $val['cam_name'].'-'.$val['cam_other_name'];
                 }
                 $unique_arr = array_unique ( $camilo_data );
                 // 获取重复数据的数组
