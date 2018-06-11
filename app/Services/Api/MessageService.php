@@ -36,7 +36,8 @@ class MessageService extends Service {
             $info = $this->checkCount($mobile);
 
             //发送验证码
-            $template = "您的验证码是%u请不要告诉任何人,30分钟内有效,如非本人操作,请忽略本短信.";
+            //$template = "您的验证码是%u请不要告诉任何人,30分钟内有效,如非本人操作,请忽略本短信.";
+            $template = "您的验证码为%u.";
             $code = $this->sendCode('login', $mobile, $template);
             $message = '发送成功';
             if( env('APP_DEBUG') ) {
@@ -72,7 +73,9 @@ class MessageService extends Service {
             $this->checkCount($mobile);
 
             //发送验证码
-            $template = "您的验证码是%u请不要告诉任何人,30分钟内有效,如非本人操作,请忽略本短信.";
+            //$template = "您的验证码是%u请不要告诉任何人,30分钟内有效,如非本人操作,请忽略本短信.";
+            $template = "您的验证码为%u.";
+
             $code = $this->sendCode('register', $mobile, $template);
 
             $message = '发送成功';
@@ -108,7 +111,9 @@ class MessageService extends Service {
             $this->checkCount($mobile);
 
             //发送验证码
-            $template = "您的验证码是%u请不要告诉任何人,30分钟内有效,如非本人操作,请忽略本短信.";
+            //$template = "您的验证码是%u请不要告诉任何人,30分钟内有效,如非本人操作,请忽略本短信.";
+            $template = "您的验证码为%u.";
+
             $code = $this->sendCode('resetpass', $mobile, $template);
 
             $message = '发送成功';
@@ -145,7 +150,9 @@ class MessageService extends Service {
             $this->checkCount($mobile);
 
             //发送验证码
-            $template = "您的验证码是%u请不要告诉任何人,30分钟内有效,如非本人操作,请忽略本短信.";
+            //$template = "您的验证码是%u请不要告诉任何人,30分钟内有效,如非本人操作,请忽略本短信.";
+            $template = "您的验证码为%u.";
+
             $code = $this->sendCode('editMobile', $mobile, $template);
 
             $message = '发送成功';
@@ -184,7 +191,7 @@ class MessageService extends Service {
 
             $nineorange = new NineOrange;
             $send_result = $nineorange->sendCustom($template, $data, $mobile);
-
+            dd($send_result);
             if ( $send_result['result'] ) {
                 //存储验证码
                 $result = $this->setVerifyCode($action, $mobile, $code);
