@@ -618,7 +618,7 @@ class PurchasingService extends Service {
                 if($user->id == 3 || $user->id == 4){
                     $this->checkPurchasingAdminJurisdiction();
                 }
-                $info =  $this->reconRepo->findWhere($where);
+                $info =  $this->reconRepo->all();
                 return $this->results = array_merge([
                     'code' => '200',
                     'message' => '查询',
