@@ -39,7 +39,7 @@ Class ForwardService extends Service
                 /*卡密列表*/
                 $data['cam'] = $this->supplyCamRepo->model()::where('user_id',$user->id)
                     ->where('status',4)
-                    ->where('forward_status',2)
+                    ->where('forward_status',getCommonCheckValue(false))
                     ->get()->map(function($item,$key){
                         return [
                            'id' => $item->id,
@@ -54,9 +54,9 @@ Class ForwardService extends Service
 
                 /*直充列表*/
                 $data['forward'] = $this->supplySingleRepo->model()::where('user_id',$user->id)
-                    ->where('supply_status',1)
-                    ->where('forward_status',2)
-                    ->where('status',1)->get()
+                    ->where('supply_status',getCommonCheckValue(true))
+                    ->where('forward_status',getCommonCheckValue(false))
+                    ->where('status',getCommonCheckValue(true))->get()
                     ->map(function($item,$key){
                     return [
                         'id' => $item->id,

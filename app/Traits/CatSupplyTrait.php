@@ -8,7 +8,7 @@ use PhpRedis;
 use Exception;
 use App\Traits\UserTrait;
 Trait CatSupplyTrait{
-
+    //供应单规则 供应商id 供应数据id 类型 时间 截取时间戳 随机数 （0-9）
     /**
      * 供应单号
      * return [type] [deception]
@@ -126,6 +126,31 @@ Trait CatSupplyTrait{
         $businessType = '0';
 
         return $serviceType . $businessType . date("Ymd") .substr(time(),2) .$user_id . rand(0, 9);
+    }
+
+    /*处理折扣*/
+    public function checkActualMoney($discount,$moneyIds)
+    {
+        try{
+            $money = $this->platformMoneyRepo->find($moneyIds)->denomination;
+            if( !$money ) {
+                throw new Exception('参数错误,暂无数据',2);
+            }
+            $info = ($money * $discount);
+            return $info;
+        } catch(Exception $e){
+            dd($e);
+        }
+
+    }
+    /*直充实际金额*/
+    public function checkChargeMoney($money,$discount = 1)
+    {
+        try{
+            return $money * $discount;
+        } catch(Exception $e){
+            dd($e);
+        }
     }
 
 

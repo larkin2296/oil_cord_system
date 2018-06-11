@@ -27,20 +27,24 @@ Trait CodeTrait
     {
         $key = $this->getCountKey($mobile);
 
-        if( PhpRedis::command('exists', [$key]) ) {
-            $count = $this->getRedis($key);
+        try{
+            if( PhpRedis::command('exists', [$key]) ) {
+                $count = $this->getRedis($key);
 
-            if( $count && $count <= $default ) {
+                if( $count && $count <= $default ) {
+                    return true;
+                }
+            } else {
                 return true;
             }
-        } else {
-            return true;
-        }
-        if (env('APP_DEBUG')) {
-            return true;
+            if (env('APP_DEBUG')) {
+                return true;
+            }
+        } catch(Exception $e){
+            dd($e);
         }
 
-        throw new Exception("短信发送次数过多", 2);
+//throw new Exception("短信发送次数过多", 2);
     }
 
     private function getRedis($key)
