@@ -66,4 +66,14 @@ class ConfigureController extends Controller
         $results = $this->service->save_platform_discount();
         return response()->json($results);
     }
+    //获取平台面额折扣
+    public function get_discount_data() {
+        $results = $this->service->get_discount_data();
+        return response()->json($results);
+    }
+    //修改平台面额折扣
+    public function save_discount_data() {
+        $results = $this->service->save_discount_data();
+        return response()->json($results);
+    }
 }

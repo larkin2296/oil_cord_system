@@ -51,6 +51,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\Interfaces\JurisdictionRepository::class, \App\Repositories\Eloquents\JurisdictionRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\Interfaces\ConfigureRepository::class,\App\Repositories\Eloquents\ConfigureRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\Interfaces\ReconciliationRepository::class,\App\Repositories\Eloquents\ReconciliationRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\Interfaces\DiscountRepository::class,\App\Repositories\Eloquents\DiscountRepositoryEloquent::class);
 
         //:end-bindings:
     }
