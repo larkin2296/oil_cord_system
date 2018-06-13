@@ -76,4 +76,9 @@ class ConfigureController extends Controller
         $results = $this->service->save_discount_data();
         return response()->json($results);
     }
+    //修改平台或者金额状态
+    public function set_config_status() {
+        $results = $this->service->set_config_status();
+        return response()->json($results);
+    }
 }

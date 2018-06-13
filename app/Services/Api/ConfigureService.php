@@ -194,4 +194,24 @@ class ConfigureService extends Service {
         }
         return array_merge($this->results, $exception);
     }
+
+    public function set_config_status() {
+        try{
+            $exception = DB::transaction(function(){
+                $type = request()->post('type','');
+                $id = request()->post('id','');
+                $status = request()->post('status','');
+
+                if($type == 'good') {
+                    $result = $this->platformRepo->update(['status'=>$status],$id);
+                } else {
+                    $result = $this->platformMoneyRepo->update(['status'=>$status],$id);
+                }
+                return ['code' => '200', 'message' => '修改成功', 'data' => $result];
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+    }
 }

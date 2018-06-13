@@ -73,4 +73,9 @@ $router->group([],function($router){
         'uses' => 'Configure\ConfigureController@save_discount_data',
         'as' => 'save_discount_data',
     ]);
+
+    $router->post('set_config_status',[
+        'uses' => 'Configure\ConfigureController@set_config_status',
+        'as' => 'set_config_status',
+    ]);
 });
