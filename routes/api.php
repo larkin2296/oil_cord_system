@@ -37,6 +37,16 @@ $router->group(['middleware' => ['api']],function($router){
                'uses' => 'Login\RegisterController@register',
                'as' => 'index',
             ]);
+
+            $router->match(['get','post'],'again_check',[
+                'uses' => 'Login\RegisterController@again_check',
+                'as' => 'again_check',
+            ]);
+
+            $router->match(['get','post'],'updatePasswd',[
+                'uses' => 'Login\RegisterController@updatePasswd',
+                'as' => 'updatePasswd',
+            ]);
         });
 
         /*登陆*/

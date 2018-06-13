@@ -98,4 +98,49 @@ class RegisterService extends Service {
 
         }
     }
+
+    public function again_check() {
+        try {
+
+            $exception =  DB::transaction(function(){
+
+                $mobile = request()->post('mobile');
+                $code = request()->post('code');
+
+
+                //验证验证码
+                $this->checkCode('resetpass', $mobile, $code);
+
+                return ['code' => '200','message' => '验证成功'];
+            });
+        } catch (Exception $e) {
+            dd($e);
+            $exception = [
+                'code' => '0',
+                'message' => $this->handler($e),
+            ];
+        }
+        return array_merge($this->results, $exception);
+    }
+
+    public function updatePasswd()
+    {
+        $exception = DB::transaction(function() {
+
+            $new_password = request()->post('new_psd','');
+            $mobile = request()->post('mobile','');
+
+            /*更改密码*/
+            $id = $this->userRepo->findWhere(['mobile'=>$mobile])->first('id');
+            if ( $data = $this->userRepo->update(['password'=>Hash::make($new_password)],$id) ) {
+
+            } else {
+                throw new Exception ('密码修改失败，请稍后再试' );
+            }
+            return ['code' => '200' ,'msg' => '密码修改成功'];
+
+        });
+
+        return array_merge($this->results,$exception);
+    }
 }

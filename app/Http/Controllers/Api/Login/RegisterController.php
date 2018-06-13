@@ -27,4 +27,17 @@ class RegisterController extends Controller
 
         return response()->json($results);
     }
+
+    public function again_check() {
+        $results = $this->service->again_check();
+
+        return response()->json($results);
+    }
+
+    public function updatePasswd()
+    {
+        $results = $this->service->updatePasswd();
+
+        return response()->json($results);
+    }
 }
