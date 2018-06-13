@@ -218,7 +218,8 @@ class AuditService extends Service {
                     'city' => $res['city'],
                     'qq_num' => $res['qq_num'],
                     'sex' => $res['sex'],
-                    'id_card' => $res['id_card']
+                    'id_card' => $res['id_card'],
+                    'status_examine' => 2
                 ];
                 //更新user表字段
                 $data = $this->userRepo->update($arr,$user->id);
