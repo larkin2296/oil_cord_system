@@ -107,7 +107,10 @@ class RegisterService extends Service {
                 $mobile = request()->post('mobile');
                 $code = request()->post('code');
 
+                if($this->userRepo->issetMobile($mobile)) {
 
+                    throw new Exception("对不起，手机号不存在！", 2);
+                }
                 //验证验证码
                 $this->checkCode('resetpass', $mobile, $code);
 
@@ -131,8 +134,9 @@ class RegisterService extends Service {
             $mobile = request()->post('mobile','');
 
             /*更改密码*/
-            $id = $this->userRepo->findWhere(['mobile'=>$mobile])->first('id');
-            if ( $data = $this->userRepo->update(['password'=>Hash::make($new_password)],$id) ) {
+            $id = $this->userRepo->findWhere(['mobile'=>$mobile],['id'])->first();
+
+            if ( $data = $this->userRepo->update(['password'=>Hash::make($new_password)],$id['id']) ) {
 
             } else {
                 throw new Exception ('密码修改失败，请稍后再试' );
