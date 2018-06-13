@@ -15,6 +15,7 @@ use JWTAuth;
 use phpDocumentor\Reflection\Types\Integer;
 use Redis;
 use Hashids\Hashids;
+use Illuminate\Support\Facades\Hash;
 
 class RegisterService extends Service {
     use ServiceTrait,ResultTrait,ExceptionTrait, CodeTrait, EncryptTrait;
@@ -130,7 +131,7 @@ class RegisterService extends Service {
     {
         $exception = DB::transaction(function() {
 
-            $new_password = request()->post('new_psd','');
+            $new_password = request()->post('password','');
             $mobile = request()->post('mobile','');
 
             /*更改密码*/
