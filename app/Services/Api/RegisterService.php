@@ -63,6 +63,7 @@ class RegisterService extends Service {
                'password' => bcrypt($password),
                'role_status' => $register->role_status ?? 0,
                'invitation_id' => $register->id ?? '',
+               'status_examine' => 4
            ];
 
            $user = User::create($data);
