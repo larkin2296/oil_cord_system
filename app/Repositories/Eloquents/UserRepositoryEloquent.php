@@ -53,6 +53,16 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             return false;
         }
     }
+    /*验证手机号存不存在*/
+    public function issetMobile($mobile)
+    {
+        if( $this->model->where('mobile',$mobile)->first() ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     /**
      * 供应商关系
