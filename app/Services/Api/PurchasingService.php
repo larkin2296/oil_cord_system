@@ -709,4 +709,40 @@ class PurchasingService extends Service {
         }
         return array_merge($this->results,$exception);
     }
+
+    public function get_search_card() {
+        try{
+            $exception = DB::transaction( function() {
+
+                $serial_number = request()->post('serial_number','');
+
+                $oil_card_code = request()->post('oil_card_code','');
+                $where = [];
+                $user = $this->jwtUser();
+                $where['user_id'] = $user->id;
+                $where['is_longtrem'] = 0;
+                $where['is_del'] = 0;
+
+                $serial_number != '' ? $where['serial_number'] = ['serial_number','like','%'.$serial_number.'%'] : '';
+                $oil_card_code != '' ? $where['oil_card_code'] = ['oil_card_code','like','%'.$oil_card_code.'%'] : '';
+
+                $result = $this->oilcardRepo->findWhere($where)->map(function($item,$index){
+                   return [
+                       'serial_number' => $item['serial_number'],
+                       'oil_card_code' => $item['oil_card_code']
+                   ];
+                });
+
+                return $this->results = array_merge([
+                    'code' => '200',
+                    'message' => '查询',
+                    'data' => $result
+                ]);
+            });
+
+        }catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
 }

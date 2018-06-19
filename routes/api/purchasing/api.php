@@ -157,4 +157,9 @@ $router->group([],function($router){
         'uses' => 'Purchasing\PurchasingController@del_short_order',
         'as' => 'del_short_order',
     ]);
+
+    $router->post('get_search_card',[
+        'uses' => 'Purchasing\PurchasingController@get_search_card',
+        'as' => 'get_search_card',
+    ]);
 });

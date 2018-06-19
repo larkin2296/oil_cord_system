@@ -208,6 +208,20 @@ Class CatSupplyservice extends Service{
         });
     }
 
+    public function export_card()
+    {
+        Excel::create('card',function($excel){
+            $excel->sheet('Sheetname',function($sheet) {
+                $sheet->rows([
+                        array('编号(必填)','姓名(必填)','油卡号(必填19位)','身份证号','官网账号','官网密码'),
+                        array('a1','张三','1234567891012131415','选填','选填','选填')
+                    ]
+                );
+
+            })->export('xlsx');
+        });
+    }
+
     /**
      * 平台金额
      * return [type][deception]

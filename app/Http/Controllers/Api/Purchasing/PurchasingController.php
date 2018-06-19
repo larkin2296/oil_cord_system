@@ -166,4 +166,9 @@ class PurchasingController extends Controller
         $results = $this->service->del_short_order();
         return response()->json($results);
     }
+
+    public function get_search_card() {
+        $results = $this->service->get_search_card();
+        return response()->json($results);
+    }
 }
