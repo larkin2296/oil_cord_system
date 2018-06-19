@@ -79,6 +79,13 @@ Class CatSupplyController extends Controller{
         return response()->json($results);
     }
 
+    public function export_card()
+    {
+        $results = $this->service->export_card();
+
+        return response()->json($results);
+    }
+
     /**
      * 直充供货
      * return [type\[deception]

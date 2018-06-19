@@ -37,6 +37,12 @@ $router->group(['prefix' => 'commodity'],function($router){
         'as' => 'export',
     ]);
 
+    $router->match(['get','post'],'export_card',[
+        'uses' => 'Supply\CatSupplyController@export_card',
+        'as' => 'export_card',
+    ]);
+
+
     /*直充供货*/
     $router->match(['get','post'],'charge',[
         'uses' => 'Supply\CatSupplyController@charge',
