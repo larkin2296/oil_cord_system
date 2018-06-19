@@ -34,59 +34,55 @@ Class CatSupplyservice extends Service{
 
                 $res = request()->post('list','');
                 $cam = $res['cam'];
-                $camilo_data = [];
-                // 获取去掉重复数据的数组
-                foreach( $cam as $val ) {
-                    if($val['cam_name'] == ''){
-                        return $this->results = array_merge([
-                            'code' => '400',
-                            'message' => '卡密字段一有未填写项',
-                            'data' => '',
-                        ]);
+
+                /*字段一不可为空*/
+                foreach( $cam as $key => $val ) {
+                    if($val['cam_name'] == '' ) {
+                        throw new Exception('卡密字段一有未填写项',2);
+                    }
+                    /*筛选库中数据*/
+                    $supplyInfo = $this->supplyCamRepo->all()->map(function($item, $key) use ($val){
+                        if($val['cam_name'] == $item['cam_name'] || $val['cam_other_name'] == $item['cam_other_name']) {
+                            return ['code' => '400', 'message' => '卡密供货卡密已经使用，重复卡密为:', 'data' => $item['cam_name'].'-'.$item['cam_other_name']];
+                        }
+                    })->first();
+                    if( is_array($supplyInfo) ) {
+                        return $supplyInfo;
                     }
                     $camilo_data[] = $val['cam_name'].'-'.$val['cam_other_name'];
                 }
-                $unique_arr = array_unique ( $camilo_data );
-                // 获取重复数据的数组
-                $repeat_arr = array_diff_assoc ( $camilo_data, $unique_arr );
-                if(!empty($repeat_arr)){
+                $unique_arr = array_unique( $camilo_data );
+
+                /*筛选重复卡密*/
+                $repeat_arr = array_diff_assoc( $camilo_data, $unique_arr );
+                if( !empty($repeat_arr) ) {
                     return $this->results = array_merge([
                         'code' => '400',
                         'message' => '卡密供货有重复数据，重复卡密为',
                         'data' => implode(',',$repeat_arr),
                     ]);
                 }
-
-                $platform_money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$res['money_id']])->map(function($item,$key){
-                    return [
-                            'id'=>$item['id']
-                            ];
-                })->first();
-
-                $platform_id = $this->platformRepo->findWhere(['platform_name'=>$res['platform_id']])->map(function($item,$key){
-                  return [
-                          'id'=>$item['id']
-                            ];
-                })->first();
-
+                /*金额*/
+                $platform_money_id =  $this->getPlatFormMoney($res['money_id']);
+                /*平台*/
+                $platform_id = $this->getPlatFormTerrace($res['platform_id']);
+                /*用户信息*/
                 $user = $this->jwtUser();
                 /*实际面额*/
-                $actual_money = $this->checkActualMoney($res['discount'],$platform_money_id['id']);
+                $actual_money = $this->checkActualMoney($res['discount'],$platform_money_id);
                 /*卡密信息*/
                 foreach( $cam as $item ) {
-
                     $arr = [
                         'cam_name' => $item['cam_name'],
                         'cam_other_name' => $item['cam_other_name'],
-                        'denomination' => $platform_money_id['id'],
-                        'platform_id' => $platform_id['id'],
+                        'denomination' => $platform_money_id,
+                        'platform_id' => $platform_id,
                         'user_id' => $user->id,
                         'discount' => $res['discount'],
                         'actual_money' => $actual_money,
                     ];
                     $data = $this->supplyCamRepo->create($arr);
                 }
-
                return $this->results = array_merge([
                   'code' => '200',
                   'message' => '卡密供货成功',
@@ -99,7 +95,6 @@ Class CatSupplyservice extends Service{
         }
         return array_merge($this->results,$exception);
     }
-
 
 
     /**
@@ -227,8 +222,8 @@ Class CatSupplyservice extends Service{
                 $platformMoney = $this->platformMoneyRepo->all();
 
                 $data = [
-                    'platform' => $platform->toArray() ?? '',
-                    'money' => $platformMoney->toArray() ?? '',
+                    'platform' => $platform->toArray() ?? collect([]),
+                    'money' => $platformMoney->toArray() ?? collect([]),
                 ];
                 return ['code' => 200, 'message' => '显示成功', 'data' => $data];
 

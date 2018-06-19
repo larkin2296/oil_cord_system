@@ -153,5 +153,28 @@ Trait CatSupplyTrait{
         }
     }
 
+    /**
+     * 金额
+     * return [type] [deception]
+     */
+    public function getPlatFormMoney($res)
+    {
+        $platformMoney = $this->platformMoneyRepo->findWhere(['denomination' => $res]);
+        if( $platformMoney->isNotEmpty() ) {
+            return $platformMoney->first()->id;
+        }
+    }
+   /**
+     * 金额
+     * return [type] [deception]
+     */
+    public function getPlatFormTerrace($res)
+    {
+        $platform = $this->platformRepo->findWhere(['platform_name'=>$res]);
+        if( $platform->isNotEmpty() ) {
+            return $platform->first()->id;
+        }
+    }
+
 
 }
