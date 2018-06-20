@@ -40,14 +40,18 @@ Class CatSupplyservice extends Service{
                     if($val['cam_name'] == '' ) {
                         throw new Exception('卡密字段一有未填写项',2);
                     }
+
                     /*筛选库中数据*/
                     $supplyInfo = $this->supplyCamRepo->all()->map(function($item, $key) use ($val){
-                        if($val['cam_name'] == $item['cam_name'] || $val['cam_other_name'] == $item['cam_other_name']) {
+                        if($val['cam_name'] == $item['cam_name'] && $val['cam_other_name'] == $item['cam_other_name']) {
                             return ['code' => '400', 'message' => '卡密供货卡密已经使用，重复卡密为:', 'data' => $item['cam_name'].'-'.$item['cam_other_name']];
                         }
-                    })->first();
-                    if( is_array($supplyInfo) ) {
-                        return $supplyInfo;
+                    });
+
+                    $condition = $this->not_null($supplyInfo);
+
+                    if( $condition->isNotEmpty() ) {
+                        return $condition->first();
                     }
                     $camilo_data[] = $val['cam_name'].'-'.$val['cam_other_name'];
                 }
@@ -96,6 +100,21 @@ Class CatSupplyservice extends Service{
         return array_merge($this->results,$exception);
     }
 
+
+    public function not_null(&$arr)
+    {
+        foreach ($arr as $key => $value) {
+            if(is_array($value)) {
+                $this->not_null($value);
+            } else {
+                if($value === null){
+                    unset($arr[$key]);
+                }
+            }
+        }
+        return $arr;
+
+    }
 
     /**
      * 导入模版
