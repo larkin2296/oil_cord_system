@@ -168,6 +168,8 @@ class AdministratorService extends Service {
                     //return $item;
                     return [
                         'id' => $item['id'],
+                        'platform_id' => $item['platform_id'],
+                        'denomination' => $item['denomination']
                     ];
 
                 })->all();
@@ -223,6 +225,8 @@ class AdministratorService extends Service {
     }
     private function set_camilo_status($data){
         foreach($data as $value){
+            $this->inventoryRepo->updateOrCreate(['platform_id'=>$value['platform_id'],'denomination_id'=>$value['denomination']])->increment('num',-1);
+            $this->inventoryRepo->updateOrCreate(['platform_id'=>$value['platform_id'],'denomination_id'=>$value['denomination']])->increment('vaild_num',-1);
             $this->supplyCamRepo->update(['status'=>2],$value['id']);
         }
         return true;
@@ -372,7 +376,7 @@ class AdministratorService extends Service {
                         'discount' => $item['discount'],
                         'oil_card_code' => explode(',',$item['oil_card_code']),
                         'price' => $item['price'],
-                        'created_at' => $item['created_at'],
+                        'created_at' => $item->created_at->format("Y-m-d H:i:s"),
                         'history_price' =>$res,
                         'success_price' => $success
                     ];

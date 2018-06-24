@@ -78,4 +78,15 @@ $router->group([],function($router){
         'uses' => 'Configure\ConfigureController@set_config_status',
         'as' => 'set_config_status',
     ]);
+
+    $router->post('get_inventory',[
+        'uses' => 'Configure\ConfigureController@get_inventory',
+        'as' => 'get_inventory',
+    ]);
+
+    $router->post('get_inventory_status',[
+        'uses' => 'Configure\ConfigureController@get_inventory_status',
+        'as' => 'get_inventory_status',
+    ]);
+
 });

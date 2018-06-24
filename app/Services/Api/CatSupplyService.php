@@ -76,6 +76,8 @@ Class CatSupplyservice extends Service{
                 $actual_money = $this->checkActualMoney($res['discount'],$platform_money_id);
                 /*卡密信息*/
                 foreach( $cam as $item ) {
+                    $this->inventoryRepo->updateOrCreate(['platform_id'=>$platform_id,'denomination_id'=>$platform_money_id])->increment('num');
+                    $this->inventoryRepo->updateOrCreate(['platform_id'=>$platform_id,'denomination_id'=>$platform_money_id])->increment('vaild_num');
                     $arr = [
                         'cam_name' => $item['cam_name'],
                         'cam_other_name' => $item['cam_other_name'],

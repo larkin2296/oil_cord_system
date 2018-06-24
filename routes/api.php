@@ -86,6 +86,19 @@ $router->group(['middleware' => ['api']],function($router){
                 'as' => 'editMobileMessage'
             ]);
         });
+        /*下载*/
+        $router->group(['prefix' => 'download'],function ($router){
+
+            $router->match(['get','post'],'export',[
+                'uses' => 'Supply\CatSupplyController@export',
+                'as' => 'export',
+            ]);
+
+            $router->match(['get','post'],'export_card',[
+                'uses' => 'Supply\CatSupplyController@export_card',
+                'as' => 'export_card',
+            ]);
+        });
 
         /*jwt auth token 验证*/
         $router->group(['middleware' => 'jwt.auth'],function($router){

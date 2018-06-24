@@ -81,4 +81,14 @@ class ConfigureController extends Controller
         $results = $this->service->set_config_status();
         return response()->json($results);
     }
+
+    public function get_inventory() {
+        $results = $this->service->get_inventory();
+        return response()->json($results);
+    }
+
+    public function get_inventory_status() {
+        $results = $this->service->get_inventory_status();
+        return response()->json($results);
+    }
 }

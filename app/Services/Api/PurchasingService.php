@@ -66,7 +66,7 @@ class PurchasingService extends Service {
         $where['order_type'] = 1;
         $where['user_id'] = $user->id;
 //        DB::connection()->enableQueryLog();
-        $results = $this->purorderRepo->findWhere($where);
+        $results = $this->purorderRepo->orderBy('created_at','desc')->findWhere($where);
 //        print_r(DB::getQueryLog());
         foreach($results as &$val){
             $val['platform'] = $this->handlePlatform($val['platform']);
@@ -127,7 +127,7 @@ class PurchasingService extends Service {
         $user = $this->jwtUser();
         $where['order_type'] = 2;
         $where['user_id'] = $user->id;
-        $results = $this->purorderRepo->findWhere($where)->map(function($item,$index){
+        $results = $this->purorderRepo->orderBy('created_at','desc')->findWhere($where)->map(function($item,$index){
             $res = $this->supplySingleRepo->model()::where(['notes'=>$item['order_code'],'supply_status'=>1])->sum('already_card');
             $time = $this->supplySingleRepo->model()::where(['notes'=>$item['order_code'],'supply_status'=>1])->orderBy('end_time','desc')->first();
             return [

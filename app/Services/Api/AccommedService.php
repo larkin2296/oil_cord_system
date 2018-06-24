@@ -54,7 +54,7 @@ class AccommedService extends Service {
                 isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
                 isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
 
-                $data =  $this->supplyCamRepo->findWhere($where)->map(function($item,$key){
+                $data =  $this->supplyCamRepo->orderBy('created_at','desc')->findWhere($where)->map(function($item,$key){
                    //return $item;
                     return [
                         'id' => $item['id'],
