@@ -73,7 +73,7 @@ class SystemOrderService extends Service
                         'platform_id' => $this->handlePlatform($item->platform_id)['platform_name'],
                         'denomination' => $this->handleDenomination($item->denomination)['denomination'],
                         'success_time' => $item->success_time,
-                        'created_at' => $item->created_at,
+                        'created_at' => $item->created_at->format('Y-m-d H:i:s'),
                         'discount' => $item->discount,
                         'status' => $this->checkCamStatus($item->status),
 
@@ -200,7 +200,7 @@ class SystemOrderService extends Service
                             'status' => $this->globalStatusGet($item->status),
                             'supply_status' => $this->checkSupplyStatus($item->supply_status),
                             'forward_status' => $this->checkForWardStatus($item->forward_status),
-                            'created_at' => $item->created_at,
+                            'created_at' => $item->created_at->format('Y-m-d H:i:s'),
                             'discount' => $item->discount,
                             'direct_id' => route('common.attach.show', [$item->direct_id]),
                         ];

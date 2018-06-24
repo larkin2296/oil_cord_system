@@ -6,13 +6,14 @@ use App\Traits\ServiceTrait;
 use App\Traits\CodeTrait;
 use App\Traits\UserTrait;
 use App\Services\Service;
+use App\Traits\CatSupplyTrait;
 use Exception;
 use DB;
 use Redis;
 use App\User;
 use JWTAuth;
 class ConfigureService extends Service {
-    use ServiceTrait,ResultTrait,ExceptionTrait, CodeTrait,UserTrait;
+    use ServiceTrait,ResultTrait,ExceptionTrait, CodeTrait,UserTrait,CatSupplyTrait;
     protected $builder;
     public function __construct()
     {
@@ -208,6 +209,86 @@ class ConfigureService extends Service {
                     $result = $this->platformMoneyRepo->update(['status'=>$status],$id);
                 }
                 return ['code' => '200', 'message' => '修改成功', 'data' => $result];
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+    }
+
+    public function get_inventory() {
+        try{
+            $exception = DB::transaction(function(){
+                $price = request()->post('card_price','');
+                $platform = request()->post('goods_type','');
+                $where = [];
+                if($price != ''){
+                    $platform_money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$price])->map(function($item,$key){
+                        return [
+                            'id'=>$item['id']
+                        ];
+                    })->first();
+
+                    $where['denomination_id'] = $platform_money_id['id'];
+                }
+
+                if($price != ''){
+                    $platform_id = $this->platformRepo->findWhere(['platform_name'=>$platform])->map(function($item,$key){
+                        return [
+                            'id'=>$item['id']
+                        ];
+                    })->first();
+                    $where['platform_id'] = $platform_id['id'];
+                }
+
+
+                $data =  $this->inventoryRepo->findWhere($where)->map(function($item,$key){
+                    return [
+                        'denomination' => $this->handleDenomination($item['denomination_id']),
+                        'platform_name' => $this->handlePlatform($item['platform_id']),
+                        'num' => $item['num'],
+                        'vaild_num' => $item['vaild_num'],
+                        'invalid_num' => $item['invalid_num']
+                    ];
+                });
+                return ['code' => 200, 'message' => '查询成功', 'data' => $data];
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results, $exception);
+    }
+
+    public function get_inventory_status() {
+        try{
+            $exception = DB::transaction(function(){
+                $price = request()->post('card_price','');
+                $platform = request()->post('goods_type','');
+                $where = [];
+                if($price != ''){
+                    $platform_money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$price])->map(function($item,$key){
+                        return [
+                            'id'=>$item['id']
+                        ];
+                    })->first();
+
+                    $where['denomination_id'] = $platform_money_id['id'];
+                }
+
+                if($price != ''){
+                    $platform_id = $this->platformRepo->findWhere(['platform_name'=>$platform])->map(function($item,$key){
+                        return [
+                            'id'=>$item['id']
+                        ];
+                    })->first();
+                    $where['platform_id'] = $platform_id['id'];
+                }
+
+                if($this->inventoryRepo->findWhere($where)->first()){
+                    return ['code' => 200, 'message' => '查询成功', 'data' => true];
+                }else{
+                    return ['code' => 200, 'message' => '查询成功', 'data' => false];
+                }
             });
         } catch(Exception $e){
             dd($e);
