@@ -406,7 +406,12 @@ Class CatSupplyservice extends Service{
             return array_merge($this->results,$exception);
     }
 
-    //校验时间
+    /**
+     * 校验时间
+     * @param $eventTime
+     * @throws Exception
+     * @return [type] [deception]
+     */
     public function checkTimeStamp($eventTime)
     {
         $timeStamp = new Carbon();
@@ -418,5 +423,68 @@ Class CatSupplyservice extends Service{
         }
     }
 
+    /**
+     * 直充获取油卡
+     * return [type] [deception]
+     */
+    public function getSupplyOilCard()
+    {
+        try{
+            $exception = DB::transaction(function(){
+               /*获取当前用户信息*/
+               $user = $this->jwtUser();
 
+                /*获取油卡张数*/
+               $limit = $this->userRepo->find($user->id)->several ?? getCommonCheckValue(true);
+
+                /* 获取油卡 */
+                $arr = $this->oilcardRepo->model()::where('status_supply',getCommonCheckValue(false))
+                    ->limit($limit)->get()->map(function($item,$key){
+                        return [
+                            'id' => $item->id,
+                            'user_id' => $item->user_id,
+                            'oil_card_code' => $item->oil_card_code,
+                            'serial_number' => $item->serial_number,
+                            'card_status' => $item->card_status,
+                            'status_supply' => $item->status_supply,
+                            'total_money' => $item->total_money,
+                            'is_longtrem' => $item->is_longtrem,
+                            'recharge_num' => $item->recharge_num,
+                            'recharge_today_num' => $item->recharge_today_num,
+                            'last_recharge_time' => $item->last_recharge_time,
+                        ];
+                    });
+
+                if( $arr ) {
+                    foreach( $arr as $item ) {
+                        /* 油卡使用状态 */
+                        $supplyStatus =  $this->oilcardRepo->update(['status_supply' => getCommonCheckValue(true)],$item['id']);
+
+                        $arrNew = [
+                            'user_id' => $user->id,
+                            'oil_id' => $item['id']
+                        ];
+
+                        $patient =  $this->oilSupplyRepo->create($arrNew);
+
+                        if( $supplyStatus && $patient ) {
+                        } else {
+                            throw new Exception('获取油卡失败，请联系管理员',2);
+                        }
+                    }
+                } else {
+                    throw new Exception('当前暂无油卡,请稍后再试',2);
+                }
+
+                return $this->results = array_merge([
+                   'code' => '200',
+                   'message' => '获取油卡成功',
+                   'data' => $arr,
+                ]);
+            });
+        } catch(Exception $e){
+            dd($e);
+        }
+        return array_merge($this->results,$exception);
+    }
 }
