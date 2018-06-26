@@ -62,25 +62,26 @@ class SystemOrderService extends Service
                         $where['denomination'] = $this->get_denomination_id(request()->post('card_price',''));
                     }
 
-                $data = $this->supplyCamRepo->findWhere($where)
+                $data = $this->supplyCamRepo->model()::where($where)
+                    ->orderBy('created_at','desc')
+                    ->get()
                     ->map(function($item, $key){
-                    return [
-                        'id' => $item->id,
-                        'user_id' => $item->user_id,
-                        'userName' => $this->getIdUserInfo($item->user_id)->truename ?? $this->getIdUserInfo($item->user_id)->mobile ,
-                        'cam_name' => $item->cam_name,
-                        'cam_other_name' => $item->cam_other_name,
-                        'platform_id' => $this->handlePlatform($item->platform_id)['platform_name'],
-                        'denomination' => $this->handleDenomination($item->denomination)['denomination'],
-                        'success_time' => $item->success_time,
-                        'created_at' => $item->created_at->format('Y-m-d H:i:s'),
-                        'discount' => $item->discount,
-                        'status' => $this->checkCamStatus($item->status),
+                        return [
+                            'id' => $item->id,
+                            'user_id' => $item->user_id,
+                            'userName' => $this->getIdUserInfo($item->user_id)->truename ?? $this->getIdUserInfo($item->user_id)->mobile ,
+                            'cam_name' => $item->cam_name,
+                            'cam_other_name' => $item->cam_other_name,
+                            'platform_id' => $this->handlePlatform($item->platform_id)['platform_name'],
+                            'denomination' => $this->handleDenomination($item->denomination)['denomination'],
+                            'success_time' => $item->success_time,
+                            'created_at' => $item->created_at->format('Y-m-d H:i'),
+                            'discount' => $item->discount,
+                            'status' => $this->checkCamStatus($item->status),
+                            ];
+                    });
 
-                    ];
-                })->all();
-
-                if ( $data ) {
+                if ($data) {
                 } else {
                     throw new Exception("数据查询失败", 2);
                 }
