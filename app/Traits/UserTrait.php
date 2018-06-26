@@ -42,9 +42,8 @@ Trait UserTrait
     {
         /*获取用户信息*/
         $user = $this->jwtUser();
-
         if (Hash::check($passwd, $user->password)) {
-           return true;
+            return true;
         } else {
            return false;
         }
@@ -85,14 +84,12 @@ Trait UserTrait
         if($user->role_status == config('back.global.status.order.refunding') ) {
             return true;
         } else if ($user->role_status == config('back.global.status.order.complete') ) {
-
-          $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findByField(['user_id' => $user->id]);
-
-          if( $check->isNotEmpty() ) {
-              return $check;
-          } else {
-              throw new Exception('您还没有该权限,请联系管理员开通',2);
-          }
+            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findWhere(['user_id' => $user->id]);
+            if( $check->isNotEmpty() ) {
+                return $check;
+            } else {
+                throw new Exception('您还没有该权限,请联系管理员开通',2);
+            }
         }
     }
 
@@ -104,11 +101,9 @@ Trait UserTrait
     {
         $user = $this->jwtUser();
         if($user->role_status == config('back.global.status.order.refunding') ) {
-
             return getCommonCheckValue(true);
         } else if ($user->role_status == config('back.global.status.order.complete') ) {
             return getCommonCheckValue(false);
-
         }
     }
 
@@ -120,11 +115,9 @@ Trait UserTrait
     {
         $user = $this->jwtUser();
         if($user->role_status == config('back.global.status.order.refunding') ) {
-
             return true;
         } else if ($user->role_status == config('back.global.status.order.complete') ) {
-            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findByField(['user_id' => $user->id]);
-
+            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findWhere(['user_id' => $user->id]);
             if( $check->isNotEmpty() ) {
                 if($check->first()->supply_jurisdiction == getCommonCheckValue(true)){
                     return true;
@@ -134,7 +127,6 @@ Trait UserTrait
             } else {
                 throw new Exception('您还没有该权限,请联系管理员开通',2);
             }
-
         }
     }
 
@@ -146,11 +138,9 @@ Trait UserTrait
     {
         $user = $this->jwtUser();
         if($user->role_status == config('back.global.status.order.refunding') ) {
-
             return true;
         } else if ($user->role_status == config('back.global.status.order.complete') ) {
-            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findByField(['user_id' => $user->id]);
-
+            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findWhere(['user_id' => $user->id]);
             if( $check->isNotEmpty() ) {
                 if($check->first()->purchase_jurisdiction == getCommonCheckValue(true)){
                     return true;
@@ -172,11 +162,9 @@ Trait UserTrait
     {
         $user = $this->jwtUser();
         if($user->role_status == config('back.global.status.order.refunding') ) {
-
             return true;
         } else if ($user->role_status == config('back.global.status.order.complete') ) {
-            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findByField(['user_id' => $user->id]);
-
+            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findWhere(['user_id' => $user->id]);
             if( $check->isNotEmpty() ) {
                 if($check->first()->service_jurisdiction == getCommonCheckValue(true)){
                     return true;
@@ -186,7 +174,6 @@ Trait UserTrait
             } else {
                 throw new Exception('您还没有该权限,请联系管理员开通',2);
             }
-
         }
     }
 
@@ -198,11 +185,9 @@ Trait UserTrait
     {
         $user = $this->jwtUser();
         if($user->role_status == config('back.global.status.order.refunding') ) {
-
             return true;
         } else if ($user->role_status == config('back.global.status.order.complete') ) {
-            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findByField(['user_id' => $user->id]);
-
+            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findWhere(['user_id' => $user->id]);
             if( $check->isNotEmpty() ) {
                 if($check->first()->commodity_jurisdiction == getCommonCheckValue(true)){
                     return true;
@@ -215,4 +200,30 @@ Trait UserTrait
 
         }
     }
+
+    /**
+     * 管理员 公告权限
+     * return [type] [deception]
+     */
+    public function checkNoticeAdminJurisdiction()
+    {
+        $user = $this->jwtUser();
+
+        if($user->role_status == config('back.global.status.order.refunding') ) {
+            return true;
+        } else if ($user->role_status == config('back.global.status.order.complete') ) {
+            $check = app(\App\Repositories\Interfaces\JurisdictionRepository::class)->findWhere(['user_id' => $user->id]);
+            if( $check->isNotEmpty() ) {
+                if($check->first()->notice_jurisdiction == getCommonCheckValue(true)){
+                    return true;
+                } else{
+                    throw new Exception('您还没有该权限,请联系管理员开通',2);
+                }
+            } else {
+                throw new Exception('您还没有该权限,请联系管理员开通',2);
+            }
+
+        }
+    }
+
 }

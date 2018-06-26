@@ -64,10 +64,10 @@ class AdminService extends Service {
                 'sex' => $item['sex'],
                 'mobile' => $item['mobile'],
                 'role_status' => $item['role_status'],
-                'supply_jurisdiction' => isset($item['jurisdiction']['supply_jurisdiction']) && $item['jurisdiction']['supply_jurisdiction'] == 1 ? true : false ,
-                'purchase_jurisdiction' => isset($item['jurisdiction']['purchase_jurisdiction']) && $item['jurisdiction']['purchase_jurisdiction'] == 1 ? true : false ,
-                'service_jurisdiction' => isset($item['jurisdiction']['service_jurisdiction']) && $item['jurisdiction']['service_jurisdiction'] == 1 ? true : false ,
-                'commodity_jurisdiction' => isset($item['jurisdiction']['commodity_jurisdiction']) && $item['jurisdiction']['commodity_jurisdiction'] == 1 ? true : false ,
+                'supply_jurisdiction' => isset($item['jurisdiction']['supply_jurisdiction']) && $item['jurisdiction']['supply_jurisdiction'] == getCommonCheckValue(true) ? true : false ,
+                'purchase_jurisdiction' => isset($item['jurisdiction']['purchase_jurisdiction']) && $item['jurisdiction']['purchase_jurisdiction'] == getCommonCheckValue(true) ? true : false ,
+                'service_jurisdiction' => isset($item['jurisdiction']['service_jurisdiction']) && $item['jurisdiction']['service_jurisdiction'] == getCommonCheckValue(true) ? true : false ,
+                'commodity_jurisdiction' => isset($item['jurisdiction']['commodity_jurisdiction']) && $item['jurisdiction']['commodity_jurisdiction'] == getCommonCheckValue(true) ? true : false ,
             ];
         })->all();
         return $data;

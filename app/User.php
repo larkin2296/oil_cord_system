@@ -41,9 +41,9 @@ class User extends Authenticatable implements Transformable
 
     protected $fillable = [
     	'name','truename','sex','mobile','email','is_auth','notes','password','avatar','invitation_id','city',
-    	'role_status','status','auth_papers','qq_num','alipay', 'cam_permission', 'long_term_permission',
-        'recommend_status', 'put_forward_premission', 'several', 'status_examine','id_card','recharge_camilo',
-        'recharge_short_directly','recharge_long_directly','pay_camilo','pay_directly'
+    	'role_status', 'status', 'auth_papers', 'qq_num', 'alipay', 'cam_permission', 'long_term_permission',
+        'recommend_status', 'put_forward_premission', 'several', 'status_examine', 'id_card', 'recharge_camilo',
+        'recharge_short_directly', 'recharge_long_directly', 'pay_camilo', 'pay_directly',
 
     ];
 

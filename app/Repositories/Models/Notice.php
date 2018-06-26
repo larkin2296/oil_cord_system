@@ -5,26 +5,25 @@ namespace App\Repositories\Models;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 /**
- * Class Jurisdiction.
+ * Class Notice.
  *
  * @package namespace App\Repositories\Models;
  */
-class Jurisdiction extends Model implements Transformable
+class Notice extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait,
+        SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $table = 'admin_jurisdiction';
-
+    protected $table = 'notice';
     protected $fillable = [
-        'user_id', 'supply_jurisdiction', 'purchase_jurisdiction', 'service_jurisdiction', 'commodity_jurisdiction',
-        'status', 'notice_jurisdiction'
+        'user_id', 'content', 'choice',
     ];
 
 }

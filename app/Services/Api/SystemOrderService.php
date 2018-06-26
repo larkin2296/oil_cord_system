@@ -177,7 +177,6 @@ class SystemOrderService extends Service
                 if($user->role_status != 3) {
                     throw new Exception('您没有管理员权限,请联系管理员',2);
                 }
-                #TODO 这里写个获取所有供应商的公共接口
 
                 $field = [
                     'user_id' => '=',

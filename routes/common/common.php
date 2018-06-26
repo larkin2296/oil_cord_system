@@ -5,7 +5,6 @@ $router->group(['prefix' => 'common','as' => 'common.'],function($router){
 
     /*附件上传专用接口*/
 
-
         $router->group(['prefix' => 'attach','as' => 'attach.'],function($router){
             /*附件上传*/
             $router->post('upload',[
