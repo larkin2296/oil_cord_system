@@ -50,6 +50,12 @@ $router->group(['prefix' => 'commodity'],function($router){
     ]);
 
     /*获取油卡*/
+    $router->match(['get','post'],'get_card',[
+        'uses' => 'Supply\CatSupplyController@getOilCard',
+        'as' => 'get_card',
+    ]);
+
+    /*获取油卡*/
     $router->post('relationship',[
        'uses' => 'Supply\CatSupplyController@relationship',
         'as' => 'relationship',

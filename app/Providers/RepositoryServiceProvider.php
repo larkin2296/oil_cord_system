@@ -55,6 +55,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\Interfaces\InventoryRepository::class,\App\Repositories\Eloquents\InventoryRepositoryEloquent::class);
 
 
+        $this->app->bind(\App\Repositories\Interfaces\NoticeRepository::class, \App\Repositories\Eloquents\NoticeRepositoryEloquent::class);
         //:end-bindings:
     }
 }

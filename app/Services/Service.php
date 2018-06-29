@@ -21,13 +21,12 @@ use App\Repositories\Interfaces\PurchasingPerrmissonRepository;
 use App\Repositories\Interfaces\AuditRepository;
 use App\Repositories\Interfaces\UserAttachmentRepository;
 use App\Repositories\Interfaces\InitializeRepository;
-
 use App\Repositories\Interfaces\JurisdictionRepository;
-
 use App\Repositories\Interfaces\ConfigureRepository;
 use App\Repositories\Interfaces\ReconciliationRepository;
 use App\Repositories\Interfaces\DiscountRepository;
 use App\Repositories\Interfaces\InventoryRepository;
+use App\Repositories\Interfaces\NoticeRepository;
 
 
 
@@ -42,11 +41,9 @@ class Service
     public $userAttachmentRepo;
     public $platformRepo;
     public $platformMoneyRepo;
-
     public $relationPlatformRepo;
     public $supplyCamRepo;
     public $supplySingleRepo;
-
     public $auditRepo;
     public $purchasingcamilodetailRepo;
     public $oilSupplyRepo;
@@ -54,13 +51,12 @@ class Service
     public $presentForwardRepo;
     public $presentSettingRepo;
     public $initializeRepo;
-
     public $jurisdictionRepo;
     public $configureRepo;
     public $reconRepo;
     public $discountRepo;
     public $inventoryRepo;
-
+    public $noticeRepo;
 
 
 
@@ -73,11 +69,9 @@ class Service
         $this->attachmentRepo = app(AttachmentRepository::class);
         $this->platformRepo = app(PlatformRepository::class);
         $this->platformMoneyRepo = app(PlatformMoneyRepository::class);
-
         $this->relationPlatformRepo = app(RelationPlatformRepository::class);
         $this->supplyCamRepo = app(SupplyCamRepository::class);
         $this->supplySingleRepo = app(SupplySingleRepository::class);
-
         $this->purchasingcamilodetailRepo = app(PurchasingCamiloDetailRepository::class);
         $this->purperrmissonRepo = app (PurchasingPerrmissonRepository::class);
         $this->oilSupplyRepo = app(OilSupplyRepository::class);
@@ -87,15 +81,11 @@ class Service
         $this->auditRepo = app(AuditRepository::class);
         $this->userAttachmentRepo = app(UserAttachmentRepository::class);
         $this->initializeRepo = app(InitializeRepository::class);
-
         $this->jurisdictionRepo = app(JurisdictionRepository::class);
-
         $this->configureRepo = app(ConfigureRepository::class);
-
         $this->reconRepo = app(ReconciliationRepository::class);
         $this->discountRepo = app(DiscountRepository::class);
         $this->inventoryRepo = app(InventoryRepository::class);
-
-
+        $this->noticeRepo = app(NoticeRepository::class);
     }
 }

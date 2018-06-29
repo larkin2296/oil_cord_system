@@ -98,6 +98,17 @@ Class CatSupplyController extends Controller{
     }
 
     /**
+     * 获取油卡
+     * return [type\[deception]
+     */
+    public function getOilCard()
+    {
+        $results = $this->service->getSupplyOilCard();
+
+        return response()->json($results);
+    }
+
+    /**
      * 油卡列表
      * return [type][deception]
      */
