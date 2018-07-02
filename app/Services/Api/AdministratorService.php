@@ -300,6 +300,7 @@ class AdministratorService extends Service {
                 'put_forward_premission' => $item['put_forward_premission'] == 1 ? true : false,
                 'long_term_permission' => $item['long_term_permission'] == 1 ? true : false,
                 'cam_permission' => $item['cam_permission'] == 1 ? true : false,
+                'whether_status' => $item['whether_status'],
                 'several' => $item['several'],
                 'edit' => false
             ];
