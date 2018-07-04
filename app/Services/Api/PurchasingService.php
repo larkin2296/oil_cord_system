@@ -298,7 +298,7 @@ class PurchasingService extends Service {
                     ->join('platform','platform.id','=','supply_cam.platform_id')
                     ->join('platform_money','platform_money.id','=','supply_cam.denomination')
                     ->where('purchasing_camilo_detail.order_code','=',$order_code)
-                    ->select('platform.platform_name', 'platform_money.denomination','supply_cam.cam_name','supply_cam.id','supply_cam.cam_other_name','supply_cam.status')
+                    ->select('platform.platform_name', 'platform_money.denomination','supply_cam.cam_name','supply_cam.id','supply_cam.cam_other_name','supply_cam.status','supply_cam.remark')
                     ->get();
         $order = $this->purorderRepo->model()::where(['id'=>$order_code])->get();
         $results['msg']['order'] = $order[0]['order_code'];
