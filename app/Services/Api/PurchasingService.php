@@ -324,10 +324,10 @@ class PurchasingService extends Service {
         return $results;
     }
     /*设置为问题卡密*/
-    public function set_problem(){
+    public function set_problem($id,$res){
         try{
-            $this->purchasingcamilodetailRepo->update(['is_problem'=>1],request('id', ''));
-            $this->supplyCamRepo->update(['status'=>4],request('card_code',''));
+            $this->purchasingcamilodetailRepo->model()::where(['camilo_id'=>$id])->update(['is_problem'=>1]);
+            $this->supplyCamRepo->model()::where(['id'=>$id])->update(['status'=>3,'remark'=>$res]);
         }catch(Exception $e) {
             return $e;
         }
