@@ -285,7 +285,7 @@ class ConfigureService extends Service {
                 }
 
                 if($data = $this->inventoryRepo->findWhere($where)->pluck('vaild_num')){
-                    if($data == []){
+                    if($data->all() == []){
                         $data = null;
                     }
                     return ['code' => 200, 'message' => '查询成功', 'data' => $data];
