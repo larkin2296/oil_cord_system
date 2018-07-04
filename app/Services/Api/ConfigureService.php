@@ -284,10 +284,13 @@ class ConfigureService extends Service {
                     $where['platform_id'] = $platform_id['id'];
                 }
 
-                if($this->inventoryRepo->findWhere($where)->first()){
-                    return ['code' => 200, 'message' => '查询成功', 'data' => true];
+                if($data = $this->inventoryRepo->findWhere($where)->pluck('vaild_num')){
+                    if($data->all() == []){
+                        $data = null;
+                    }
+                    return ['code' => 200, 'message' => '查询成功', 'data' => $data];
                 }else{
-                    return ['code' => 200, 'message' => '查询成功', 'data' => false];
+                    return ['code' => 400, 'message' => '查询成功', 'data' => $data];
                 }
             });
         } catch(Exception $e){

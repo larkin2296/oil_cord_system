@@ -61,6 +61,12 @@ class SystemOrderService extends Service
                     if(request()->post('card_price','')){
                         $where['denomination'] = $this->get_denomination_id(request()->post('card_price',''));
                     }
+                if(request()->post('is_del','')){
+                    $where['is_del'] = request()->post('is_del','');
+                } else {
+                    $where['is_del'] = 0;
+                }
+
 
                 $data = $this->supplyCamRepo->model()::where($where)
                     ->orderBy('created_at','desc')
@@ -78,6 +84,7 @@ class SystemOrderService extends Service
                             'created_at' => $item->created_at->format('Y-m-d H:i'),
                             'discount' => $item->discount,
                             'status' => $this->checkCamStatus($item->status),
+                            'is_del' => $item->is_del
                             ];
                     });
 
@@ -111,7 +118,7 @@ class SystemOrderService extends Service
                 /*验证权限*/
                 $this->checkSupplyAdminJurisdiction();
 
-                if( $data = $this->supplyCamRepo->delete(request()->id) ) {
+                if( $data = $this->supplyCamRepo->update(['is_del'=>1],request()->id) ) {
 
                 } else {
                     throw new Exception('删除卡密失败',2);
@@ -142,7 +149,7 @@ class SystemOrderService extends Service
                 /*验证权限*/
                 $this->checkSupplyAdminJurisdiction();
 
-                if( $data = $this->supplyCamRepo->model()::withTrashed()->where('id',request()->id)->restore() ) {
+                if( $data = $this->supplyCamRepo->update(['is_del'=>0],request()->id) ) {
 
                 } else {
                     throw new Exception('恢复卡密失败',2);

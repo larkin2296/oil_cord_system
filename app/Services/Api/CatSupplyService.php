@@ -279,8 +279,12 @@ Class CatSupplyservice extends Service{
         try{
             $exception = DB::transaction(function() {
                 $user = $this->jwtUser();
+                $limit = $this->userRepo->find($user->id)->several ?? getCommonCheck(true);
                 /*供应商是否第一次获取油卡*/
                 if( $info = $this->oilSupplyRepo->findWhere(['user_id' => $user->id])->count() > 0 ) {
+                    if($this->oilSupplyRepo->findWhere(['user_id' => $user->id])->count() == $limit){
+                        return ['code' => 205, 'message' => '油卡当前只可获取'.$limit.'张','data' => ''];
+                    }
                     /* 油卡信息 */
                     $data=  $this->oilSupplyRepo->model()::where('user_id',$user->id)
                         ->with('hasManyOilCard')->get()
@@ -304,7 +308,6 @@ Class CatSupplyservice extends Service{
                     return ['code' => 200, 'message' => '获取油卡信息成功','data' => $data];
                 } else {
                     /*获取油卡张数*/
-                    $limit = $this->userRepo->find($user->id)->several ?? getCommonCheck(true);
                     /* 获取油卡 */
                     $arr = $this->oilcardRepo->model()::where('status_supply',getCommonCheckValue(false))
                         ->limit($limit)->get()->map(function($item,$key){

@@ -745,4 +745,37 @@ class PurchasingService extends Service {
         }
         return array_merge($this->results,$exception);
     }
+
+    public function camilo_order($data) {
+        foreach($data as $value){
+            $num["{$value['platform']}"]["{$value['unit_price']}"] = 0;
+        }
+        foreach($data as $value){
+            $num["{$value['platform']}"]["{$value['unit_price']}"] += $value['num'];
+        }
+        foreach($num as $key=>$value){
+            $platform_id = $this->platformRepo->findWhere(['platform_name'=>$key])->map(function($item,$key){
+                return [
+                    'id'=>$item['id']
+                ];
+            })->first();
+            foreach($value as $k=>$v){
+                $platform_money_id = $this->platformMoneyRepo->findWhere(['denomination'=>$k])->map(function($item,$key){
+                    return [
+                        'id'=>$item['id']
+                    ];
+                })->first();
+                $where['denomination_id'] = $platform_money_id['id'];
+                $where['platform_id'] = $platform_id['id'];
+                $vaild = $this->inventoryRepo->findWhere($where)->pluck('vaild_num');
+                if($v > $vaild[0]){
+                    return ['msg'=>$key.'平台面额'.$k.'实时库存不足','code'=>400];
+                }
+            }
+        }
+        foreach($data as $val){
+            $results = $this->add($val);
+        }
+        return ['code'=>200];
+    }
 }
