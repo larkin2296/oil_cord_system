@@ -377,9 +377,9 @@ class PurchasingService extends Service {
         }
     }
     /*采购商设置卡密已用*/
-    public function set_camilo_userd($id,$code){
-        $this->purchasingcamilodetailRepo->update(['is_used'=>1],['camilo_id'=>$id]);
-        $this->supplyCamRepo->update(['status'=>4],['cam_name'=>$code]);
+    public function set_camilo_userd($id){
+        $this->purchasingcamilodetailRepo->model()::where(['camilo_id'=>$id])->update(['is_used'=>1]);
+        $this->supplyCamRepo->model()::where(['id'=>$id])->update(['status'=>4]);
     }
     /*采购商直充长期查询详情*/
     public function get_ldirectly_detail(){
