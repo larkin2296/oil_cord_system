@@ -22,13 +22,13 @@ return [
     /*
     | 密码
     */
-    'Password' => 'qwer1234',
+    'Password' => 'dl159901',
     'ScheduleTime' => '',
     'ExtendAccessNum' => '',
     'f' => 1,
     /*
     | 模板 -- 目前只支持一个参数
     */
-    //'msg_template' => '您的验证码是%u请不要告诉任何人,30分钟内有效,如非本人操作,请忽略本短信.',
-    'msg_template' => '您的验证码为%u.',
+    'msg_template' => '您的验证码是%u请不要告诉任何人,30分钟内有效,如非本人操作,请忽略本短信.',
+
 ];
