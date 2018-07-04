@@ -122,7 +122,9 @@ class PurchasingController extends Controller
     public function set_camilo_userd(Request $request){
         try{
             foreach($request['order'] as $value){
-                $this->service->set_camilo_userd($value['id'],$value['cam_name']);
+                if(isset($value['choose']) && $value['choose'] == true){
+                    $this->service->set_camilo_userd($value['id'],$value['cam_name']);
+                }
             }
             return response()->json(['code'=>200,'msg'=>'修改成功']);
         }catch(Exception $e){
