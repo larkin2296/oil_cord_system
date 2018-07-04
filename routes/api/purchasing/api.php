@@ -86,9 +86,9 @@ $router->group([],function($router){
         'as' => 'get_sdirectly_detail',
     ]);
     /*采购商上报错误*/
-    $router->match(['get','post'],'set_problem',[
+    $router->match(['get','post'],'send_problem',[
         'uses' => 'Purchasing\PurchasingController@set_problem',
-        'as' => 'set_problem',
+        'as' => 'send_problem',
     ]);
     /*采购商圈存数据获取*/
     $router->match(['get','post'],'get_initialize',[

@@ -91,9 +91,15 @@ class PurchasingController extends Controller
         return response()->json($results);
     }
     //设置问题卡密
-    public function set_problem(){
-        $results = $this->service->set_problem();
-        return response()->json($results);
+    public function set_problem(Request $request){
+        try{
+            foreach($request['list'] as $value){
+                $results = $this->service->set_problem($value['id'],$value['type']);
+            }
+            return response()->json(['code'=>200,'msg'=>'修改成功']);
+        }catch(Exception $e){
+            return response()->json($e);
+        }
     }
     //获取圈存
     public function get_initialize(){
@@ -123,7 +129,7 @@ class PurchasingController extends Controller
         try{
             foreach($request['order'] as $value){
                 if(isset($value['choose']) && $value['choose'] == true){
-                    $this->service->set_camilo_userd($value['id'],$value['cam_name']);
+                    $this->service->set_camilo_userd($value['id']);
                 }
             }
             return response()->json(['code'=>200,'msg'=>'修改成功']);
