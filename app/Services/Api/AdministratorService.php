@@ -49,7 +49,7 @@ class AdministratorService extends Service {
                     isset($post['order_code']) ? $where['order_code'] = ['order_code','like','%'.$post['order_code'].'%'] : '';
                 }
 
-                $data =  $this->purorderRepo->findWhere($where)->map(function($item,$key){
+                $data =  $this->purorderRepo->orderBy('created_at','desc')->findWhere($where)->map(function($item,$key){
                     //return $item;
                     return [
                         'id' => $item['id'],
@@ -57,7 +57,7 @@ class AdministratorService extends Service {
                         'discount' => $item['discount'],
                         'denomination' => $this->handleDenomination($item['unit_price']),
                         'platform_id' => $this->handlePlatform($item['platform']),
-                        'created_at' => $item['created_at'],
+                        'created_at' => $item['created_at']->format('Y-m-d H:i:s'),
                         'num' => $item['num'],
                         'status' => $item['order_status']
                     ];
