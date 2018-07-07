@@ -298,7 +298,7 @@ class PurchasingService extends Service {
                     ->join('platform','platform.id','=','supply_cam.platform_id')
                     ->join('platform_money','platform_money.id','=','supply_cam.denomination')
                     ->where('purchasing_camilo_detail.order_code','=',$order_code)
-                    ->select('platform.platform_name', 'platform_money.denomination','supply_cam.cam_name','supply_cam.id','supply_cam.cam_other_name','supply_cam.status')
+                    ->select('platform.platform_name', 'platform_money.denomination','supply_cam.cam_name','supply_cam.id','supply_cam.cam_other_name','supply_cam.status','supply_cam.remark')
                     ->get();
         $order = $this->purorderRepo->model()::where(['id'=>$order_code])->get();
         $results['msg']['order'] = $order[0]['order_code'];
@@ -324,10 +324,10 @@ class PurchasingService extends Service {
         return $results;
     }
     /*设置为问题卡密*/
-    public function set_problem(){
+    public function set_problem($id,$res){
         try{
-            $this->purchasingcamilodetailRepo->update(['is_problem'=>1],request('id', ''));
-            $this->supplyCamRepo->update(['status'=>4],request('card_code',''));
+            $this->purchasingcamilodetailRepo->model()::where(['camilo_id'=>$id])->update(['is_problem'=>1]);
+            $this->supplyCamRepo->model()::where(['id'=>$id])->update(['status'=>3,'remark'=>$res]);
         }catch(Exception $e) {
             return $e;
         }
@@ -377,9 +377,9 @@ class PurchasingService extends Service {
         }
     }
     /*采购商设置卡密已用*/
-    public function set_camilo_userd($id,$code){
-        $this->purchasingcamilodetailRepo->update(['is_used'=>1],['camilo_id'=>$id]);
-        $this->supplyCamRepo->update(['status'=>4],['cam_name'=>$code]);
+    public function set_camilo_userd($id){
+        $this->purchasingcamilodetailRepo->model()::where(['camilo_id'=>$id])->update(['is_used'=>1]);
+        $this->supplyCamRepo->model()::where(['id'=>$id])->update(['status'=>4]);
     }
     /*采购商直充长期查询详情*/
     public function get_ldirectly_detail(){

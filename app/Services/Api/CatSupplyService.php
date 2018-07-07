@@ -66,16 +66,20 @@ Class CatSupplyservice extends Service{
                         'data' => implode(',',$repeat_arr),
                     ]);
                 }
-                /*金额*/
-                $platform_money_id =  $this->getPlatFormMoney($res['money_id']);
-                /*平台*/
-                $platform_id = $this->getPlatFormTerrace($res['platform_id']);
+//                /*金额*/
+//                $platform_money_id =  $this->getPlatFormMoney($res['money_id']);
+//                /*平台*/
+//                $platform_id = $this->getPlatFormTerrace($res['platform_id']);
                 /*用户信息*/
                 $user = $this->jwtUser();
-                /*实际面额*/
-                $actual_money = $this->checkActualMoney($res['discount'],$platform_money_id);
                 /*卡密信息*/
                 foreach( $cam as $item ) {
+                    /*金额*/
+                    $platform_money_id =  $this->getPlatFormMoney($item['price']);
+                    /*平台*/
+                    $platform_id = $this->getPlatFormTerrace($item['plaform']);
+                    /*实际面额*/
+                    $actual_money = $this->checkActualMoney($res['discount'],$platform_money_id);
                     $this->inventoryRepo->updateOrCreate(['platform_id'=>$platform_id,'denomination_id'=>$platform_money_id])->increment('num');
                     $this->inventoryRepo->updateOrCreate(['platform_id'=>$platform_id,'denomination_id'=>$platform_money_id])->increment('vaild_num');
                     $arr = [
