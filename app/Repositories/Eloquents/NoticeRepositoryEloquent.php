@@ -4,7 +4,7 @@ namespace App\Repositories\Eloquents;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\Interfaces\noticeRepository;
+use App\Repositories\Interfaces\NoticeRepository;
 use App\Repositories\Models\Notice;
 use App\Repositories\Validators\NoticeValidator;
 
