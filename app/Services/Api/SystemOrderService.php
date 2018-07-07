@@ -70,8 +70,9 @@ class SystemOrderService extends Service
 
                 $data = $this->supplyCamRepo->model()::where($where)
                     ->orderBy('created_at','desc')
+                    ->withTrashed()
                     ->get()
-                    ->map(function($item, $key){
+                    ->map(function($item, $key) {
                         return [
                             'id' => $item->id,
                             'user_id' => $item->user_id,
@@ -84,6 +85,7 @@ class SystemOrderService extends Service
                             'created_at' => $item->created_at->format('Y-m-d H:i'),
                             'discount' => $item->discount,
                             'status' => $this->checkCamStatus($item->status),
+                            'deleted_at' => $item->deleted_at
                             ];
                     });
 
