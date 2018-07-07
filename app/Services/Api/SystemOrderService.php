@@ -62,6 +62,12 @@ class SystemOrderService extends Service
                         $where['denomination'] = $this->get_denomination_id(request()->post('card_price',''));
                     }
 
+                    if (request()->post('is_del','')) {
+                         $where['is_del'] = request()->post('is_del','');
+                    } else {
+                        $where['is_del'] = 0;
+                    }
+
                 $data = $this->supplyCamRepo->model()::where($where)
                     ->orderBy('created_at','desc')
                     ->get()
@@ -111,7 +117,7 @@ class SystemOrderService extends Service
                 /*验证权限*/
                 $this->checkSupplyAdminJurisdiction();
 
-                if( !$data = $this->supplyCamRepo->delete(request()->id) ) {
+                if (!$data = $this->supplyCamRepo->delete(request()->id)) {
                     throw new Exception('删除卡密失败',2);
                 }
 
@@ -169,10 +175,6 @@ class SystemOrderService extends Service
                 $this->checkSupplyAdminJurisdiction();
                 /*用户信息*/
                 $user = $this->jwtUser();
-
-                if($user->role_status != 3) {
-                    throw new Exception('您没有管理员权限,请联系管理员',2);
-                }
 
                 $field = [
                     'user_id' => '=',
