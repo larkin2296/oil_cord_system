@@ -26,7 +26,7 @@ class AccommedService extends Service {
     public function index()
     {
         try{
-            $exception = DB::transaction(function(){
+            $exception = DB::transaction(function() {
 
                 /*用户信息*/
                 $user = $this->jwtUser();
