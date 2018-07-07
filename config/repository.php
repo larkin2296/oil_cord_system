@@ -145,10 +145,10 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Criteria Config
+    | Criterias Config
     |--------------------------------------------------------------------------
     |
-    | Settings of request parameters names that will be used by Criteria
+    | Settings of request parameters names that will be used by Criterias
     |
     */
     'criteria'   => [
@@ -157,7 +157,7 @@ return [
         | Accepted Conditions
         |--------------------------------------------------------------------------
         |
-        | Conditions accepted in consultations where the Criteria
+        | Conditions accepted in consultations where the Criterias
         |
         | Ex:
         |
