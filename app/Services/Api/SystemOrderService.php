@@ -63,9 +63,9 @@ class SystemOrderService extends Service
                     }
 
                     if (request()->post('is_del','')) {
-                         $where['is_del'] = request()->post('is_del','');
+//                         $where['is_del'] = request()->post('is_del','');
                     } else {
-                        $where['is_del'] = 0;
+                        $where['deleted_at'] = null;
                     }
 
                 $data = $this->supplyCamRepo->model()::where($where)
