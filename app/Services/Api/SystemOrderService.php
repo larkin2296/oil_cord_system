@@ -119,10 +119,10 @@ class SystemOrderService extends Service
                 /*验证权限*/
                 $this->checkSupplyAdminJurisdiction();
 
+                $this->inventory_del(request()->id);
                 if (!$data = $this->supplyCamRepo->delete(request()->id)) {
                     throw new Exception('删除卡密失败',2);
                 }
-
                 return $this->results = array_merge([
                     'code' => '200',
                     'message' => '删除成功',
@@ -147,11 +147,11 @@ class SystemOrderService extends Service
 
                 /*验证权限*/
                 $this->checkSupplyAdminJurisdiction();
-
                 if (!$data = $this->supplyCamRepo->model()::withTrashed()->where('id',request()->id)->restore()) {
                     throw new Exception('恢复卡密失败',2);
+                }else{
+                    $this->inventory_add(request()->id);
                 }
-
                 return $this->results = array_merge([
                     'code' => '200',
                     'message' => '恢复成功',
@@ -162,7 +162,7 @@ class SystemOrderService extends Service
         } catch(Exception $e ) {
             dd($e);
         }
-        return array_merge($this->results,$exception);
+//        return array_merge($this->results,$exception);
     }
 
 
@@ -245,5 +245,12 @@ class SystemOrderService extends Service
             ]);
         }
     }
-
+    public function inventory_add($id){
+        $data = $this->supplyCamRepo->find($id);
+        $this->inventoryRepo->updateOrCreate(['platform_id'=>$data->platform_id,'denomination_id'=>$data->denomination])->increment('vaild_num');
+    }
+    public function inventory_del($id){
+        $data = $this->supplyCamRepo->find($id);
+        $this->inventoryRepo->updateOrCreate(['platform_id'=>$data->platform_id,'denomination_id'=>$data->denomination])->increment('vaild_num',-1);
+    }
 }

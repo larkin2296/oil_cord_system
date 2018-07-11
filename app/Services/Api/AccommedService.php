@@ -51,11 +51,10 @@ class AccommedService extends Service {
                     $where['denomination'] = $this->get_denomination_id($post['card_price']);
                 }
                 isset($post['status']) ? $where['status'] = $post['status'] : '';
-                isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
-                isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
-                
-                $data =  $this->supplyCamRepo->orderBy('created_at','desc')->findWhere($where)->map(function($item,$key) {
-                   
+                isset($post['time_end']) ? $where['end'] = ['created_at','<',$post['time_end']] : '';
+                isset($post['time_start']) ? $where['start'] = ['created_at','>',$post['time_start']] : '';
+                $data =  $this->supplyCamRepo->orderBy('created_at','desc')->findWhere($where)->map(function($item,$key){
+                   //return $item;
                     return [
                         'id' => $item['id'],
                         'cam_name' => $item['cam_name'],
@@ -72,8 +71,9 @@ class AccommedService extends Service {
 
                })->all();
 
-                if (!$data) {
-                    throw new EXception('卡密查询异常,请重试','2');
+                if( $data ) {
+                } else {
+                    return ['code' => '400', 'message' => '查询成功', 'data' => ''];
                 }
 
                 return  [
