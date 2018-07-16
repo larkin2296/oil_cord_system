@@ -53,7 +53,7 @@ class PresentAdministrationService extends Service {
                      'forward_number' => $item->forward_number,
                      'money' => $item->money,
                      'status' => $this->checkForWardStatus($item->status),
-                     'created_at' => $item->created_at->format("Y-m-d") ?: '',
+                     'created_at' => $item->created_at->format("Y-m-d H:i:s") ?: '',
                  ];
               });
 

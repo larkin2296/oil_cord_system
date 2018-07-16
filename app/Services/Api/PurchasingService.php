@@ -70,13 +70,23 @@ class PurchasingService extends Service {
 //        print_r(DB::getQueryLog());
         foreach($results as &$val){
             $val['platform'] = $this->handlePlatform($val['platform']);
+            if($data = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$val['id']])->count()){
+                $use_num = $data; 
+            }else{
+                $use_num = 0;
+            } 
+            $need_num = $val['num'];
 //            $val['unit_price'] = $this->handlePlatform($val['unit_price']);
             switch($val['order_status']){
                 case 1:
                     $val['order_status'] = '未完成';
                     break;
                 case 2:
-                    $val['order_status'] = '已完成';
+                    if($use_num == $need_num){
+                        $val['order_status'] = '已完成';
+                    }else{
+                        $val['order_status'] = '已发送';
+                    }
                     break;
                 case 3:
                     $val['order_status'] = '问题订单';
