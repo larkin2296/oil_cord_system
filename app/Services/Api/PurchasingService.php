@@ -79,7 +79,7 @@ class PurchasingService extends Service {
 //            $val['unit_price'] = $this->handlePlatform($val['unit_price']);
             switch($val['order_status']){
                 case 1:
-                    $val['order_status'] = '未完成';
+                    $val['order_status'] = '未发送';
                     break;
                 case 2:
                     if($use_num == 0){
