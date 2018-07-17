@@ -70,7 +70,7 @@ class PurchasingService extends Service {
 //        print_r(DB::getQueryLog());
         foreach($results as &$val){
             $val['platform'] = $this->handlePlatform($val['platform']);
-            if($data = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$val['id']])->count()){
+            if($data = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$val['id'],'is_used'=>0,'is_problem'=>0])->count()){
                 $use_num = $data; 
             }else{
                 $use_num = 0;
@@ -82,7 +82,7 @@ class PurchasingService extends Service {
                     $val['order_status'] = '未完成';
                     break;
                 case 2:
-                    if($use_num == $need_num){
+                    if($use_num == 0){
                         $val['order_status'] = '已完成';
                     }else{
                         $val['order_status'] = '已发送';
