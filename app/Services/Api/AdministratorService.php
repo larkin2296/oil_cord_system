@@ -51,6 +51,7 @@ class AdministratorService extends Service {
 
                 $data =  $this->purorderRepo->orderBy('created_at','desc')->findWhere($where)->map(function($item,$key){
                     //return $item;
+		    $user = $this->userRepo->find($item['user_id']);
                     return [
                         'id' => $item['id'],
                         'order_code' => $item['order_code'],
@@ -59,6 +60,7 @@ class AdministratorService extends Service {
                         'platform_id' => $this->handlePlatform($item['platform']),
                         'created_at' => $item['created_at']->format('Y-m-d H:i:s'),
                         'num' => $item['num'],
+			'user_name' => $user['truename'],
                         'status' => $item['order_status']
                     ];
 
