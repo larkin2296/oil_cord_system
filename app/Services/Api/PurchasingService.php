@@ -59,8 +59,8 @@ class PurchasingService extends Service {
                 $where['unit_price'] = $this->get_denomination_id($post['card_price']);
             }
             isset($post['order_status']) ? $where['order_status'] = $post['order_status'] : '';
-            isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
-            isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
+            isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].' 23:59:59'] : '';
+            isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].' 00:00:00'] : '';
             isset($post['order_code']) ? $where['order_code'] = ['order_code','like','%'.$post['order_code'].'%'] : '';
         }
         $where['order_type'] = 1;
@@ -130,8 +130,8 @@ class PurchasingService extends Service {
 
         if(!empty($post)) {
             isset($post['order_status']) ? $where['order_status'] = $post['order_status'] : '';
-//            isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
-//            isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
+//            isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].' 23:59:59'] : '';
+//            isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].' 00:00:00'] : '';
             isset($post['order_code']) ? $where['order_code'] = ['order_code','like','%'.$post['order_code'].'%'] : '';
         }
         $user = $this->jwtUser();

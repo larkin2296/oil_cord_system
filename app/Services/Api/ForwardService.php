@@ -109,7 +109,7 @@ Class ForwardService extends Service
                     $sum[0] = 0;
                 }else{
                     foreach($cam as $k => $v) {
-                        $sum[$k] = $v['denomination']['denomination'];
+                        $sum[$k] = $v['denomination']['denomination'] * $v['discount'];
                     }
                 }
 
