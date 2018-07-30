@@ -8,7 +8,7 @@ use App\Repositories\Models\PurchasingOrder;
 use App\Repositories\Models\SupplyCam;
 use App\Repositories\Models\UserAttachment;
 use App\Repositories\Models\UserOilCard;
-use App\Services\AttachmentService;
+use App\Services\SaleAttachmentService;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;

@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\AttachmentService as Service;
+use App\Services\SaleAttachmentService as Service;
 class AttachmentController extends Controller {
 
     public function __construct(Service $service)
