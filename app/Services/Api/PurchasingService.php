@@ -59,8 +59,8 @@ class PurchasingService extends Service {
                 $where['unit_price'] = $this->get_denomination_id($post['card_price']);
             }
             isset($post['order_status']) ? $where['order_status'] = $post['order_status'] : '';
-            isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
-            isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
+            isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].' 23:59:59'] : '';
+            isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].' 00:00:00'] : '';
             isset($post['order_code']) ? $where['order_code'] = ['order_code','like','%'.$post['order_code'].'%'] : '';
         }
         $where['order_type'] = 1;
@@ -70,13 +70,23 @@ class PurchasingService extends Service {
 //        print_r(DB::getQueryLog());
         foreach($results as &$val){
             $val['platform'] = $this->handlePlatform($val['platform']);
+            if($data = $this->purchasingcamilodetailRepo->findWhere(['order_code'=>$val['id'],'is_used'=>0,'is_problem'=>0])->count()){
+                $use_num = $data; 
+            }else{
+                $use_num = 0;
+            } 
+            $need_num = $val['num'];
 //            $val['unit_price'] = $this->handlePlatform($val['unit_price']);
             switch($val['order_status']){
                 case 1:
-                    $val['order_status'] = '未完成';
+                    $val['order_status'] = '未发送';
                     break;
                 case 2:
-                    $val['order_status'] = '已完成';
+                    if($use_num == 0){
+                        $val['order_status'] = '已完成';
+                    }else{
+                        $val['order_status'] = '已发送';
+                    }
                     break;
                 case 3:
                     $val['order_status'] = '问题订单';
@@ -120,8 +130,8 @@ class PurchasingService extends Service {
 
         if(!empty($post)) {
             isset($post['order_status']) ? $where['order_status'] = $post['order_status'] : '';
-//            isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].'23:59:59'] : '';
-//            isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].'00:00:00'] : '';
+//            isset($post['time_end']) ? $where['created_at'] = ['created_at','<',$post['time_end'].' 23:59:59'] : '';
+//            isset($post['time_start']) ? $where['created_at'] = ['created_at','>',$post['time_start'].' 00:00:00'] : '';
             isset($post['order_code']) ? $where['order_code'] = ['order_code','like','%'.$post['order_code'].'%'] : '';
         }
         $user = $this->jwtUser();
